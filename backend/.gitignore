@@ -3,3 +3,6 @@ dist/
 temp/
 **/**/*.log
 config.js
+
+# Ignore env files
+config/*.env.*
