@@ -1,0 +1,33 @@
+.sidebar-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #9b9b9b;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.sidebar-button:hover {
+  background-color: #e9ecef;
+}
+
+.sidebar-button.active {
+  background-color: #f4eaff;
+  color: #6d33aa;
+}
+
+.sidebar-icon {
+  font-size: 1.5rem;
+}

@@ -1,0 +1,20 @@
+.sidebar {
+  width: 300px;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  /* gap: 1.5rem; */
+  border: 1px solid #d0d4d9;
+  grid-area: sidebar;
+}
+
+.separator {
+  height: 1px;
+  background-color: #d0d4d9;
+  width: 100%;
+  margin-top: 0.8rem;
+  margin-bottom: 1.3rem;
+} 
