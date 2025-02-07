@@ -1,19 +1,25 @@
-import { FC } from 'react'
+import { FC, RefObject } from 'react'
 import { Sidebar } from '../components/Sidebar/Sidebar'
 import { SearchBox } from '../components/SearchBox/SearchBox'
 import './RootLayout.css'
 import SortButton from '../components/SortButton/SortButton'
-import CreateNoteBar from '../components/CreateNoteBar/CreateNoteBar'
+import { CreateNoteBar } from '../components/CreateNoteBar/CreateNoteBar'
 
-export const RootLayout: FC<{ children: React.ReactNode }> = ({ children }) => {
+interface RootLayoutProps {
+  cardContainer: RefObject<HTMLDivElement>;
+  children: React.ReactNode;
+}
+
+export const RootLayout: FC<RootLayoutProps> = ({ cardContainer, children }) => {
   return (
     <div className="app-container">
       <Sidebar />
-        <SearchBox />
-        <SortButton />
+      <SearchBox />
+      <SortButton />
       <main className="main-content">
         {children}
       </main>
+      <CreateNoteBar cardContainer={cardContainer} />
     </div>
   )
 }

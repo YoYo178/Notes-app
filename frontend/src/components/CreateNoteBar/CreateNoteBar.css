@@ -1,0 +1,73 @@
+.create-note-bar {
+    position: fixed;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-30%) scaleX(0);
+    width: 50%;
+    max-width: calc(100% - 2rem);
+    margin: 0 1rem;
+    background-color: white;
+    padding: 1rem;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    border: 1px solid #d0d4d9;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+
+    display: flex;
+    align-items: center;
+
+    text-align: center;
+}
+
+.create-note-bar.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.create-note-bar.visible {
+    transform: translateX(-30%) scaleX(1);
+    opacity: 1;
+}
+
+.add-note-buttons-container {
+    display: flex;
+    gap: 0.6rem
+}
+
+.add-note-button,
+.add-note-image-button {
+    font-size: 2rem;
+    padding: 0.4rem;
+    border-radius: 8px;
+    color: rgb(73, 73, 73);
+}
+
+.add-note-button:hover,
+.add-note-image-button:hover {
+    background-color: rgb(216, 216, 216);
+    cursor: pointer;
+}
+
+.record-note-button-container {
+    margin-left: auto;
+    margin-right: 1rem;
+    background-color: #fd302f;
+    padding: 0.5rem 0.8rem;
+    border-radius: 20px;
+
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: white;
+
+    transition: scale 0.2s ease-in-out;
+}
+
+.record-note-button-container:hover {
+    background-color: #ff2525;
+    cursor: pointer;
+    scale: 105%
+}
