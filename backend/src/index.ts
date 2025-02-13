@@ -2,13 +2,30 @@ import logger from 'jet-logger';
 
 import Env from '@src/common/Env';
 import server from './server';
+import mongoose from 'mongoose';
 
+import { connectDB } from '@src/common/db';
 
 /******************************************************************************
                                   Run
 ******************************************************************************/
 
-const SERVER_START_MSG = ('Express server started on port: ' + 
+connectDB();
+
+const SERVER_START_MSG = ('Express server started on port: ' +
   Env.Port.toString());
 
-server.listen(Env.Port, () => logger.info(SERVER_START_MSG));
+mongoose.connection.once('open', () => {
+  logger.info(`Connected to MongoDB (${process.env.NODE_ENV || "NODE_ENV NOT DEFINED!"})`);
+  server.listen(Env.Port, () => logger.info(SERVER_START_MSG));
+})
+
+mongoose.connection.on('error', (error) => {
+  // Only log errors that occur after connecting
+  // Errors that occur during connecting will be handled in connnectDB()
+  if (mongoose.connection.readyState !== 1)
+    return;
+
+  logger.err("An error occured while connecting to MongoDB!");
+  logger.err(error);
+})
