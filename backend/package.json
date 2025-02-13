@@ -16,12 +16,14 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-async-errors": "^3.1.1",
+    "express-async-handler": "^1.2.0",
     "helmet": "^8.0.0",
     "inserturlparams": "^2.0.5",
     "jet-env": "^1.1.4",
@@ -39,6 +41,7 @@
     "@stylistic/eslint-plugin-js": "^3.0.1",
     "@stylistic/eslint-plugin-ts": "^3.0.1",
     "@swc/core": "^1.10.14",
+    "@types/bcrypt": "^5",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2",
     "@types/eslint__js": "^8.42.3",
