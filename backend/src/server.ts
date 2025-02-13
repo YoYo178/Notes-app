@@ -3,6 +3,7 @@ import path from 'path';
 import helmet from 'helmet';
 import express, { Request, Response, NextFunction } from 'express';
 import logger from 'jet-logger';
+import cors from 'cors';
 
 import 'express-async-errors';
 
@@ -13,6 +14,7 @@ import Env from '@src/common/Env';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import { RouteError } from '@src/common/route-errors';
 import { NodeEnvs } from '@src/common/constants';
+import { CORS_CONFIG } from '@src/config/CORS'
 
 
 /******************************************************************************
@@ -23,6 +25,8 @@ const app = express();
 
 
 // **** Setup
+
+app.use(cors(CORS_CONFIG))
 
 // Basic middleware
 app.use(express.json());
