@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import express, { Request, Response, NextFunction } from 'express';
 import logger from 'jet-logger';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import 'express-async-errors';
 
@@ -25,11 +26,14 @@ const app = express();
 
 // **** Setup
 
-app.use(cors(CORS_CONFIG))
 
 // Basic middleware
+app.use(cors(CORS_CONFIG))
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
 
 // Show routes called in console during development
 if (Env.NodeEnv === NodeEnvs.Dev.valueOf()) {
