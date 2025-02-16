@@ -10,17 +10,32 @@ import { ObjectId } from "mongoose";
 @description Creates a new user.
 */
 const createUser = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { username, password, displayName } = req.body;
+    const { username, password, displayName, email } = req.body;
 
-    if (!username || !password || !displayName) {
+    if (!username || !password || !displayName || !email) {
         res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "All fields are required" })
         return;
     }
 
-    const userExists = !!await User.findOne({ username }).lean().exec()
+    // only supporting gmail for now, lol
+    if (!email.endsWith("@gmail.com")) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Email not supported" });
+        return;
+    }
 
-    if (userExists) {
+    // Check username, if it's already taken
+    const usernameExists = !!await User.findOne({ username }).select('-password').lean().exec()
+
+    if (usernameExists) {
         res.status(HttpStatusCodes.CONFLICT).send({ message: "A user already exists with the provided username" })
+        return;
+    }
+
+    // Check email, if the user already has an account with this email
+    const userEmailExists = !!await User.findOne({ email }).select('-password').lean().exec()
+
+    if (userEmailExists) {
+        res.status(HttpStatusCodes.CONFLICT).send({ message: "A user already exists with the provided email" })
         return;
     }
 
@@ -29,7 +44,8 @@ const createUser = expressAsyncHandler(async (req: Request, res: Response) => {
     const user = await User.create({
         username,
         password: hashedPassword,
-        displayName
+        displayName,
+        email
     });
 
     if (user) {
@@ -45,10 +61,11 @@ const createUser = expressAsyncHandler(async (req: Request, res: Response) => {
 @description Updates an existing user.
 */
 const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { id, username, password, displayName } = req.body;
+    const { id, username, password, displayName, email } = req.body;
 
-    if (!id || !username || !password || !displayName) {
-        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "All fields are required" });
+    // only supporting gmail for now, lol
+    if (email && !email.endsWith("@gmail.com")) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Email not supported" });
         return;
     }
 
@@ -59,15 +76,22 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const duplicateUser = await User.findOne({ username })
-    if (duplicateUser && (duplicateUser._id as ObjectId).toString() !== id) {
+    const duplicateUsername = await User.findOne({ username }).exec()
+    if (duplicateUsername && (duplicateUsername._id as ObjectId).toString() !== id) {
         res.status(HttpStatusCodes.CONFLICT).send({ message: "Username already exists" });
         return;
     }
 
-    user.username = username;
-    user.displayName = displayName;
-    user.password = await bcrypt.hash(password, 10);
+    const duplicateEmail = await User.findOne({ email }).exec();
+    if (duplicateEmail && (duplicateEmail._id as ObjectId).toString() !== id) {
+        res.status(HttpStatusCodes.CONFLICT).send({ message: "Email is already registered" });
+        return;
+    }
+
+    user.username = username || user.username;
+    user.displayName = displayName || user.displayName;
+    user.password = password ? await bcrypt.hash(password, 10) : user.password;
+    user.email = email || user.email;
 
     await user.save();
 
