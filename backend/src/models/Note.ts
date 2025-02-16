@@ -1,10 +1,8 @@
 import { MongooseModel } from "@src/util/dbUtils";
-import { Schema } from "mongoose";
-
-const { Types: { ObjectId } } = Schema;
+import { Schema, ObjectId } from "mongoose";
 
 interface INote {
-    user: typeof ObjectId;
+    user: ObjectId;
     title: string;
     description: string;
     password: string;
@@ -13,7 +11,7 @@ interface INote {
 
 const noteSchema: Schema = new Schema<INote>(
     {
-        user: { type: ObjectId, required: true, ref: 'User' },
+        user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
         title: { type: String, required: true },
         description: { type: String, required: true },
         images: [{ type: String, required: false }],
