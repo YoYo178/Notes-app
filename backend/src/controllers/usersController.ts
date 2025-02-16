@@ -93,7 +93,7 @@ const deleteUser = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const result = await user.deleteOne();
+    await user.deleteOne();
 
     res.status(HttpStatusCodes.OK).send({ message: "User deleted successfully" });
 })
