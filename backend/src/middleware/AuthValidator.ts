@@ -21,15 +21,16 @@ const AuthValidator = (req: Request, res: Response, next: NextFunction) => {
 
     const token = authHeader.split(" ")[1];
 
-    if (!process.env.REFRESH_TOKEN_SECRET) {
-        logger.err("REFRESH_TOKEN_SECRET is undefined!");
+    if (!process.env.ACCESS_TOKEN_SECRET) {
+        logger.err("ACCESS_TOKEN_SECRET is undefined!");
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured in the server." });
         return;
     }
 
     try {
-        const decoded: any = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
-        req.user = { username: decoded.username };
+        const decoded: any = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+        req.user = { username: decoded.User.username };
+        next();
     } catch (err: any) {
         const error = err as JsonWebTokenError;
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: error.message });
