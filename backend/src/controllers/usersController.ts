@@ -6,20 +6,6 @@ import HttpStatusCodes from "@src/common/HttpStatusCodes";
 import { ObjectId } from "mongoose";
 
 /**
-@route GET /users
-@description Returns all users.
-*/
-const getAllUsers = expressAsyncHandler(async (req: Request, res: Response) => {
-    const users = await User.find().select('-password').lean().exec() || [];
-
-    if (!users.length) {
-        res.status(HttpStatusCodes.NOT_FOUND).send({ message: "No users found!" });
-        return;
-    }
-    res.status(200).send(users)
-})
-
-/**
 @route POST /users
 @description Creates a new user.
 */
@@ -113,7 +99,6 @@ const deleteUser = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 export default {
-    getAllUsers,
     createUser,
     updateUser,
     deleteUser
