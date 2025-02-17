@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 import logger from 'jet-logger'
 import HttpStatusCodes from "@src/common/HttpStatusCodes";
+import cookieConfig from "@src/config/cookieConfig";
 
 /**
 @route POST /auth/login
@@ -60,14 +61,14 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
         { expiresIn: "7d" }
     )
 
-    res.cookie("jwt", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none",
-        maxAge: 7 * 24 * 60 * 60 * 1000
+    res.cookie("jwt_rt", refreshToken, cookieConfig) // Default maxAge is 7d
+
+    res.cookie("jwt_at", accessToken, {
+        ...cookieConfig,
+        maxAge: 3 * 60 * 60 * 1000 // 3h
     })
 
-    res.status(HttpStatusCodes.OK).send({ message: "Logged in successfully", token: accessToken })
+    res.status(HttpStatusCodes.OK).send({ message: "Logged in successfully" })
 })
 
 /**
@@ -77,12 +78,12 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
 const refresh = expressAsyncHandler(async (req: Request, res: Response) => {
     const cookies = req.cookies;
 
-    if (!cookies?.jwt) {
+    if (!cookies?.jwt_rt) {
         res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: "Unauthorized" });
         return;
     }
 
-    const refreshToken = cookies.jwt;
+    const refreshToken = cookies.jwt_rt;
 
     if (!process.env.REFRESH_TOKEN_SECRET) {
         logger.err("REFRESH_TOKEN_SECRET is undefined!");
@@ -117,7 +118,12 @@ const refresh = expressAsyncHandler(async (req: Request, res: Response) => {
             { expiresIn: "3h" }
         )
 
-        res.status(HttpStatusCodes.OK).send({ message: `Welcome ${decoded.username}`, accessToken })
+        res.cookie("jwt_at", accessToken, {
+            ...cookieConfig,
+            maxAge: 3 * 60 * 60 * 1000 // 3h
+        })
+
+        res.status(HttpStatusCodes.OK).send({ message: `Welcome ${decoded.username}` })
     } catch (err: any) {
         const error = err as JsonWebTokenError;
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: error.message });
@@ -133,12 +139,18 @@ const refresh = expressAsyncHandler(async (req: Request, res: Response) => {
 const logout = expressAsyncHandler(async (req: Request, res: Response) => {
     const cookies = req.cookies;
 
-    if (!cookies?.jwt) {
+    if (!cookies?.jwt_rt && !cookies?.jwt_at) {
         res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: "User is not logged in" });
         return;
     }
 
-    res.clearCookie('jwt', {
+    res.clearCookie('jwt_rt', {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: process.env.NODE_ENV === "production"
+    });
+
+    res.clearCookie('jwt_at', {
         httpOnly: true,
         sameSite: 'none',
         secure: process.env.NODE_ENV === "production"

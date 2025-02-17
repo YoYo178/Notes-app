@@ -16,22 +16,16 @@ const tokenBlacklist: string[] = [];
 const AuthValidator = (req: Request, res: Response, next: NextFunction) => {
     // Make sure the user is logged in
     const cookies = req.cookies;
-    if (!cookies?.jwt) {
+    if (!cookies?.jwt_rt || !cookies.jwt_at) {
         res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: "User is not logged in" })
         return;
     }
 
-    // Make sure the user has a valid access token
-    const authHeader: string | undefined = req.headers.authorization || (req.headers.Authorization as string);
-    if (!authHeader?.startsWith("Bearer ")) {
-        res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: "User is not logged in" })
-        return;
-    }
-
-    const token = authHeader.split(" ")[1];
+    const refreshToken = cookies.jwt_rt;
+    const accessToken = cookies.jwt_at;
 
     // Check if the access token is in token blacklist
-    if (tokenBlacklist.includes(token)) {
+    if (tokenBlacklist.includes(accessToken)) {
         res.status(HttpStatusCodes.FORBIDDEN).send({ message: "Forbidden" });
         return;
     }
@@ -50,8 +44,8 @@ const AuthValidator = (req: Request, res: Response, next: NextFunction) => {
 
     try {
         // Decode both access token and refresh token
-        const decodedRefreshToken: any = jwt.verify(cookies.jwt, process.env.REFRESH_TOKEN_SECRET);
-        const decodedAccessToken: any = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const decodedRefreshToken: any = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const decodedAccessToken: any = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
 
         // Make sure the access token and refresh token belong to the same account
         // It's a malicious attempt otherwise
@@ -64,7 +58,7 @@ const AuthValidator = (req: Request, res: Response, next: NextFunction) => {
             });
 
             // Add the access token to token blacklist
-            tokenBlacklist.push(token);
+            tokenBlacklist.push(accessToken);
 
             // Remove the token from blacklist after it expires
             setTimeout(() => {
