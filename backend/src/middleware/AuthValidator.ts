@@ -20,13 +20,13 @@ const tokenBlacklist: string[] = [];
 const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     // Make sure the user is logged in
     const cookies = req.cookies;
-    if (!cookies?.jwt_rt || !cookies.jwt_at) {
+    if (!cookies?.jwt_rt) {
         res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: "User is not logged in" })
         return;
     }
 
     const refreshToken = cookies.jwt_rt;
-    const accessToken = cookies.jwt_at;
+    const accessToken = cookies?.jwt_at || null;
 
     // Check if the access token is in token blacklist
     /** TODOs:
@@ -36,7 +36,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
      * 
      * - Use IP instead of token, makes it more secure
      */
-    if (tokenBlacklist.includes(accessToken)) {
+    if (accessToken && tokenBlacklist.includes(accessToken)) {
         res.status(HttpStatusCodes.FORBIDDEN).send({ message: "Forbidden" });
         return;
     }
