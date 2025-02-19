@@ -6,7 +6,7 @@ import HttpStatusCodes from '@src/common/HttpStatusCodes';
 declare global {
     namespace Express {
         interface Request {
-            user?: { username: string; }
+            user?: { id: string; username: string; }
         }
     }
 }
