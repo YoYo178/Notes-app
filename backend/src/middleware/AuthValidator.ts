@@ -1,7 +1,13 @@
-import jwt, { JsonWebTokenError } from 'jsonwebtoken';
+import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import logger from 'jet-logger'
 import { Request, Response, NextFunction } from "express";
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import { User } from '@src/models/User';
+import expressAsyncHandler from 'express-async-handler';
+import { ObjectId } from 'mongoose';
+import cookieConfig from '@src/config/cookieConfig';
+import { refreshAccessToken } from '@src/util/authUtils';
+import { tokenConfig } from '@src/config/tokenConfig';
 
 declare global {
     namespace Express {
@@ -53,16 +59,65 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
         return;
     }
 
+    let userID: string | null = null;
+
+    // Check for user's refresh token first, make sure it's valid
     try {
-        // Decode both access token and refresh token
-        const decodedRefreshToken: any = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        const decodedAccessToken: any = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+        // Decode user's refresh token
+        const decoded: any = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        userID = decoded.User.id;
+    } catch (err) {
+        if (err instanceof JsonWebTokenError) {
+            const error = err as JsonWebTokenError;
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: error?.message === "invalid signature" ? "Invalid token" : error?.message });
+            return;
+        } else if (err instanceof TokenExpiredError) {
+            const error = err as TokenExpiredError;
+            res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: error?.message === "jwt expired" ? "Expired token" : error?.message });
+            return;
+        }
+
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: err?.message });
+        return;
+    }
+
+    const user = userID ? await User.findById(userID).select('-password').lean().exec() : null;
+    if (!user) {
+        res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
+        return;
+    }
+
+    if (!accessToken) {
+        // Generate new access token
+        const accessToken = refreshAccessToken(user);
+
+        res.cookie("jwt_at", accessToken, cookieConfig);
+
+        // Add the user's id and username in the request for other handlers
+        req.user = { id: (user._id as ObjectId).toString(), username: user.username };
+
+        // Move to other routes
+        next();
+        return;
+    }
+
+    // User's refresh token was valid, now check for their access token
+    // If expired, then refresh it silently
+    try {
+        // Decode user's access token
+        const decoded: any = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
 
         // Make sure the access token and refresh token belong to the same account
         // It's a malicious attempt otherwise
-        if (decodedAccessToken.User.username !== decodedRefreshToken.username) {
+        if (decoded.User.id !== userID) {
             // Force logout immediately, Revoking access from the app's routes
-            res.clearCookie('jwt', {
+            res.clearCookie('jwt-at', {
+                httpOnly: true,
+                sameSite: 'none',
+                secure: process.env.NODE_ENV === "production"
+            });
+
+            res.clearCookie('jwt-rt', {
                 httpOnly: true,
                 sameSite: 'none',
                 secure: process.env.NODE_ENV === "production"
@@ -74,23 +129,42 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
             // Remove the token from blacklist after it expires
             setTimeout(() => {
                 tokenBlacklist.shift()
-            }, (decodedAccessToken.exp * 1000) - Date.now())
+            }, (decoded.exp * 1000) - Date.now())
 
             res.status(HttpStatusCodes.CONFLICT).send({ message: "Malicious attempt detected, You have been added to the blacklist" });
             return;
         }
 
-        // Everything was valid, add the username in the request for other handlers
-        req.user = { username: decodedAccessToken.User.username };
+        // Everything was valid, add the user's id and username in the request for other handlers
+        req.user = { id: decoded.User.id, username: decoded.User.username };
+
+        // Move to other routes
         next();
+        return;
     } catch (err: any) {
-        if (err instanceof JsonWebTokenError) {
+        // Need to check for TokenExpiredError first
+        // because it inherits from JsonWebTokenError
+        if (err instanceof TokenExpiredError) {
+            // Generate new access token
+            const accessToken = refreshAccessToken(user);
+
+            // Send the HTTP-only cookie to the client
+            res.cookie("jwt_at", accessToken, cookieConfig);
+
+            // Add the user's id and username in the request for other handlers
+            req.user = { id: (user._id as ObjectId).toString(), username: user.username };
+
+            // Move to other routes
+            next();
+            return;
+        } else if (err instanceof JsonWebTokenError) {
             const error = err as JsonWebTokenError;
-            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: err.message === "invalid signature" ? "Invalid token" : err.message });
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: error?.message === "invalid signature" ? "Invalid token" : error?.message });
             return;
         }
 
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: err?.message });
+        return;
     }
 })
 
