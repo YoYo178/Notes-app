@@ -127,9 +127,13 @@ const refresh = expressAsyncHandler(async (req: Request, res: Response) => {
 
         res.status(HttpStatusCodes.OK).send({ message: `Welcome ${decoded.username}` })
     } catch (err: any) {
-        const error = err as JsonWebTokenError;
-        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: error.message });
-        return;
+        if (err instanceof JsonWebTokenError) {
+            const error = err as JsonWebTokenError;
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: err.message === "invalid signature" ? "Invalid token" : err.message });
+            return;
+        }
+
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: err?.message });
     }
 
 })

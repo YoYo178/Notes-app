@@ -84,9 +84,13 @@ const AuthValidator = (req: Request, res: Response, next: NextFunction) => {
         req.user = { username: decodedAccessToken.User.username };
         next();
     } catch (err: any) {
-        const error = err as JsonWebTokenError;
-        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: error.message });
-        return;
+        if (err instanceof JsonWebTokenError) {
+            const error = err as JsonWebTokenError;
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: err.message === "invalid signature" ? "Invalid token" : err.message });
+            return;
+        }
+
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: err?.message });
     }
 }
 
