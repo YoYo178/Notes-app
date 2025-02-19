@@ -6,6 +6,8 @@ import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 import logger from 'jet-logger'
 import HttpStatusCodes from "@src/common/HttpStatusCodes";
 import cookieConfig from "@src/config/cookieConfig";
+import { ObjectId } from "mongoose";
+import { tokenConfig } from "@src/config/tokenConfig";
 
 /**
  * @route GET /auth
@@ -53,12 +55,13 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
     const accessToken = jwt.sign(
         {
             User: {
+                id: (user._id as ObjectId).toString(),
                 username: user.username,
                 displayName: user.displayName
             }
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "3h" }
+        { expiresIn: tokenConfig.accessToken.expiry }
     )
 
     if (!process.env.REFRESH_TOKEN_SECRET) {
@@ -68,17 +71,22 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
     }
 
     const refreshToken = jwt.sign(
-        { username: user.username },
+        {
+            User: {
+                id: (user._id as ObjectId).toString(),
+                username: user.username
+            }
+        },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "7d" }
+        { expiresIn: tokenConfig.refreshToken.expiry }
     )
 
-    res.cookie("jwt_rt", refreshToken, cookieConfig) // Default maxAge is 7d
-
-    res.cookie("jwt_at", accessToken, {
+    res.cookie("jwt_rt", refreshToken, {
         ...cookieConfig,
-        maxAge: 3 * 60 * 60 * 1000 // 3h
-    })
+        maxAge: tokenConfig.refreshToken.expiry, // 7 days
+    });
+
+    res.cookie("jwt_at", accessToken, cookieConfig);
 
     res.status(HttpStatusCodes.OK).send({ message: "Logged in successfully" })
 })
@@ -107,7 +115,7 @@ const refresh = expressAsyncHandler(async (req: Request, res: Response) => {
     try {
         const decoded: any = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
 
-        const user = await User.findOne({ username: decoded.username });
+        const user = await User.findOne({ username: decoded.User.username });
 
         if (!user) {
             res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
@@ -123,20 +131,18 @@ const refresh = expressAsyncHandler(async (req: Request, res: Response) => {
         const accessToken = jwt.sign(
             {
                 User: {
+                    id: (user._id as ObjectId).toString(),
                     username: user.username,
                     displayName: user.displayName
                 }
             },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "3h" }
+            { expiresIn: tokenConfig.accessToken.expiry }
         )
 
-        res.cookie("jwt_at", accessToken, {
-            ...cookieConfig,
-            maxAge: 3 * 60 * 60 * 1000 // 3h
-        })
+        res.cookie("jwt_at", accessToken, cookieConfig);
 
-        res.status(HttpStatusCodes.OK).send({ message: `Welcome ${decoded.username}` })
+        res.status(HttpStatusCodes.OK).send({ message: `Welcome ${decoded.User.username}` })
     } catch (err: any) {
         if (err instanceof JsonWebTokenError) {
             const error = err as JsonWebTokenError;
