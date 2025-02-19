@@ -13,6 +13,10 @@ declare global {
 
 const tokenBlacklist: string[] = [];
 
+/**
+ * @description Authentication validator, verifies if the user is logged in or not
+ * @returns HTTP 400, 401, 403, 409, 500
+ */
 const AuthValidator = (req: Request, res: Response, next: NextFunction) => {
     // Make sure the user is logged in
     const cookies = req.cookies;
@@ -25,6 +29,13 @@ const AuthValidator = (req: Request, res: Response, next: NextFunction) => {
     const accessToken = cookies.jwt_at;
 
     // Check if the access token is in token blacklist
+    /** TODOs:
+     * - Move this check into a global middleware
+     *   so we can restrict access to our entire API.
+     *   i.e - User cannot login either, until their token expires
+     * 
+     * - Use IP instead of token, makes it more secure
+     */
     if (tokenBlacklist.includes(accessToken)) {
         res.status(HttpStatusCodes.FORBIDDEN).send({ message: "Forbidden" });
         return;

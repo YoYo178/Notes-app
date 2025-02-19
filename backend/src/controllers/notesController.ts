@@ -6,9 +6,10 @@ import { ObjectId } from "mongoose";
 import { Note } from "@src/models/Note";
 
 /**
-@route GET /notes
-@description Returns all notes.
-*/
+ * @route GET /notes
+ * @description Returns all notes.
+ * @returns HTTP 200, 404
+ */
 const getAllNotes = expressAsyncHandler(async (req: Request, res: Response) => {
     const user = await User.findOne({ username: req.user?.username }).select('-password').lean().exec();
 
@@ -28,9 +29,10 @@ const getAllNotes = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 /**
-@route POST /notes
-@description Creates a new note.
-*/
+ * @route POST /notes
+ * @description Creates a new note.
+ * @returns HTTP 200, 400, 404
+ */
 const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
     const user = await User.findOne({ username: req.user?.username }).select('-password').lean().exec();
 
@@ -57,9 +59,10 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 /**
-@route PATCH /notes
-@description Updates an existing note.
-*/
+ * @route PATCH /notes
+ * @description Updates an existing note.
+ * @returns HTTP 200, 404
+ */
 const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
     const user = await User.findOne({ username: req.user?.username }).select('-password').lean().exec();
 
@@ -88,9 +91,10 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 /**
-@route DELETE /notes
-@description Deletes a note.
-*/
+ * @route DELETE /notes
+ * @description Deletes a note.
+ * @returns HTTP 200, 404
+ */
 const deleteNote = expressAsyncHandler(async (req: Request, res: Response) => {
     const user = await User.findOne({ username: req.user?.username }).select('-password').lean().exec();
 

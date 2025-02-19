@@ -8,9 +8,10 @@ import HttpStatusCodes from "@src/common/HttpStatusCodes";
 import cookieConfig from "@src/config/cookieConfig";
 
 /**
-@route POST /auth/login
-@description Logs in the user and returns an HTTP only cookie to the client.
-*/
+ * @route POST /auth/login
+ * @description Logs in the user and returns an HTTP only cookie to the client.
+ * @returns HTTP 200, 400, 401, 404, 500
+ */
 const login = expressAsyncHandler(async (req: Request, res: Response) => {
     const { username, password } = req.body;
 
@@ -72,9 +73,10 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 /**
-@route GET /auth/refresh
-@description Provides the client with a new access token.
-*/
+ * @route GET /auth/refresh
+ * @description Provides the client with a new access token.
+ * @returns HTTP 200, 400, 401, 404, 500
+ */
 const refresh = expressAsyncHandler(async (req: Request, res: Response) => {
     const cookies = req.cookies;
 
@@ -133,9 +135,10 @@ const refresh = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 /**
-@route POST /auth/logout
-@description Logs out the user and clears the HTTP only cookie on the client.
-*/
+ * @route POST /auth/logout
+ * @description Logs out the user and clears the HTTP only cookie on the client.
+ * @returns HTTP 200, 401
+ */
 const logout = expressAsyncHandler(async (req: Request, res: Response) => {
     const cookies = req.cookies;
 

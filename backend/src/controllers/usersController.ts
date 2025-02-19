@@ -6,9 +6,10 @@ import HttpStatusCodes from "@src/common/HttpStatusCodes";
 import { ObjectId } from "mongoose";
 
 /**
-@route POST /users
-@description Creates a new user.
-*/
+ * @route POST /users
+ * @description Creates a new user.
+ * @returns HTTP 201, 400, 409, 500
+ */
 const createUser = expressAsyncHandler(async (req: Request, res: Response) => {
     const { username, password, displayName, email } = req.body;
 
@@ -57,9 +58,10 @@ const createUser = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 /**
-@route PATCH /users
-@description Updates an existing user.
-*/
+ * @route PATCH /users
+ * @description Updates an existing user.
+ * @returns HTTP 200, 400, 404, 409
+ */
 const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
     const { id, username, password, displayName, email } = req.body;
 
@@ -99,9 +101,10 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 /**
-@route DELETE /users
-@description Deletes a user.
-*/
+ * @route DELETE /users
+ * @description Deletes a user.
+ * @returns HTTP 200, 401, 404
+ */
 const deleteUser = expressAsyncHandler(async (req: Request, res: Response) => {
     const { id } = req.body;
 
