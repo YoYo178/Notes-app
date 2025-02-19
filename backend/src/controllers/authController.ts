@@ -8,6 +8,17 @@ import HttpStatusCodes from "@src/common/HttpStatusCodes";
 import cookieConfig from "@src/config/cookieConfig";
 
 /**
+ * @route GET /auth
+ * @description A query route for the client to know if they're logged in or not
+ * @returns HTTP 200
+ */
+const queryAuth = expressAsyncHandler(async (req: Request, res: Response) => {
+    // No need to perform any checks
+    // Auth validator middleware handles everything already
+    res.status(HttpStatusCodes.OK).send({ message: "User is logged in" });
+})
+
+/**
  * @route POST /auth/login
  * @description Logs in the user and returns an HTTP only cookie to the client.
  * @returns HTTP 200, 400, 401, 404, 500
@@ -167,6 +178,7 @@ const logout = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 export default {
+    queryAuth,
     login,
     refresh,
     logout
