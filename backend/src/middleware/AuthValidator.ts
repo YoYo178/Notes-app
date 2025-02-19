@@ -17,7 +17,7 @@ const tokenBlacklist: string[] = [];
  * @description Authentication validator, verifies if the user is logged in or not
  * @returns HTTP 400, 401, 403, 409, 500
  */
-const AuthValidator = (req: Request, res: Response, next: NextFunction) => {
+const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     // Make sure the user is logged in
     const cookies = req.cookies;
     if (!cookies?.jwt_rt || !cookies.jwt_at) {
@@ -92,6 +92,6 @@ const AuthValidator = (req: Request, res: Response, next: NextFunction) => {
 
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: err?.message });
     }
-}
+})
 
 export default AuthValidator;
