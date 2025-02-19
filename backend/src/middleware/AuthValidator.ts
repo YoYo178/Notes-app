@@ -66,13 +66,15 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
         const decoded: any = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
         userID = decoded.User.id;
     } catch (err) {
-        if (err instanceof JsonWebTokenError) {
-            const error = err as JsonWebTokenError;
-            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: error?.message === "invalid signature" ? "Invalid token" : error?.message });
-            return;
-        } else if (err instanceof TokenExpiredError) {
+        // Need to check for TokenExpiredError first
+        // because it inherits from JsonWebTokenError
+        if (err instanceof TokenExpiredError) {
             const error = err as TokenExpiredError;
             res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: error?.message === "jwt expired" ? "Expired token" : error?.message });
+            return;
+        } else if (err instanceof JsonWebTokenError) {
+            const error = err as JsonWebTokenError;
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: error?.message === "invalid signature" ? "Invalid token" : error?.message });
             return;
         }
 
