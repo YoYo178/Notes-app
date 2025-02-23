@@ -88,7 +88,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
 
     res.cookie("jwt_at", accessToken, cookieConfig);
 
-    res.status(HttpStatusCodes.OK).send({ message: "Logged in successfully", user: { displayName: user.displayName, id: user.id } });
+    res.status(HttpStatusCodes.OK).send({ message: "Logged in successfully", user: { displayName: user.displayName, id: (user._id as ObjectId).toString() } });
 })
 
 /**
