@@ -20,6 +20,10 @@ createRoot(document.getElementById('root')!).render(
               <Route index element={<Home />} />
               <Route path="favorites" element={<Favorites />} />
               <Route path="login" element={<Login />} />
+              <Route path='register' element={<h1>TODO: Register page</h1>} />
+              <Route path='reset' element={<h1>TODO: Reset password page</h1>} />
+
+              <Route path="*" element={<h1>TODO: Not found page</h1>} />
             </Route>
           </Routes>
         </BrowserRouter>
