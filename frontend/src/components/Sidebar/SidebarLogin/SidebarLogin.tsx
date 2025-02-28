@@ -1,10 +1,9 @@
 import React from 'react'
 import "./SidebarLogin.css"
+import { Link } from 'react-router-dom'
 
 export default function SidebarLogin() {
   return (
-    <button className='sidebar-login-btn'>
-      <span className='login-btn-text'>Login/Sign-up</span>
-    </button>
+    <Link to="/login" className='sidebar-login-btn'>Login/Sign-up</Link>
   )
 }

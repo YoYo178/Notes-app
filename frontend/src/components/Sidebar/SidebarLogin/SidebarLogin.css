@@ -11,15 +11,16 @@
 
     background-color: #f4eaff;
     transition: background-color 0.2s;
+
+    font-family: 'Inter';
+    font-weight: bold;
+    color: #6d33aa;
+    text-align: center;
+
+    text-decoration: none;
 }
 
 .sidebar-login-btn:hover {
     cursor: pointer;
     background-color: #e8d3ff;
-}
-
-.login-btn-text {
-    font-family: 'Inter';
-    font-weight: bold;
-    color: #6d33aa;
 }
