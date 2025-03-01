@@ -1,4 +1,6 @@
-const APIEndpoints = {
+import { Endpoints } from "../types/APITypes";
+
+const APIEndpoints: Endpoints = {
     LOGIN: {
         URL: "/api/auth/login",
         METHOD: "POST"
