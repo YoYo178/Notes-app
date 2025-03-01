@@ -11,6 +11,10 @@ const APIEndpoints = {
         URL: "/api/auth/refresh",
         METHOD: "GET"
     },
+    REGISTER: {
+        URL: "/api/users",
+        METHOD: "POST"
+    },
     AUTH_QUERY: {
         URL: "/api/auth/",
         METHOD: "GET"
