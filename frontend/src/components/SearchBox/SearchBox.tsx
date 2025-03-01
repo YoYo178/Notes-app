@@ -1,5 +1,7 @@
 import { FC } from 'react'
+
 import { AiOutlineSearch } from 'react-icons/ai'
+
 import './SearchBox.css'
 
 export const SearchBox: FC = () => {

@@ -1,6 +1,8 @@
 import { FC } from 'react'
 import { AiOutlineHome, AiOutlineStar } from 'react-icons/ai'
+
 import { SidebarButton } from './SidebarButton/SidebarButton'
+
 import './SidebarLinks.css'
 
 export const SidebarLinks: FC = () => {

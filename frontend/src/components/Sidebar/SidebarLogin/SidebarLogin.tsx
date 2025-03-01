@@ -1,6 +1,6 @@
-import React from 'react'
-import "./SidebarLogin.css"
 import { Link } from 'react-router-dom'
+
+import "./SidebarLogin.css"
 
 export default function SidebarLogin() {
   return (

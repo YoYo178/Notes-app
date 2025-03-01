@@ -1,6 +1,6 @@
-import React from 'react'
-import "./SortButton.css"
 import { MdOutlineSort } from "react-icons/md";
+
+import "./SortButton.css"
 
 export default function SortButton() {
   return (

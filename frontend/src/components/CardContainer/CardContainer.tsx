@@ -1,6 +1,8 @@
-import React, { FC, RefObject } from 'react'
-import "./CardContainer.css"
+import { FC, RefObject } from 'react'
+
 import { Card } from './Card/Card';
+
+import "./CardContainer.css"
 
 interface CardContainerProps {
     innerRef?: RefObject<HTMLDivElement>;

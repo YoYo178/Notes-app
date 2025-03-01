@@ -1,9 +1,11 @@
 import { FC, RefObject } from 'react'
-import { Sidebar } from '../components/Sidebar/Sidebar'
-import { SearchBox } from '../components/SearchBox/SearchBox'
-import './RootLayout.css'
-import SortButton from '../components/SortButton/SortButton'
+
 import { CreateNoteBar } from '../components/CreateNoteBar/CreateNoteBar'
+import { SearchBox } from '../components/SearchBox/SearchBox'
+import { Sidebar } from '../components/Sidebar/Sidebar'
+import SortButton from '../components/SortButton/SortButton'
+
+import './RootLayout.css'
 
 interface RootLayoutProps {
   cardContainer: RefObject<HTMLDivElement>;

@@ -1,8 +1,10 @@
-import React, { FC, RefObject, useEffect, useState } from 'react'
-import './CreateNoteBar.css'
+import { FC, RefObject, useEffect, useState } from 'react'
+
 import { FiFilePlus } from 'react-icons/fi';
 import { BsRecord2 } from 'react-icons/bs';
 import { RiImageAddLine } from 'react-icons/ri';
+
+import './CreateNoteBar.css'
 
 interface CreateNoteBarProps {
     cardContainer: RefObject<HTMLDivElement>;

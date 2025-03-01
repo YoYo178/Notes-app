@@ -1,8 +1,10 @@
 import { FC } from 'react'
+
 import { SidebarBranding } from './SidebarBranding/SidebarBranding'
 import { SidebarLinks } from './SidebarLinks/SidebarLinks'
-import './Sidebar.css'
 import SidebarLogin from './SidebarLogin/SidebarLogin'
+
+import './Sidebar.css'
 
 export const Sidebar: FC = () => {
   return (
