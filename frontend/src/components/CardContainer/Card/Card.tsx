@@ -8,14 +8,9 @@ import { CiImageOn } from 'react-icons/ci';
 import { TiEdit } from 'react-icons/ti';
 
 import "./Card.css"
+import { Note } from '../../../types/NoteTypes';
 
-interface CardProps {
-    date: string; // TODO: Change to Date
-    duration: string | null;
-    isText: boolean;
-    title: string;
-    description: string;
-}
+type CardProps = Note;
 
 export const Card: FC<CardProps> = ({ date, duration, isText, title, description }) => {
     return (
