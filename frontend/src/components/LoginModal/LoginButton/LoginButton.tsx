@@ -6,13 +6,15 @@ import { useLogin } from '../../../hooks/auth/useLogin';
 import AuthContext from '../../../contexts/AuthProvider';
 
 import './LoginButton.css';
+import axios, { AxiosError } from 'axios';
 
 interface LoginButtonProps {
-    username: string,
-    password: string
+    username: string;
+    password: string;
+    setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const LoginButton: FC<LoginButtonProps> = ({ username, password }) => {
+export const LoginButton: FC<LoginButtonProps> = ({ username, password, setErrorMessage }) => {
     const { setAuth } = useContext(AuthContext);
     const loginMutation = useLogin();
 
@@ -35,7 +37,18 @@ export const LoginButton: FC<LoginButtonProps> = ({ username, password }) => {
             }
         } else if (loginMutation.isError) {
             if (loginMutation.error?.message) {
+                const { error: err } = loginMutation;
+
+                if (err && axios.isAxiosError(err)) {
+                    const error = err as AxiosError<{ message: unknown }>;
+
+                    setErrorMessage(error.response?.data?.message as string);
+                    return;
+                }
+
                 const errorMessage = loginMutation.error?.message;
+                setErrorMessage(errorMessage);
+
                 console.log("An error occured while trying to sign-in.")
                 console.log(errorMessage);
             }

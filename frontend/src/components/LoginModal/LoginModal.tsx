@@ -1,5 +1,5 @@
 import { FC, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { FaRegEye } from 'react-icons/fa6';
 import { IoKeyOutline, IoPersonOutline } from 'react-icons/io5';
@@ -12,8 +12,12 @@ import './LoginModal.css';
 export const LoginModal: FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    
+
+    const [errorMessage, setErrorMessage] = useState('');
+
     const passwordField = useRef<HTMLInputElement>(null); // Only needed for toggling password visibility
+
+    const location = useLocation();
 
     return (
         <form className="login-modal" onSubmit={(e) => e.preventDefault()}>
@@ -60,11 +64,13 @@ export const LoginModal: FC = () => {
 
             <Link to="/reset" className='forgot-password-button'>Forgot password?</Link>
 
-            <LoginButton username={username} password={password} />
+            <div className="lm-error" style={{ display: errorMessage.length ? "block" : "none" }}>{errorMessage}</div>
+
+            <LoginButton username={username} password={password} setErrorMessage={setErrorMessage} />
 
             <div className="register-container">
                 <span className="register-text">Don't have an account?</span>
-                <Link to="/register" className='register-button'>Register now</Link>
+                <Link to="/register" className='register-button' state={{ from: location }} replace>Register now</Link>
             </div>
         </form>
     );
