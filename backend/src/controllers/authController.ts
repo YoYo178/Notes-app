@@ -17,7 +17,7 @@ import { tokenConfig } from "@src/config/tokenConfig";
 const queryAuth = expressAsyncHandler(async (req: Request, res: Response) => {
     // No need to perform any checks
     // Auth validator middleware handles everything already
-    res.status(HttpStatusCodes.OK).send({ message: "User is logged in" });
+    res.status(HttpStatusCodes.OK).send({ message: "User is logged in", user: req.user });
 })
 
 /**
