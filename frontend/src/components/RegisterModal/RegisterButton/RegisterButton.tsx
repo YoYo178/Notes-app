@@ -1,5 +1,4 @@
 import { FC, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
 
 import { RegisterFields } from '../../../types/AuthTypes';
 import { useRegister } from '../../../hooks/auth/useRegister';
