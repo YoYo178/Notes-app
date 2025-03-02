@@ -11,7 +11,11 @@ import { refreshAccessToken } from '@src/util/authUtils';
 declare global {
     namespace Express {
         interface Request {
-            user?: { id: string; username: string; }
+            user?: {
+                id: string;
+                username: string;
+                displayName: string;
+            }
         }
     }
 }
@@ -95,7 +99,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
         res.cookie("jwt_at", accessToken, cookieConfig);
 
         // Add the user's id and username in the request for other handlers
-        req.user = { id: (user._id as ObjectId).toString(), username: user.username };
+        req.user = { id: (user._id as ObjectId).toString(), username: user.username, displayName: user.displayName };
 
         // Move to other routes
         next();
@@ -137,7 +141,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
         }
 
         // Everything was valid, add the user's id and username in the request for other handlers
-        req.user = { id: decoded.User.id, username: decoded.User.username };
+        req.user = { id: decoded.User.id, username: decoded.User.username, displayName: decoded.User.displayName };
 
         // Move to other routes
         next();
@@ -153,7 +157,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
             res.cookie("jwt_at", accessToken, cookieConfig);
 
             // Add the user's id and username in the request for other handlers
-            req.user = { id: (user._id as ObjectId).toString(), username: user.username };
+            req.user = { id: (user._id as ObjectId).toString(), username: user.username, displayName: user.displayName };
 
             // Move to other routes
             next();
