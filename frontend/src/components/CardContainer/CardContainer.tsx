@@ -3,7 +3,7 @@ import { FC, RefObject, useEffect, useState } from 'react'
 import { useGetNotes } from '../../hooks/network/note/useGetNotes';
 import { Note } from '../../types/NoteTypes';
 
-import { Card } from './Card/Card';
+import { Card } from './Card/Card.tsx';
 
 import "./CardContainer.css"
 
@@ -21,7 +21,6 @@ export const CardContainer: FC<CardContainerProps> = ({ innerRef, favoritesOnly 
     const useGetNotesMutation = useGetNotes();
 
     useEffect(() => {
-        console.log(notes)
         if (!notes.length && useGetNotesMutation.isIdle) {
             useGetNotesMutation.mutate({});
         }
@@ -41,8 +40,11 @@ export const CardContainer: FC<CardContainerProps> = ({ innerRef, favoritesOnly 
                 const stringTime = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 
                 notesArr.push({
+                    id: note._id,
                     title: note.title,
                     description: note.description,
+                    images: note.images,
+                    isFavorite: note.isFavorite,
                     isText: note.isText,
                     duration: note.duration,
                     date: `${stringDate} · ${stringTime}`,
@@ -59,18 +61,37 @@ export const CardContainer: FC<CardContainerProps> = ({ innerRef, favoritesOnly 
 
     return (
         <div ref={innerRef} className="card-container">
-            {notes.map((note, i) => {
-                return (
-                    <Card
-                        key={i}
-                        title={note.title}
-                        description={note.description}
-                        date={note.date}
-                        duration={note.duration}
-                        isText={note.isText}
-                    />
-                )
-            })}
+            {favoritesOnly ? (
+                notes.filter(note => note.isFavorite).map((note) => {
+                    return (
+                        <Card
+                            key={note.id}
+                            id={note.id} // eeuuhhhh.....
+                            title={note.title}
+                            description={note.description}
+                            date={note.date}
+                            duration={note.duration}
+                            isText={note.isText}
+                            isFavorite={note.isFavorite}
+                        />
+                    )
+                })
+            ) : (
+                notes.map((note) => {
+                    return (
+                        <Card
+                            key={note.id}
+                            id={note.id} // eeuuhhhh.....
+                            title={note.title}
+                            description={note.description}
+                            date={note.date}
+                            duration={note.duration}
+                            isText={note.isText}
+                            isFavorite={note.isFavorite}
+                        />
+                    )
+                })
+            )}
         </div>
     )
 }
