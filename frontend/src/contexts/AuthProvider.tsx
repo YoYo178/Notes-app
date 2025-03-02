@@ -4,7 +4,7 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
-interface AuthObject {
+export interface AuthFields {
     displayName: string | undefined;
     username: string | undefined;
     id: string | undefined;
@@ -12,13 +12,13 @@ interface AuthObject {
 
 interface AuthValues {
     auth: {} | null;
-    setAuth: React.Dispatch<React.SetStateAction<AuthObject | null>> | null;
+    setAuth: React.Dispatch<React.SetStateAction<AuthFields | null>> | null;
 }
 
 const AuthContext = createContext<AuthValues>({ auth: null, setAuth: null })
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-    const [auth, setAuth] = useState<AuthObject | null>(null)
+    const [auth, setAuth] = useState<AuthFields | null>(null)
 
     return (
         <AuthContext.Provider value={{ auth, setAuth }}>
