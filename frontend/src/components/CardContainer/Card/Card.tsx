@@ -1,7 +1,7 @@
 import { FC } from 'react'
 
 import { AiOutlineFileText } from "react-icons/ai";
-import { FaRegCopy, FaRegStar } from 'react-icons/fa';
+import { FaRegCopy, FaRegStar, FaStar } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { IoPlayOutline } from 'react-icons/io5';
 import { CiImageOn } from 'react-icons/ci';
@@ -10,10 +10,14 @@ import { TiEdit } from 'react-icons/ti';
 import { Note } from '../../../types/NoteTypes';
 
 import "./Card.css"
+import { ButtonHandler } from './Card';
+import { useUpdateNote } from '../../../hooks/network/note/useUpdateNote';
 
 type CardProps = Note;
 
-export const Card: FC<CardProps> = ({ date, duration, isText, title, description }) => {
+export const Card: FC<CardProps> = ({ date, duration, isText, title, description, isFavorite, id }) => {
+    const useUpdateNoteMutation = useUpdateNote();
+
     return (
         <div className="card">
             <div className="card-top-container">
@@ -38,21 +42,25 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
             </div>
 
             <div className="card-buttons-container">
-                <div className='card-favorite-button'>
-                    <FaRegStar />
-                </div>
+                <button className='card-favorite-button' onClick={() => ButtonHandler.favoriteOnClick(useUpdateNoteMutation, id, isFavorite)}>
+                    {isFavorite ? (
+                        <FaStar />
+                    ) : (
+                        <FaRegStar />
+                    )}
+                </button>
 
-                <div className='card-copy-button'>
+                <button className='card-copy-button'>
                     <FaRegCopy />
-                </div>
+                </button>
 
-                <div className='card-delete-button'>
+                <button className='card-delete-button'>
                     <RiDeleteBin6Line />
-                </div>
+                </button>
 
-                <div className='card-edit-button'>
+                <button className='card-edit-button'>
                     <TiEdit />
-                </div>
+                </button>
             </div>
         </div >
     )

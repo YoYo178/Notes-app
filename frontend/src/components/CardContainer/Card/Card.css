@@ -107,6 +107,12 @@
     border-radius: 8px;
     margin-right: auto;
     color: rgb(119, 119, 119);
+
+    /* Properties needed after changing from div to button */
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    background-color: transparent;
 }
 
 .card-copy-button,
@@ -115,6 +121,12 @@
     padding: 0.4rem;
     border-radius: 8px;
     color: rgb(119, 119, 119);
+
+    /* Properties needed after changing from div to button */
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    background-color: transparent;
 }
 
 .card-copy-button:hover,
@@ -122,4 +134,7 @@
 .card-edit-button:hover,
 .card-favorite-button:hover {
     background-color: rgb(216, 216, 216);
+    
+    /* Properties needed after changing from div to button */
+    cursor: pointer;
 }
