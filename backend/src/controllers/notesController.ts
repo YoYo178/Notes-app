@@ -41,10 +41,13 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const { title, description, images } = req.body;
+    const { title, description, images, isText, isFavorite, duration } = req.body;
 
-    if (!title || !description) {
-        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Title and description fields are required" });
+    if (
+        !title || !description || !duration ||
+        (isText === undefined && isText === null)
+    ) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "All fields except images and isFavorite are required" });
         return;
     }
 
@@ -53,6 +56,9 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
         title,
         description,
         images: (images && images.length) ? images : [],
+        isText,
+        isFavorite: isFavorite !== undefined && isFavorite !== null ? isFavorite : false,
+        duration: duration !== null ? duration : null
     })
 
     res.status(HttpStatusCodes.OK).send({ message: "Note created successfully", id: (note._id as ObjectId).toString() });
@@ -71,7 +77,7 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const { id, title, description, images } = req.body;
+    const { id, title, description, images, isText, isFavorite, duration } = req.body;
 
     const note = await Note.findById(id).exec();
 
@@ -83,6 +89,12 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
     note.title = title || note.title;
     note.description = description || note.description;
     note.images = (images && images.length) ? images : note.images;
+    note.isText = isText || note.isText; // TODO: should users be allowed to change this?
+    note.isText = duration || note.duration; // TODO: should users be allowed to change this?
+
+    if (isFavorite !== null && isFavorite !== undefined && isFavorite != note.isFavorite) {
+        note.isFavorite = isFavorite;
+    }
 
     await note.save();
 
