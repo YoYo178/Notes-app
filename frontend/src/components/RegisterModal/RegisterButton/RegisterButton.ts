@@ -3,7 +3,7 @@ import { RegisterFields } from "../../../types/AuthTypes";
 
 async function registerButtonOnClick(
     registerData: RegisterFields,
-    registerMutation: UseMutationResult<any, Error, RegisterFields, unknown>
+    registerMutation: UseMutationResult<any, Error, RegisterFields | undefined, unknown>
 ) {
     const { username, password, confirmPassword, displayName, email } = registerData;
 
