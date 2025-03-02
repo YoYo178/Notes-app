@@ -7,8 +7,9 @@ import { IoPlayOutline } from 'react-icons/io5';
 import { CiImageOn } from 'react-icons/ci';
 import { TiEdit } from 'react-icons/ti';
 
-import "./Card.css"
 import { Note } from '../../../types/NoteTypes';
+
+import "./Card.css"
 
 type CardProps = Note;
 
