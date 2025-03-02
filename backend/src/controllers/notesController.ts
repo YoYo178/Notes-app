@@ -44,8 +44,8 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
     const { title, description, images, isText, isFavorite, duration } = req.body;
 
     if (
-        !title || !description || !duration ||
-        (isText === undefined && isText === null)
+        !title || !description || duration === undefined ||
+        (isText === undefined || isText === null)
     ) {
         res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "All fields except images and isFavorite are required" });
         return;
@@ -90,7 +90,7 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
     note.description = description || note.description;
     note.images = (images && images.length) ? images : note.images;
     note.isText = isText || note.isText; // TODO: should users be allowed to change this?
-    note.isText = duration || note.duration; // TODO: should users be allowed to change this?
+    note.duration = duration || note.duration; // TODO: should users be allowed to change this?
 
     if (isFavorite !== null && isFavorite !== undefined && isFavorite != note.isFavorite) {
         note.isFavorite = isFavorite;
