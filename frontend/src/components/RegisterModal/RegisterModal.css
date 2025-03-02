@@ -144,3 +144,25 @@
 .rm-existing-acc-button:hover {
     text-decoration: underline;
 }
+
+.rm-error {
+    background-color: rgba(255, 42, 42, 0.555);
+    padding: 1rem;
+    text-align: center;
+    border-radius: 1rem;
+    
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.rm-info {
+    background-color: rgba(42, 255, 42, 0.555);
+    padding: 1rem;
+    text-align: center;
+    border-radius: 1rem;
+    
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 0.9rem;
+}

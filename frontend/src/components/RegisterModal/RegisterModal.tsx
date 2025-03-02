@@ -19,6 +19,9 @@ export const RegisterModal: FC = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [email, setEmail] = useState('');
 
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+
     const passwordField = useRef<HTMLInputElement>(null); // Only needed for toggling password visibility
     const confirmPasswordField = useRef<HTMLInputElement>(null); // Only needed for toggling password visibility
 
@@ -131,7 +134,14 @@ export const RegisterModal: FC = () => {
 
             <Link to="/reset" className='rm-reset-password-button'>Forgot password?</Link>
 
-            <RegisterButton registerData={{ username, password, confirmPassword, email, displayName: `${firstName} ${lastName}` }} />
+            <div className="rm-error" style={{ display: errorMessage.length ? "block" : "none" }}>{errorMessage}</div>
+            <div className="rm-info" style={{ display: successMessage.length ? "block" : "none" }}>{successMessage}</div>
+
+            <RegisterButton
+                registerData={{ username, password, confirmPassword, email, displayName: `${firstName} ${lastName}` }}
+                setErrorMessage={setErrorMessage}
+                setSuccessMessage={setSuccessMessage}
+            />
 
             <div className="rm-existing-acc-container">
                 <span className="rm-existing-acc-text">Already have an account?</span>

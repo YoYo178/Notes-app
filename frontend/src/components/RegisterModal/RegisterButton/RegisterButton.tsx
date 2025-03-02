@@ -1,31 +1,55 @@
-import { FC, useEffect } from 'react';
+import { FC, ReactNode, useEffect, useState } from 'react';
 
 import { RegisterFields } from '../../../types/AuthTypes';
 import { useRegister } from '../../../hooks/auth/useRegister';
 import { ButtonHandler } from './RegisterButton';
 
 import './RegisterButton.css';
+import axios, { AxiosError } from 'axios';
+import { Navigate, useLocation } from 'react-router-dom';
 
 interface RegisterButtonProps {
-    registerData: RegisterFields
+    registerData: RegisterFields;
+    setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+    setSuccessMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const RegisterButton: FC<RegisterButtonProps> = ({ registerData }) => {
+export const RegisterButton: FC<RegisterButtonProps> = ({ registerData, setErrorMessage, setSuccessMessage }) => {
+    const [redirect, setRedirect] = useState<ReactNode | null>(null);
+
     const registerMutation = useRegister();
+    const location = useLocation();
 
     useEffect(() => {
         if (registerMutation.isSuccess) {
-            console.log("REGISTRATION SUCCESS");
             if (registerMutation.data) {
-                const data = registerMutation.data;
-                console.log("DATA RECEIVED AFTER REGISTERING");
-                console.log(data);
+                setErrorMessage('');
+                setSuccessMessage('You have been registered successfully! Redirecting to sign-in page...');
+
+                const timeout = setTimeout(() => {
+                    setRedirect(
+                        <Navigate to="/login" state={{ from: location }} replace />
+                    )
+                }, 3000);
+
+                return () => clearTimeout(timeout);
             }
         } else if (registerMutation.isError) {
-            console.log("AN ERROR OCCURED WHILE REGISTERING")
             if (registerMutation.error?.message) {
+                setSuccessMessage('');
+                const { error: err } = registerMutation;
+
+                if (err && axios.isAxiosError(err)) {
+                    const error = err as AxiosError<{ message: unknown }>;
+
+                    setErrorMessage(error.response?.data?.message as string);
+                    return;
+                }
+
                 const errorMessage = registerMutation.error?.message;
-                console.log("REGISTRATION ERROR MESSAGE")
+                setErrorMessage(errorMessage);
+
+                console.log("An error occured while trying to register.")
                 console.log(errorMessage);
             }
         }
@@ -38,6 +62,7 @@ export const RegisterButton: FC<RegisterButtonProps> = ({ registerData }) => {
             onClick={async () => { await ButtonHandler.registerButtonOnClick(registerData, registerMutation) }
             }>
             Register
+            {redirect}
         </button>
     )
 }
