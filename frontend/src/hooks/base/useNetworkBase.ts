@@ -5,9 +5,6 @@ import API from '../../api/backendAPI'
 import { HTTP_METHODS } from "../../types/APITypes";
 
 export const useNetworkBase = <T>(endpoint: { URL: string, METHOD: HTTP_METHODS }, queryKeys: string[], actionName: string, sendCookies: boolean = false) => {
-
-    const queryClient = useQueryClient();
-
     const callbackFunc = async (payload?: T) => {
         // @ts-ignore
         const HTTPFunc = API[endpoint.METHOD.toLowerCase()];
@@ -24,6 +21,8 @@ export const useNetworkBase = <T>(endpoint: { URL: string, METHOD: HTTP_METHODS 
     };
 
     return () => {
+        const queryClient = useQueryClient();
+
         return useMutation({
             mutationFn: callbackFunc,
             onSuccess: () => {
