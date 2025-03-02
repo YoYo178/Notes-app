@@ -10,15 +10,19 @@ import { TiEdit } from 'react-icons/ti';
 import "./Card.css"
 
 interface CardProps {
+    date: string; // TODO: Change to Date
     duration: string | null;
+    isText: boolean;
+    title: string;
+    description: string;
 }
 
-export const Card: FC<CardProps> = ({ duration }) => {
+export const Card: FC<CardProps> = ({ date, duration, isText, title, description }) => {
     return (
         <div className="card">
             <div className="card-top-container">
-                <div className="card-date">Jan 30, 2025 &#183; 5:26 PM</div>
-                {duration ? (
+                <div className="card-date">{date}</div>
+                {!isText ? (
                     <div className="card-type">
                         <IoPlayOutline className="card-type-logo" />
                         <div className="card-type-text">{duration}</div>
@@ -30,8 +34,8 @@ export const Card: FC<CardProps> = ({ duration }) => {
                     </div>
                 )}
             </div>
-            <div className="card-title">Engineering Assignment Audio</div>
-            <div className="card-description">I'm recording an audio to transcribe into text for the assignment of engineering in terms of actors.</div>
+            <div className="card-title">{title}</div>
+            <div className="card-description">{description}</div>
             <div className="card-image-attached">
                 <CiImageOn className="card-image-attached-logo" />
                 <span className='card-image-attached-text'>1 Image</span>
