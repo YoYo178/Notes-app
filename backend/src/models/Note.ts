@@ -5,7 +5,6 @@ interface INote {
     user: ObjectId;
     title: string;
     description: string;
-    password: string;
     images: string[];
 }
 
