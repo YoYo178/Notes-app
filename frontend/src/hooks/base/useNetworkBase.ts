@@ -6,9 +6,18 @@ import { HTTP_METHODS } from "../../types/APITypes";
 
 export const useNetworkBase = <T>(endpoint: { URL: string, METHOD: HTTP_METHODS }, queryKeys: string[], actionName: string, sendCookies: boolean = false) => {
 
-    const callbackFunc = async (payload: T) => {
-        // @ts-ignore
-        const { data } = await API[endpoint.METHOD.toLowerCase()](endpoint.URL, payload, { withCredentials: sendCookies });
+    const callbackFunc = async (payload?: T) => {
+        let response = { data: null };
+
+        if (["GET", "DELETE", "OPTIONS"].includes(endpoint.METHOD))
+            // @ts-ignore
+            response = await API[endpoint.METHOD.toLowerCase()](endpoint.URL, { withCredentials: sendCookies });
+
+        if (["POST", "PUT", "PATCH"].includes(endpoint.METHOD))
+            // @ts-ignore
+            response = await API[endpoint.METHOD.toLowerCase()](endpoint.URL, payload, { withCredentials: sendCookies });
+
+        const { data } = response;
         return data;
     };
 
