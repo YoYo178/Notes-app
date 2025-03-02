@@ -1,5 +1,5 @@
 import { FC, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { IoAt, IoKeyOutline, IoPersonOutline } from 'react-icons/io5';
 import { HiOutlineUserCircle } from 'react-icons/hi2';
@@ -21,6 +21,8 @@ export const RegisterModal: FC = () => {
 
     const passwordField = useRef<HTMLInputElement>(null); // Only needed for toggling password visibility
     const confirmPasswordField = useRef<HTMLInputElement>(null); // Only needed for toggling password visibility
+
+    const location = useLocation();
 
     return (
         <form className="rm" onSubmit={(e) => e.preventDefault()}>
@@ -133,7 +135,7 @@ export const RegisterModal: FC = () => {
 
             <div className="rm-existing-acc-container">
                 <span className="rm-existing-acc-text">Already have an account?</span>
-                <Link to="/login" className='rm-existing-acc-button'>Sign-In</Link>
+                <Link to="/login" className='rm-existing-acc-button' state={{ from: location }} replace>Sign-In</Link>
             </div>
         </form>
     );
