@@ -1,12 +1,13 @@
 import { FC, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
+import axios, { AxiosError } from 'axios';
 
-import { ButtonHandler } from './LoginButton';
 import { useLogin } from '../../../hooks/auth/useLogin';
 import AuthContext from '../../../contexts/AuthProvider';
 
+import { ButtonHandler } from './LoginButton';
+
 import './LoginButton.css';
-import axios, { AxiosError } from 'axios';
 
 interface LoginButtonProps {
     username: string;

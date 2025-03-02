@@ -1,14 +1,14 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
+import { createRoot } from 'react-dom/client';
+import { StrictMode } from 'react';
 
 import { AuthProvider } from './contexts/AuthProvider';
 
 import { Favorites } from './pages/Favorites/Favorites';
-import { Home } from './pages/Home/Home';
-import { Login } from './pages/Login/Login';
 import { Register } from './pages/Register/Register'
+import { Login } from './pages/Login/Login';
+import { Home } from './pages/Home/Home';
 
 const queryClient = new QueryClient();
 

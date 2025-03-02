@@ -1,8 +1,8 @@
 import { FC, RefObject, useEffect, useState } from 'react'
 
+import { RiImageAddLine } from 'react-icons/ri';
 import { FiFilePlus } from 'react-icons/fi';
 import { BsRecord2 } from 'react-icons/bs';
-import { RiImageAddLine } from 'react-icons/ri';
 
 import './CreateNoteBar.css'
 

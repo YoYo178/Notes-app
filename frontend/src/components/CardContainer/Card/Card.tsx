@@ -1,10 +1,10 @@
 import { FC } from 'react'
 
 import { AiOutlineFileText } from "react-icons/ai";
-import { IoPlayOutline } from 'react-icons/io5';
-import { CiImageOn } from 'react-icons/ci';
 import { FaRegCopy, FaRegStar } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { IoPlayOutline } from 'react-icons/io5';
+import { CiImageOn } from 'react-icons/ci';
 import { TiEdit } from 'react-icons/ti';
 
 import "./Card.css"
