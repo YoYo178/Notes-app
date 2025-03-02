@@ -1,6 +1,6 @@
 import { FC, useRef } from 'react'
 
-import { RootLayout } from '../../layouts/RootLayout'
+import { RootLayout } from '../../layouts/RootLayout/RootLayout'
 import { CardContainer } from '../../components/CardContainer/CardContainer'
 
 export const Favorites: FC = () => {

@@ -1,12 +1,12 @@
 import { FC, RefObject, useContext, useEffect } from 'react'
 
-import { useAuthQuery } from '../hooks/auth/useAuthQuery'
-import AuthContext from '../contexts/AuthProvider'
+import { useAuthQuery } from '../../hooks/auth/useAuthQuery'
+import AuthContext from '../../contexts/AuthProvider'
 
-import { CreateNoteBar } from '../components/CreateNoteBar/CreateNoteBar'
-import { SearchBox } from '../components/SearchBox/SearchBox'
-import { Sidebar } from '../components/Sidebar/Sidebar'
-import SortButton from '../components/SortButton/SortButton'
+import { CreateNoteBar } from '../../components/CreateNoteBar/CreateNoteBar'
+import { SearchBox } from '../../components/SearchBox/SearchBox'
+import { Sidebar } from '../../components/Sidebar/Sidebar'
+import SortButton from '../../components/SortButton/SortButton'
 
 import './RootLayout.css'
 
