@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
 import { RegisterFields } from '../../../types/AuthTypes';
-import { useRegister } from '../../../hooks/auth/useRegister';
+import { useRegister } from '../../../hooks/network/auth/useRegister';
 
 import { ButtonHandler } from './RegisterButton';
 

@@ -2,7 +2,7 @@ import { FC, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
-import { useLogin } from '../../../hooks/auth/useLogin';
+import { useLogin } from '../../../hooks/network/auth/useLogin';
 import AuthContext from '../../../contexts/AuthProvider';
 
 import { ButtonHandler } from './LoginButton';

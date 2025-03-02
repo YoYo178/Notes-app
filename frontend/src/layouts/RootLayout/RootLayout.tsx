@@ -1,6 +1,6 @@
 import { FC, RefObject, useContext, useEffect } from 'react'
 
-import { useAuthQuery } from '../../hooks/auth/useAuthQuery'
+import { useAuthQuery } from '../../hooks/network/auth/useAuthQuery'
 import AuthContext from '../../contexts/AuthProvider'
 
 import { CreateNoteBar } from '../../components/CreateNoteBar/CreateNoteBar'
