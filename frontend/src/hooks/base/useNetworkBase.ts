@@ -1,29 +1,29 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 import API from '../../api/backendAPI'
 import { HTTP_METHODS } from "../../types/APITypes";
 
 export const useNetworkBase = <T>(endpoint: { URL: string, METHOD: HTTP_METHODS }, queryKeys: string[], actionName: string, sendCookies: boolean = false) => {
 
+    const queryClient = useQueryClient();
+
     const callbackFunc = async (payload?: T) => {
-        let response = { data: null };
+        // @ts-ignore
+        const HTTPFunc = API[endpoint.METHOD.toLowerCase()];
+
+        let response: AxiosResponse<any, any> | null = null;
 
         if (["GET", "DELETE", "OPTIONS"].includes(endpoint.METHOD))
-            // @ts-ignore
-            response = await API[endpoint.METHOD.toLowerCase()](endpoint.URL, { withCredentials: sendCookies });
+            response = await HTTPFunc(endpoint.URL, { withCredentials: sendCookies });
 
         if (["POST", "PUT", "PATCH"].includes(endpoint.METHOD))
-            // @ts-ignore
-            response = await API[endpoint.METHOD.toLowerCase()](endpoint.URL, payload, { withCredentials: sendCookies });
+            response = await HTTPFunc(endpoint.URL, payload, { withCredentials: sendCookies });
 
-        const { data } = response;
-        return data;
+        return !!response ? response.data : null;
     };
 
     return () => {
-        const queryClient = useQueryClient();
-
         return useMutation({
             mutationFn: callbackFunc,
             onSuccess: () => {
