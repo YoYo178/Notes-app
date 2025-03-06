@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
 import { RegisterFields } from '../../../types/AuthTypes';
-import { useRegister } from '../../../hooks/network/auth/useRegister';
+import { useRegisterMutation } from '../../../hooks/network/auth/useRegisterMutation';
 
 import { ButtonHandler } from './RegisterButton';
 
@@ -18,7 +18,7 @@ interface RegisterButtonProps {
 export const RegisterButton: FC<RegisterButtonProps> = ({ registerData, setErrorMessage, setSuccessMessage }) => {
     const [redirect, setRedirect] = useState<ReactNode | null>(null);
 
-    const registerMutation = useRegister();
+    const registerMutation = useRegisterMutation();
     const location = useLocation();
 
     useEffect(() => {

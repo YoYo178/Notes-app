@@ -2,7 +2,7 @@ import { FC, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
-import { useLogin } from '../../../hooks/network/auth/useLogin';
+import { useLoginMutation } from '../../../hooks/network/auth/useLoginMutation';
 import AuthContext from '../../../contexts/AuthProvider';
 
 import { ButtonHandler } from './LoginButton';
@@ -17,7 +17,7 @@ interface LoginButtonProps {
 
 export const LoginButton: FC<LoginButtonProps> = ({ username, password, setErrorMessage }) => {
     const { setAuth } = useContext(AuthContext);
-    const loginMutation = useLogin();
+    const loginMutation = useLoginMutation();
 
     useEffect(() => {
         if (loginMutation.isSuccess) {

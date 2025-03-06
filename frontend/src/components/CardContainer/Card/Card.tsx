@@ -11,12 +11,12 @@ import { Note } from '../../../types/NoteTypes';
 
 import "./Card.css"
 import { ButtonHandler } from './Card';
-import { useUpdateNote } from '../../../hooks/network/note/useUpdateNote';
+import { useUpdateNoteMutation } from '../../../hooks/network/note/useUpdateNoteMutation';
 
 type CardProps = Note;
 
 export const Card: FC<CardProps> = ({ date, duration, isText, title, description, isFavorite, id }) => {
-    const useUpdateNoteMutation = useUpdateNote();
+    const updateNoteMutation = useUpdateNoteMutation();
 
     return (
         <div className="card">
@@ -42,7 +42,7 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
             </div>
 
             <div className="card-buttons-container">
-                <button className='card-favorite-button' onClick={() => ButtonHandler.favoriteOnClick(useUpdateNoteMutation, id, isFavorite)}>
+                <button className='card-favorite-button' onClick={() => ButtonHandler.favoriteOnClick(updateNoteMutation, id, isFavorite)}>
                     {isFavorite ? (
                         <FaStar />
                     ) : (
