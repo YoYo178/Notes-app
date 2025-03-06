@@ -1,4 +1,4 @@
-import { useNetworkBase } from '../useNetworkBase';
-import APIEndpoints from "../../../config/APIEndpoints";
+import APIEndpoints from '../../../config/APIEndpoints';
+import { useQueryBase } from '../useQueryBase';
 
-export const useAuthQuery = useNetworkBase(APIEndpoints.AUTH_QUERY, ['authQuery'], "Getting auth status", true);
+export const useAuthQuery = useQueryBase(APIEndpoints.AUTH_QUERY, ['auth'], true, false);
