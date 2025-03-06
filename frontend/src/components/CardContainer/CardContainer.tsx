@@ -1,11 +1,12 @@
-import { FC, RefObject, useEffect, useState } from 'react'
+import { FC, RefObject, useContext } from 'react'
 
-import { useGetNotes } from '../../hooks/network/note/useGetNotes';
+import { useGetNotesQuery } from '../../hooks/network/note/useGetNotesQuery.ts';
 import { Note } from '../../types/NoteTypes';
 
 import { Card } from './Card/Card.tsx';
 
 import "./CardContainer.css"
+import AuthContext from '../../contexts/AuthProvider.tsx';
 
 interface CardContainerProps {
     innerRef?: RefObject<HTMLDivElement>;
@@ -16,82 +17,55 @@ interface CardContainerProps {
 interface MNote extends Note { rawDate: Date };
 
 export const CardContainer: FC<CardContainerProps> = ({ innerRef, favoritesOnly }) => {
-    const [notes, setNotes] = useState<MNote[]>([]);
+    const { auth } = useContext(AuthContext);
+    const { data, isLoading, error } = useGetNotesQuery();
 
-    const useGetNotesMutation = useGetNotes();
+    const notes: MNote[] = data?.notes?.map((note: any) => {
+        const date = new Date(note.createdAt);
+        const stringDate = `${date.toString().substring(4, 10)}, ${date.toString().substring(11, 15)}`;
+        const stringTime = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 
-    useEffect(() => {
-        if (!notes.length && useGetNotesMutation.isIdle) {
-            useGetNotesMutation.mutate({});
-        }
+        return {
+            id: note._id,
+            title: note.title,
+            description: note.description,
+            images: note.images,
+            isFavorite: note.isFavorite,
+            isText: note.isText,
+            duration: note.duration,
+            date: `${stringDate} · ${stringTime}`,
+            rawDate: date
+        };
+    }).sort((a: MNote, b: MNote) => b.rawDate.valueOf() - a.rawDate.valueOf()) ?? [];
 
-        if (!notes.length && useGetNotesMutation.isSuccess && useGetNotesMutation.data) {
-            const { data: { notes: serverNotes } } = useGetNotesMutation; // 3-Layer destructured properties
+    const filteredNotes = favoritesOnly ? notes.filter(note => note.isFavorite) : notes;
 
-            if (!serverNotes || !serverNotes.length)
-                return;
+    if(!auth) {
+        return <div>Not logged in!</div>
+    }
 
-            const notesArr: MNote[] = []
+    if (error) {
+        return <div>Error!</div>
+    }
 
-            for (const note of serverNotes) {
-                const date = new Date(note.createdAt);
-
-                const stringDate = `${date.toString().substring(4, 10)}, ${date.toString().substring(11, 15)}`;
-                const stringTime = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-
-                notesArr.push({
-                    id: note._id,
-                    title: note.title,
-                    description: note.description,
-                    images: note.images,
-                    isFavorite: note.isFavorite,
-                    isText: note.isText,
-                    duration: note.duration,
-                    date: `${stringDate} · ${stringTime}`,
-                    rawDate: date
-                })
-            }
-
-            // Sort in descending order (Newest first)
-            notesArr.sort((a, b) => b.rawDate.valueOf() - a.rawDate.valueOf())
-
-            setNotes(notesArr);
-        }
-    }, [notes.length, useGetNotesMutation.isSuccess])
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div ref={innerRef} className="card-container">
-            {favoritesOnly ? (
-                notes.filter(note => note.isFavorite).map((note) => {
-                    return (
-                        <Card
-                            key={note.id}
-                            id={note.id} // eeuuhhhh.....
-                            title={note.title}
-                            description={note.description}
-                            date={note.date}
-                            duration={note.duration}
-                            isText={note.isText}
-                            isFavorite={note.isFavorite}
-                        />
-                    )
-                })
-            ) : (
-                notes.map((note) => {
-                    return (
-                        <Card
-                            key={note.id}
-                            id={note.id} // eeuuhhhh.....
-                            title={note.title}
-                            description={note.description}
-                            date={note.date}
-                            duration={note.duration}
-                            isText={note.isText}
-                            isFavorite={note.isFavorite}
-                        />
-                    )
-                })
-            )}
+            {filteredNotes.map(note => (
+                <Card
+                    key={note.id}
+                    id={note.id}
+                    title={note.title}
+                    description={note.description}
+                    date={note.date}
+                    duration={note.duration}
+                    isText={note.isText}
+                    isFavorite={note.isFavorite}
+                />
+            ))}
         </div>
     )
 }
