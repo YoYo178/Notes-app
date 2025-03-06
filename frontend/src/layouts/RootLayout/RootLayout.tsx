@@ -9,6 +9,7 @@ import { Sidebar } from '../../components/Sidebar/Sidebar'
 import SortButton from '../../components/SortButton/SortButton'
 
 import './RootLayout.css'
+import { AxiosError } from 'axios'
 
 interface RootLayoutProps {
   cardContainer: RefObject<HTMLDivElement>;
@@ -16,20 +17,25 @@ interface RootLayoutProps {
 }
 
 export const RootLayout: FC<RootLayoutProps> = ({ cardContainer, children }) => {
-  const { auth, setAuth } = useContext(AuthContext);
-  const authStatusMutation = useAuthQuery();
+  const { setAuth } = useContext(AuthContext);
+  const { data, isLoading, error } = useAuthQuery();
 
   useEffect(() => {
-    if (!auth && authStatusMutation.isIdle) {
-      authStatusMutation.mutate({});
-    }
+    if (!data || !setAuth)
+      return;
 
-    if (!auth && !!setAuth && authStatusMutation.isSuccess && authStatusMutation.data) {
-      const { data: { user: { id, username, displayName } } } = authStatusMutation; // 3-Layer destructured properties
+    const { id, username, displayName } = data.user;
+    setAuth({ id, username, displayName });
+  }, [data])
 
-      setAuth({ id, username, displayName });
-    }
-  }, [auth, authStatusMutation.isSuccess])
+  if (error) {
+    if ((error as AxiosError).status !== 401)
+      return <div>Error!</div>
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="app-container">
