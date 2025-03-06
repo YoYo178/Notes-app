@@ -5,6 +5,8 @@ import { IoAt, IoKeyOutline, IoPersonOutline } from 'react-icons/io5';
 import { HiOutlineUserCircle } from 'react-icons/hi2';
 import { FaRegEye } from 'react-icons/fa6';
 
+import { useRegisterMutation } from '../../hooks/network/auth/useRegisterMutation.ts';
+
 import { RegisterButton } from './RegisterButton/RegisterButton.tsx';
 import { ButtonHandler } from './RegisterModal.ts';
 
@@ -25,10 +27,14 @@ export const RegisterModal: FC = () => {
     const passwordField = useRef<HTMLInputElement>(null); // Only needed for toggling password visibility
     const confirmPasswordField = useRef<HTMLInputElement>(null); // Only needed for toggling password visibility
 
+    const registerMutation = useRegisterMutation();
     const location = useLocation();
 
     return (
-        <form className="rm" onSubmit={(e) => e.preventDefault()}>
+        <form className="rm" onSubmit={(e) => e.preventDefault()} onKeyDown={(e) => {
+            ButtonHandler.onKeyDown(e, { username, password, confirmPassword, email, displayName: `${firstName} ${lastName}` }, registerMutation)
+        }
+        }>
             <h2 className="rm-title">Register</h2>
 
             { /* Display name field */}
@@ -141,6 +147,7 @@ export const RegisterModal: FC = () => {
                 registerData={{ username, password, confirmPassword, email, displayName: `${firstName} ${lastName}` }}
                 setErrorMessage={setErrorMessage}
                 setSuccessMessage={setSuccessMessage}
+                registerMutation={registerMutation}
             />
 
             <div className="rm-existing-acc-container">

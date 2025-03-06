@@ -1,5 +1,9 @@
 import { RefObject } from "react";
 
+import { ButtonHandler as RegisterButtonHandler } from "./RegisterButton/RegisterButton";
+import { RegisterFields } from "../../types/AuthTypes";
+import { UseMutationResult } from "@tanstack/react-query";
+
 function togglePasswordVisibility(
     passwordField: RefObject<HTMLInputElement>,
     confirmPasswordField: RefObject<HTMLInputElement>
@@ -11,6 +15,14 @@ function togglePasswordVisibility(
 
 }
 
+function onKeyDown(e: React.KeyboardEvent<HTMLFormElement>, registerData: RegisterFields, registerMutation: UseMutationResult<any, Error, RegisterFields | undefined, unknown>) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        RegisterButtonHandler.registerButtonOnClick(registerData, registerMutation)
+    }
+}
+
 export const ButtonHandler = {
-    togglePasswordVisibility
+    togglePasswordVisibility,
+    onKeyDown
 }

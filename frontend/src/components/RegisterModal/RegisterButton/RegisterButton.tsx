@@ -1,9 +1,9 @@
 import { FC, ReactNode, useEffect, useState } from 'react';
+import { UseMutationResult } from '@tanstack/react-query';
 import { Navigate, useLocation } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
 import { RegisterFields } from '../../../types/AuthTypes';
-import { useRegisterMutation } from '../../../hooks/network/auth/useRegisterMutation';
 
 import { ButtonHandler } from './RegisterButton';
 
@@ -13,12 +13,12 @@ interface RegisterButtonProps {
     registerData: RegisterFields;
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
     setSuccessMessage: React.Dispatch<React.SetStateAction<string>>;
+    registerMutation: UseMutationResult<any, Error, RegisterFields | undefined, unknown>
 }
 
-export const RegisterButton: FC<RegisterButtonProps> = ({ registerData, setErrorMessage, setSuccessMessage }) => {
+export const RegisterButton: FC<RegisterButtonProps> = ({ registerData, setErrorMessage, setSuccessMessage, registerMutation }) => {
     const [redirect, setRedirect] = useState<ReactNode | null>(null);
 
-    const registerMutation = useRegisterMutation();
     const location = useLocation();
 
     useEffect(() => {
