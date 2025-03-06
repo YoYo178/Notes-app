@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import API from '../../api/backendAPI'
 import { HTTP_METHODS } from "../../types/APITypes";
 
-export const useNetworkBase = <T>(endpoint: { URL: string, METHOD: HTTP_METHODS }, queryKeys: string[], actionName: string, sendCookies: boolean = false) => {
+export const useMutationBase = <T>(endpoint: { URL: string, METHOD: HTTP_METHODS }, queryKeys: string[], actionName: string, sendCookies: boolean = false) => {
     const callbackFunc = async (payload?: T) => {
         // @ts-ignore
         const HTTPFunc = API[endpoint.METHOD.toLowerCase()];
