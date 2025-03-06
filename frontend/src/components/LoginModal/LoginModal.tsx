@@ -4,6 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { FaRegEye } from 'react-icons/fa6';
 import { IoKeyOutline, IoPersonOutline } from 'react-icons/io5';
 
+import { useLoginMutation } from '../../hooks/network/auth/useLoginMutation.ts';
+
 import { LoginButton } from './LoginButton/LoginButton.tsx';
 import { ButtonHandler } from './LoginModal.ts';
 
@@ -18,9 +20,10 @@ export const LoginModal: FC = () => {
     const passwordField = useRef<HTMLInputElement>(null); // Only needed for toggling password visibility
 
     const location = useLocation();
+    const loginMutation = useLoginMutation();
 
     return (
-        <form className="login-modal" onSubmit={(e) => e.preventDefault()}>
+        <form className="login-modal" onSubmit={(e) => e.preventDefault()} onKeyDown={(e) => ButtonHandler.onKeyDown(e, username, password, loginMutation)}>
             <h2 className="login-title">Sign In</h2>
 
             { /* Username field */}
@@ -66,7 +69,7 @@ export const LoginModal: FC = () => {
 
             <div className="lm-error" style={{ display: errorMessage.length ? "block" : "none" }}>{errorMessage}</div>
 
-            <LoginButton username={username} password={password} setErrorMessage={setErrorMessage} />
+            <LoginButton username={username} password={password} setErrorMessage={setErrorMessage} loginMutation={loginMutation} />
 
             <div className="register-container">
                 <span className="register-text">Don't have an account?</span>

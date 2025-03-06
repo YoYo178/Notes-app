@@ -1,9 +1,10 @@
+import { UseMutationResult } from '@tanstack/react-query';
 import { FC, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
-import { useLoginMutation } from '../../../hooks/network/auth/useLoginMutation';
 import AuthContext from '../../../contexts/AuthProvider';
+import { LoginFields } from '../../../types/AuthTypes';
 
 import { ButtonHandler } from './LoginButton';
 
@@ -13,11 +14,11 @@ interface LoginButtonProps {
     username: string;
     password: string;
     setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+    loginMutation: UseMutationResult<any, Error, LoginFields | undefined, unknown>
 }
 
-export const LoginButton: FC<LoginButtonProps> = ({ username, password, setErrorMessage }) => {
+export const LoginButton: FC<LoginButtonProps> = ({ username, password, setErrorMessage, loginMutation }) => {
     const { setAuth } = useContext(AuthContext);
-    const loginMutation = useLoginMutation();
 
     useEffect(() => {
         if (loginMutation.isSuccess) {
