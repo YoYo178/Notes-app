@@ -2,7 +2,7 @@ import { User } from "@src/models/User";
 import expressAsyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import HttpStatusCodes from "@src/common/HttpStatusCodes";
-import { ObjectId } from "mongoose";
+import { isObjectIdOrHexString, ObjectId } from "mongoose";
 import { Note } from "@src/models/Note";
 
 /**
@@ -79,6 +79,16 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
 
     const { id, title, description, images, isText, isFavorite, duration } = req.body;
 
+    if (!id) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Note ID is required" });
+        return;
+    }
+
+    if (!isObjectIdOrHexString(id)) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Invalid ID provided" });
+        return;
+    }
+
     const note = await Note.findById(id).exec();
 
     if (!note) {
@@ -116,6 +126,23 @@ const deleteNote = expressAsyncHandler(async (req: Request, res: Response) => {
     }
 
     const { id } = req.body;
+
+    if (!id) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Note ID is required" });
+        return;
+    }
+
+    if (!isObjectIdOrHexString(id)) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Invalid ID provided" });
+        return;
+    }
+
+    const note = await Note.findById(id).lean().exec();
+
+    if (!note) {
+        res.status(HttpStatusCodes.NOT_FOUND).send({ message: "No note found with the specified ID" });
+        return;
+    }
 
     await Note.deleteOne({ _id: id });
 

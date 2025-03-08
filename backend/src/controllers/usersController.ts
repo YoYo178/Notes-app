@@ -3,7 +3,7 @@ import expressAsyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt'
 import HttpStatusCodes from "@src/common/HttpStatusCodes";
-import { ObjectId } from "mongoose";
+import { isObjectIdOrHexString, ObjectId } from "mongoose";
 
 /**
  * @route POST /users
@@ -71,6 +71,16 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
+    if (!id) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "User ID is required" });
+        return;
+    }
+
+    if (!isObjectIdOrHexString(id)) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Invalid ID provided" });
+        return;
+    }
+
     const user = await User.findById(id).exec();
 
     if (!user) {
@@ -110,6 +120,11 @@ const deleteUser = expressAsyncHandler(async (req: Request, res: Response) => {
 
     if (!id) {
         res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "User ID is required" })
+        return;
+    }
+
+    if (!isObjectIdOrHexString(id)) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Invalid ID provided" });
         return;
     }
 
