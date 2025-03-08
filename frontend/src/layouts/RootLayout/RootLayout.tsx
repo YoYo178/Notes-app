@@ -12,11 +12,12 @@ import './RootLayout.css'
 import { AxiosError } from 'axios'
 
 interface RootLayoutProps {
+  setFilterText: React.Dispatch<React.SetStateAction<string>>;
   cardContainer: RefObject<HTMLDivElement>;
   children: React.ReactNode;
 }
 
-export const RootLayout: FC<RootLayoutProps> = ({ cardContainer, children }) => {
+export const RootLayout: FC<RootLayoutProps> = ({ setFilterText, cardContainer, children }) => {
   const { setAuth } = useContext(AuthContext);
   const { data, isLoading, error } = useAuthQuery();
 
@@ -40,7 +41,7 @@ export const RootLayout: FC<RootLayoutProps> = ({ cardContainer, children }) => 
   return (
     <div className="app-container">
       <Sidebar />
-      <SearchBox />
+      <SearchBox setFilterText={setFilterText} />
       <SortButton />
       <main className="main-content">
         {children}

@@ -4,11 +4,20 @@ import { AiOutlineSearch } from 'react-icons/ai'
 
 import './SearchBox.css'
 
-export const SearchBox: FC = () => {
+interface SearchBoxProps {
+  setFilterText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const SearchBox: FC<SearchBoxProps> = ({ setFilterText }) => {
   return (
     <div className="search-box">
       <AiOutlineSearch className="search-icon" />
-      <input type="text" placeholder="Search" className="search-input" />
+      <input
+        type="text"
+        placeholder="Search"
+        className="search-input"
+        onChange={(e) => { setFilterText(e.target.value) }}
+      />
     </div>
   )
 } 

@@ -11,12 +11,13 @@ import AuthContext from '../../contexts/AuthProvider.tsx';
 interface CardContainerProps {
     innerRef?: RefObject<HTMLDivElement>;
     favoritesOnly: boolean;
+    filterText: string;
 }
 
 // Special type just to add rawDate, to sort by date
 interface MNote extends Note { rawDate: Date };
 
-export const CardContainer: FC<CardContainerProps> = ({ innerRef, favoritesOnly }) => {
+export const CardContainer: FC<CardContainerProps> = ({ innerRef, favoritesOnly, filterText }) => {
     const { auth } = useContext(AuthContext);
     const { data, isLoading, error } = useGetNotesQuery();
 
@@ -38,9 +39,15 @@ export const CardContainer: FC<CardContainerProps> = ({ innerRef, favoritesOnly 
         };
     }).sort((a: MNote, b: MNote) => b.rawDate.valueOf() - a.rawDate.valueOf()) ?? [];
 
-    const filteredNotes = favoritesOnly ? notes.filter(note => note.isFavorite) : notes;
+    let filteredNotes = favoritesOnly ? notes.filter(note => note.isFavorite) : notes;
+    filteredNotes = !!filterText.length ? filteredNotes.filter(note => {
+        return (
+            note.title.toLowerCase().includes(filterText) ||
+            note.description.toLowerCase().includes(filterText)
+        )
+    }) : filteredNotes;
 
-    if(!auth) {
+    if (!auth) {
         return <div>Not logged in!</div>
     }
 
