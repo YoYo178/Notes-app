@@ -12,11 +12,13 @@ import { Note } from '../../../types/NoteTypes';
 import "./Card.css"
 import { ButtonHandler } from './Card';
 import { useUpdateNoteMutation } from '../../../hooks/network/note/useUpdateNoteMutation';
+import { useDeleteNoteMutation } from '../../../hooks/network/note/useDeleteNoteMutation';
 
 type CardProps = Note;
 
 export const Card: FC<CardProps> = ({ date, duration, isText, title, description, isFavorite, id }) => {
     const updateNoteMutation = useUpdateNoteMutation();
+    const deleteNoteMutation = useDeleteNoteMutation();
 
     return (
         <div className="card">
@@ -54,7 +56,7 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
                     <FaRegCopy />
                 </button>
 
-                <button className='card-delete-button'>
+                <button className='card-delete-button' onClick={() => ButtonHandler.deleteOnClick(deleteNoteMutation, id)}>
                     <RiDeleteBin6Line />
                 </button>
 

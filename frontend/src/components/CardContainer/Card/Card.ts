@@ -3,11 +3,18 @@ import { Note } from "../../../types/NoteTypes"
 
 function favoriteOnClick(useUpdateNoteMutation: UseMutationResult<any, Error, Partial<Note> | undefined, unknown>, id: string, isFavorite: boolean | undefined) {
     useUpdateNoteMutation.mutate({
-        id: id,
+        id,
         isFavorite: !isFavorite
     })
 }
 
+function deleteOnClick(useDeleteNoteMutation: UseMutationResult<any, Error, { id: string } | undefined, unknown>, id: string) {
+    useDeleteNoteMutation.mutate({
+        id
+    })
+}
+
 export const ButtonHandler = {
-    favoriteOnClick
+    favoriteOnClick,
+    deleteOnClick
 }
