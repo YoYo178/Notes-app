@@ -11,11 +11,14 @@ export const useMutationBase = <T>(endpoint: { URL: string, METHOD: HTTP_METHODS
 
         let response: AxiosResponse<any, any> | null = null;
 
-        if (["GET", "DELETE", "OPTIONS"].includes(endpoint.METHOD))
-            response = await HTTPFunc(endpoint.URL, { withCredentials: sendCookies });
-
         if (["POST", "PUT", "PATCH"].includes(endpoint.METHOD))
             response = await HTTPFunc(endpoint.URL, payload, { withCredentials: sendCookies });
+
+        if (endpoint.METHOD === "DELETE")
+            response = await HTTPFunc(endpoint.URL, { withCredentials: sendCookies, data: payload })
+
+        if (endpoint.METHOD === "OPTIONS")
+            response = await HTTPFunc(endpoint.URL, { withCredentials: sendCookies });
 
         return !!response ? response.data : null;
     };
