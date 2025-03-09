@@ -10,7 +10,7 @@
     flex-direction: column;
 
     transition: background-color .2s ease-in-out,
-                scale .2s ease-in-out;
+        scale .2s ease-in-out;
 }
 
 .card:hover {
@@ -79,11 +79,11 @@
 
     border-radius: 20px;
     padding: 0.2rem 0.4rem;
-    
+
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
     gap: 0.4rem;
 }
 
@@ -134,7 +134,34 @@
 .card-edit-button:hover,
 .card-favorite-button:hover {
     background-color: rgb(216, 216, 216);
-    
+
     /* Properties needed after changing from div to button */
     cursor: pointer;
+}
+
+.card-copied-tooltip {
+    background-color: rgb(216, 216, 216);
+
+    width: fit-content;
+    height: fit-content;
+    padding: 0.4rem;
+
+    border-radius: 5px;
+
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    font-size: 0.8rem;
+
+    position: absolute;
+
+    transform: translateX(-3.7rem) translateY(-2.5rem);
+    
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+}
+
+.card-copy-button:hover .card-copied-tooltip {
+    opacity: 1;
+    visibility: visible;
 }
