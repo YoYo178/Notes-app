@@ -1,0 +1,52 @@
+.create-note-modal-backdrop {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(0, 0, 0, 0.6);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.create-note-modal {
+    width: 60%;
+    height: 80%;
+    background-color: rgb(255, 255, 255);
+    padding: 2rem;
+    border-radius: 1rem;
+    border: 1px solid #d0d4d9;
+    /* box-shadow: 0px 0px 5px 1px #292929; */
+
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    color: #1b1b1b;
+}
+
+.create-note-modal-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.create-note-modal-close-button {
+    font-size: 2rem;
+    padding: 0.4rem;
+    border-radius: 8px;
+    border: none;
+    background-color: transparent;
+
+    display: flex;
+
+    transform: translate(1rem, -1rem);
+}
+
+.create-note-modal-close-button:hover {
+    background-color: rgb(216, 216, 216);
+    cursor: pointer;
+}
+
+.create-note-modal-close-button-icon {
+    color: #9b9b9b;
+}
