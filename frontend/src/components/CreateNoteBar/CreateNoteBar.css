@@ -39,10 +39,11 @@
 
 .add-note-button,
 .add-note-image-button {
-    font-size: 2rem;
+    font-size: 1rem;
     padding: 0.4rem;
     border-radius: 8px;
-    color: rgb(73, 73, 73);
+    border: none;
+    background-color: transparent;
 }
 
 .add-note-button:hover,
@@ -70,4 +71,12 @@
     background-color: #ff2525;
     cursor: pointer;
     scale: 105%
+}
+
+.add-note-icon {
+    color: rgb(119, 119, 119);
+}
+
+.add-note-image-icon {
+    color: rgb(119, 119, 119);
 }

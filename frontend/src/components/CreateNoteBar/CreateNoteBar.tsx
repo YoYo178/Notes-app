@@ -38,13 +38,17 @@ export const CreateNoteBar: FC<CreateNoteBarProps> = ({ cardContainer }) => {
     return (
         <div className={`create-note-bar ${isVisible ? 'visible' : 'hidden'}`}>
             <div className="add-note-buttons-container">
-                <FiFilePlus className='add-note-button' />
-                <RiImageAddLine className='add-note-image-button' />
+                <button className='add-note-button' onClick={() => setModalOpen(true)}>
+                    <FiFilePlus className='add-note-icon' />
+                </button>
+                <button className='add-note-image-button' >
+                    <RiImageAddLine className='add-note-image-icon' />
+                </button>
             </div>
             <div className="record-note-button-container">
                 <BsRecord2 />
                 Start Recording
             </div>
-        </div>
+        </div >
     )
 }
