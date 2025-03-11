@@ -1,6 +1,7 @@
 import { FC } from 'react'
 
 import { IoMdClose } from 'react-icons/io';
+import { FaCheck } from 'react-icons/fa';
 
 import "./CreateNoteModal.css"
 
@@ -21,10 +22,21 @@ const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
                         <IoMdClose className='cnm-close-button-icon' />
                     </button>
                 </div>
-                <p>This is a modal.</p>
+                <div className="cnm-fields">
+                    <div className="cnm-text-field-container">
+                        <input type="text" className="cnm-field-title" placeholder='Title' />
+                    </div>
+                    <div className="cnm-text-field-container cnm-description-field-container">
+                        <textarea className="cnm-field-description" placeholder='Description' />
+                    </div>
+                </div>
+                <div className="cnm-footer">
+                    <button className="cnm-check-button">
+                        <FaCheck />
+                    </button>
+                </div>
             </div>
         </div>
-
     )
 }
 

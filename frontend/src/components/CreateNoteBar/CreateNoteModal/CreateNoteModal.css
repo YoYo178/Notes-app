@@ -23,11 +23,15 @@
     font-family: 'Inter', sans-serif;
     font-weight: bold;
     color: #1b1b1b;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .cnm-header {
     display: flex;
     justify-content: space-between;
+    color: grey;
 }
 
 .cnm-close-button {
@@ -49,4 +53,98 @@
 
 .cnm-close-button-icon {
     color: #9b9b9b;
+}
+
+.cnm-fields {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 6rem);
+}
+
+.cnm-text-field-container {
+    border: 1px solid #d0d4d9;
+    border-radius: 10px;
+
+    height: 2.5rem;
+
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.cnm-field-title {
+    height: 100%;
+
+    border: none;
+    outline: none;
+
+    flex: 1;
+
+    padding: 0.5rem;
+    margin-left: 0.3rem;
+    margin-right: 0.5rem;
+    font-size: 1.3rem;
+
+    letter-spacing: 1px;
+}
+
+.cnm-field-title::placeholder {
+    font-size: 1.1rem;
+}
+
+.cnm-description-field-container {
+    flex: 1;
+}
+
+.cnm-field-description {
+    height: 100%;
+
+    border: none;
+    outline: none;
+
+    padding: 0.5rem;
+    margin-left: 0.3rem;
+    margin-right: 0.5rem;
+    font-size: 1.3rem;
+
+    letter-spacing: 1px;
+
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    color: #1b1b1b;
+
+    resize: none; /* is a textarea element */
+}
+
+.cnm-field-description::placeholder {
+    font-size: 1.1rem;
+}
+
+.cnm-footer {
+    flex: 1;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.cnm-check-button {
+    padding: 0.7rem;
+    border-radius: 8px;
+    color: rgb(119, 119, 119);
+
+    display: flex;
+
+    /* Properties needed after changing from div to button */
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+.cnm-check-button:hover {
+    background-color: rgb(216, 216, 216);
+
+    /* Properties needed after changing from div to button */
+    cursor: pointer;
 }
