@@ -1,6 +1,6 @@
 import { FC } from 'react'
 
-import { IoIosCloseCircleOutline } from 'react-icons/io';
+import { IoMdClose } from 'react-icons/io';
 
 import "./CreateNoteModal.css"
 
@@ -18,7 +18,7 @@ const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
                 <div className="cnm-header">
                     <h2 className='cnm-title'>Add new note</h2>
                     <button className='cnm-close-button' onClick={onClose}>
-                        <IoIosCloseCircleOutline className='cnm-close-button-icon' />
+                        <IoMdClose className='cnm-close-button-icon' />
                     </button>
                 </div>
                 <p>This is a modal.</p>
