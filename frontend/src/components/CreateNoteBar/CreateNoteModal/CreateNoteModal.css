@@ -1,4 +1,4 @@
-.create-note-modal-backdrop {
+.cnm-backdrop {
     position: fixed;
     top: 0px;
     bottom: 0px;
@@ -11,7 +11,7 @@
     justify-content: center;
 }
 
-.create-note-modal {
+.cnm {
     width: 60%;
     height: 80%;
     background-color: rgb(255, 255, 255);
@@ -25,12 +25,12 @@
     color: #1b1b1b;
 }
 
-.create-note-modal-header {
+.cnm-header {
     display: flex;
     justify-content: space-between;
 }
 
-.create-note-modal-close-button {
+.cnm-close-button {
     font-size: 2rem;
     padding: 0.4rem;
     border-radius: 8px;
@@ -42,11 +42,11 @@
     transform: translate(1rem, -1rem);
 }
 
-.create-note-modal-close-button:hover {
+.cnm-close-button:hover {
     background-color: rgb(216, 216, 216);
     cursor: pointer;
 }
 
-.create-note-modal-close-button-icon {
+.cnm-close-button-icon {
     color: #9b9b9b;
 }

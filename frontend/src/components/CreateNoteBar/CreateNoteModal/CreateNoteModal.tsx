@@ -13,12 +13,12 @@ const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     return (
-        <div className='create-note-modal-backdrop' onClick={onClose}>
-            <div className='create-note-modal' onClick={(e) => e.stopPropagation()}>
-                <div className="create-note-modal-header">
-                    <h2 className='create-note-modal-title'>Add new note</h2>
-                    <button className='create-note-modal-close-button' onClick={onClose}>
-                        <IoIosCloseCircleOutline className='create-note-modal-close-button-icon' />
+        <div className='cnm-backdrop' onClick={onClose}>
+            <div className='cnm' onClick={(e) => e.stopPropagation()}>
+                <div className="cnm-header">
+                    <h2 className='cnm-title'>Add new note</h2>
+                    <button className='cnm-close-button' onClick={onClose}>
+                        <IoIosCloseCircleOutline className='cnm-close-button-icon' />
                     </button>
                 </div>
                 <p>This is a modal.</p>
