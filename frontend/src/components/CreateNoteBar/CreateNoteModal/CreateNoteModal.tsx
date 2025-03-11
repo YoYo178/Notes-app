@@ -13,8 +13,8 @@ const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     return (
-        <div className='cnm-backdrop' onClick={onClose}>
-            <div className='cnm' onClick={(e) => e.stopPropagation()}>
+        <div className='cnm-backdrop' onMouseDown={onClose}>
+            <div className='cnm' onMouseDown={(e) => e.stopPropagation()}>
                 <div className="cnm-header">
                     <h2 className='cnm-title'>Add new note</h2>
                     <button className='cnm-close-button' onClick={onClose}>
