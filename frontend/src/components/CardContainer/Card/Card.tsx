@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, useRef, useState } from 'react'
 
 import { AiOutlineFileText } from "react-icons/ai";
 import { FaRegCopy, FaRegStar, FaStar } from 'react-icons/fa';
