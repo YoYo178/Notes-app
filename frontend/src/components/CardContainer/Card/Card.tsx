@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 
 import { AiOutlineFileText } from "react-icons/ai";
 import { FaRegCopy, FaRegStar, FaStar } from 'react-icons/fa';
@@ -11,6 +11,7 @@ import { useUpdateNoteMutation } from '../../../hooks/network/note/useUpdateNote
 import { useDeleteNoteMutation } from '../../../hooks/network/note/useDeleteNoteMutation';
 import { Note } from '../../../types/NoteTypes';
 
+import { EditNoteModal } from './EditNoteModal/EditNoteModal.tsx'
 import { ButtonHandler } from './Card';
 
 import "./Card.css"
@@ -24,8 +25,11 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
     const updateNoteMutation = useUpdateNoteMutation();
     const deleteNoteMutation = useDeleteNoteMutation();
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     return (
         <div className="card">
+            <EditNoteModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} originalTitle={title} originalDescription={description} noteID={id} />
             <div className="card-top-container">
                 <div className="card-date">{date}</div>
                 {!isText ? (
@@ -65,7 +69,7 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
                     <RiDeleteBin6Line />
                 </button>
 
-                <button className='card-edit-button'>
+                <button className='card-edit-button' onClick={() => setIsModalOpen(true)}>
                     <TiEdit />
                 </button>
             </div>
