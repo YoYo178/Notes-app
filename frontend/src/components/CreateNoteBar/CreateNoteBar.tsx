@@ -1,4 +1,4 @@
-import { FC, RefObject, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 
 import { RiImageAddLine } from 'react-icons/ri';
 import { FiFilePlus } from 'react-icons/fi';
@@ -9,34 +9,11 @@ import CreateNoteModal from './CreateNoteModal/CreateNoteModal.tsx';
 import './CreateNoteBar.css'
 
 interface CreateNoteBarProps {
-    cardContainer: RefObject<HTMLDivElement | null>;
+    isVisible: boolean;
 }
 
-export const CreateNoteBar: FC<CreateNoteBarProps> = ({ cardContainer }) => {
-    const [isVisible, setIsVisible] = useState(true);
+export const CreateNoteBar: FC<CreateNoteBarProps> = ({ isVisible }) => {
     const [modalOpen, setModalOpen] = useState(false);
-
-    useEffect(() => {
-        const handleScroll = (event: Event) => {
-            // @ts-ignore
-            const scrollTop = event.target?.scrollTop;
-            if (scrollTop > 0) {
-                setIsVisible(false);
-            } else {
-                setIsVisible(true);
-            }
-        };
-
-        if (cardContainer.current) {
-            cardContainer.current.addEventListener('scroll', handleScroll);
-        }
-
-        return () => {
-            if (cardContainer.current) {
-                cardContainer.current.removeEventListener('scroll', handleScroll);
-            }
-        };
-    }, []);
 
     return (
         <>

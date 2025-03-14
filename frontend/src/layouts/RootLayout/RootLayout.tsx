@@ -1,4 +1,4 @@
-import { FC, RefObject, useContext, useEffect } from 'react'
+import { FC, useContext, useEffect } from 'react'
 import { AxiosError } from 'axios'
 
 import { useAuthQuery } from '../../hooks/network/auth/useAuthQuery'
@@ -13,11 +13,11 @@ import './RootLayout.css'
 
 interface RootLayoutProps {
   setFilterText: React.Dispatch<React.SetStateAction<string>>;
-  cardContainer: RefObject<HTMLDivElement | null>;
   children: React.ReactNode;
+  isCreateNoteBarVisible: boolean;
 }
 
-export const RootLayout: FC<RootLayoutProps> = ({ setFilterText, cardContainer, children }) => {
+export const RootLayout: FC<RootLayoutProps> = ({ setFilterText, children, isCreateNoteBarVisible }) => {
   const { setAuth } = useContext(AuthContext);
   const { data, isLoading, error } = useAuthQuery();
 
@@ -46,7 +46,7 @@ export const RootLayout: FC<RootLayoutProps> = ({ setFilterText, cardContainer, 
       <main className="main-content">
         {children}
       </main>
-      <CreateNoteBar cardContainer={cardContainer} />
+      <CreateNoteBar isVisible={isCreateNoteBarVisible} />
     </div>
   )
 }

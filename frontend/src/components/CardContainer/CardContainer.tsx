@@ -1,4 +1,4 @@
-import { FC, RefObject, useContext } from 'react'
+import { FC, useContext } from 'react'
 
 import { useGetNotesQuery } from '../../hooks/network/note/useGetNotesQuery.ts';
 import AuthContext from '../../contexts/AuthProvider.tsx';
@@ -9,15 +9,15 @@ import { Card } from './Card/Card.tsx';
 import "./CardContainer.css"
 
 interface CardContainerProps {
-    innerRef?: RefObject<HTMLDivElement | null>;
     favoritesOnly: boolean;
     filterText: string;
+    setIsCreateNoteBarVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Special type just to add rawDate, to sort by date
 interface MNote extends Note { rawDate: Date };
 
-export const CardContainer: FC<CardContainerProps> = ({ innerRef, favoritesOnly, filterText }) => {
+export const CardContainer: FC<CardContainerProps> = ({ favoritesOnly, filterText, setIsCreateNoteBarVisible }) => {
     const { auth } = useContext(AuthContext);
     const { data, isLoading, error } = useGetNotesQuery();
 
@@ -60,7 +60,15 @@ export const CardContainer: FC<CardContainerProps> = ({ innerRef, favoritesOnly,
     }
 
     return (
-        <div ref={innerRef} className="card-container">
+        <div
+            className="card-container"
+            onScroll={
+                (e) => {
+                    // @ts-ignore
+                    setIsCreateNoteBarVisible(e.target?.scrollTop === 0)
+                }
+            }
+        >
             {filteredNotes.map(note => (
                 <Card
                     key={note.id}

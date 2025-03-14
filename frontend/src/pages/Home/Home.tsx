@@ -1,15 +1,15 @@
-import { FC, useRef, useState } from 'react'
+import { FC, useState } from 'react'
 
 import { RootLayout } from '../../layouts/RootLayout/RootLayout'
 import { CardContainer } from '../../components/CardContainer/CardContainer'
 
 export const Home: FC = () => {
   const [filterText, setFilterText] = useState('');
-  const cardContainer = useRef<HTMLDivElement>(null);
+  const [isCreateNoteBarVisible, setIsCreateNoteBarVisible] = useState(true);
 
   return (
-    <RootLayout cardContainer={cardContainer} setFilterText={setFilterText}>
-      <CardContainer innerRef={cardContainer} favoritesOnly={false} filterText={filterText} />
+    <RootLayout isCreateNoteBarVisible={isCreateNoteBarVisible} setFilterText={setFilterText}>
+      <CardContainer favoritesOnly={false} filterText={filterText} setIsCreateNoteBarVisible={setIsCreateNoteBarVisible} />
     </RootLayout>
   )
 } 
