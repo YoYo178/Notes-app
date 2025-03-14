@@ -7,12 +7,13 @@ import { IoPlayOutline } from 'react-icons/io5';
 import { CiImageOn } from 'react-icons/ci';
 import { TiEdit } from 'react-icons/ti';
 
-import { Note } from '../../../types/NoteTypes';
-
-import "./Card.css"
-import { ButtonHandler } from './Card';
 import { useUpdateNoteMutation } from '../../../hooks/network/note/useUpdateNoteMutation';
 import { useDeleteNoteMutation } from '../../../hooks/network/note/useDeleteNoteMutation';
+import { Note } from '../../../types/NoteTypes';
+
+import { ButtonHandler } from './Card';
+
+import "./Card.css"
 
 type CardProps = Note;
 

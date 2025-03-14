@@ -1,6 +1,7 @@
 import { RefObject } from "react";
-import { ButtonHandler as LoginButtonHandler } from "./LoginButton/LoginButton";
 import { UseMutationResult } from "@tanstack/react-query";
+
+import { ButtonHandler as LoginButtonHandler } from "./LoginButton/LoginButton";
 import { LoginFields } from "../../types/AuthTypes";
 
 function togglePasswordVisibility(passwordField: RefObject<HTMLInputElement>) {

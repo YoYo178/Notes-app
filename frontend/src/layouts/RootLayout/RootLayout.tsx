@@ -1,4 +1,5 @@
 import { FC, RefObject, useContext, useEffect } from 'react'
+import { AxiosError } from 'axios'
 
 import { useAuthQuery } from '../../hooks/network/auth/useAuthQuery'
 import AuthContext from '../../contexts/AuthProvider'
@@ -9,7 +10,6 @@ import { Sidebar } from '../../components/Sidebar/Sidebar'
 import SortButton from '../../components/SortButton/SortButton'
 
 import './RootLayout.css'
-import { AxiosError } from 'axios'
 
 interface RootLayoutProps {
   setFilterText: React.Dispatch<React.SetStateAction<string>>;

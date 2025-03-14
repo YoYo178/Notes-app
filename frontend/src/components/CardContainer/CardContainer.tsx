@@ -1,12 +1,12 @@
 import { FC, RefObject, useContext } from 'react'
 
 import { useGetNotesQuery } from '../../hooks/network/note/useGetNotesQuery.ts';
+import AuthContext from '../../contexts/AuthProvider.tsx';
 import { Note } from '../../types/NoteTypes';
 
 import { Card } from './Card/Card.tsx';
 
 import "./CardContainer.css"
-import AuthContext from '../../contexts/AuthProvider.tsx';
 
 interface CardContainerProps {
     innerRef?: RefObject<HTMLDivElement | null>;
