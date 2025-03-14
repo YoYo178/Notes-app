@@ -9,7 +9,7 @@ import "./CardContainer.css"
 import AuthContext from '../../contexts/AuthProvider.tsx';
 
 interface CardContainerProps {
-    innerRef?: RefObject<HTMLDivElement>;
+    innerRef?: RefObject<HTMLDivElement | null>;
     favoritesOnly: boolean;
     filterText: string;
 }

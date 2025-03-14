@@ -13,7 +13,7 @@ import { AxiosError } from 'axios'
 
 interface RootLayoutProps {
   setFilterText: React.Dispatch<React.SetStateAction<string>>;
-  cardContainer: RefObject<HTMLDivElement>;
+  cardContainer: RefObject<HTMLDivElement | null>;
   children: React.ReactNode;
 }
 

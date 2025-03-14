@@ -5,8 +5,8 @@ import { RegisterFields } from "../../types/AuthTypes";
 import { UseMutationResult } from "@tanstack/react-query";
 
 function togglePasswordVisibility(
-    passwordField: RefObject<HTMLInputElement>,
-    confirmPasswordField: RefObject<HTMLInputElement>
+    passwordField: RefObject<HTMLInputElement | null>,
+    confirmPasswordField: RefObject<HTMLInputElement | null>
 ) {
     if (!passwordField.current || !confirmPasswordField.current || (!passwordField.current.value && !confirmPasswordField.current.value) )
         return;

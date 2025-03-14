@@ -9,7 +9,7 @@ import CreateNoteModal from './CreateNoteModal/CreateNoteModal';
 import './CreateNoteBar.css'
 
 interface CreateNoteBarProps {
-    cardContainer: RefObject<HTMLDivElement>;
+    cardContainer: RefObject<HTMLDivElement | null>;
 }
 
 export const CreateNoteBar: FC<CreateNoteBarProps> = ({ cardContainer }) => {
