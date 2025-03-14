@@ -1,0 +1,150 @@
+.enm-backdrop {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(0, 0, 0, 0.6);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.enm {
+    width: 60%;
+    height: 80%;
+    background-color: rgb(255, 255, 255);
+    padding: 2rem;
+    border-radius: 1rem;
+    border: 1px solid #d0d4d9;
+    /* box-shadow: 0px 0px 5px 1px #292929; */
+
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    color: #1b1b1b;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.enm-header {
+    display: flex;
+    justify-content: space-between;
+    color: grey;
+}
+
+.enm-close-button {
+    font-size: 2rem;
+    padding: 0.4rem;
+    border-radius: 8px;
+    border: none;
+    background-color: transparent;
+
+    display: flex;
+
+    transform: translate(1rem, -1rem);
+}
+
+.enm-close-button:hover {
+    background-color: rgb(216, 216, 216);
+    cursor: pointer;
+}
+
+.enm-close-button-icon {
+    color: #9b9b9b;
+}
+
+.enm-fields {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 6rem);
+}
+
+.enm-text-field-container {
+    border: 1px solid #d0d4d9;
+    border-radius: 10px;
+
+    height: 2.5rem;
+
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.enm-field-title {
+    height: 100%;
+
+    border: none;
+    outline: none;
+
+    flex: 1;
+
+    padding: 0.5rem;
+    margin-left: 0.3rem;
+    margin-right: 0.5rem;
+    font-size: 1.3rem;
+
+    letter-spacing: 1px;
+}
+
+.enm-field-title::placeholder {
+    font-size: 1.1rem;
+}
+
+.enm-description-field-container {
+    flex: 1;
+}
+
+.enm-field-description {
+    height: 100%;
+
+    border: none;
+    outline: none;
+
+    padding: 0.5rem;
+    margin-left: 0.3rem;
+    margin-right: 0.5rem;
+    font-size: 1.3rem;
+
+    letter-spacing: 1px;
+
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    color: #1b1b1b;
+
+    resize: none; /* is a textarea element */
+}
+
+.enm-field-description::placeholder {
+    font-size: 1.1rem;
+}
+
+.enm-footer {
+    flex: 1;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.enm-check-button {
+    padding: 0.7rem;
+    border-radius: 8px;
+    color: rgb(119, 119, 119);
+
+    display: flex;
+
+    /* Properties needed after changing from div to button */
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+.enm-check-button:hover {
+    background-color: rgb(216, 216, 216);
+
+    /* Properties needed after changing from div to button */
+    cursor: pointer;
+}
