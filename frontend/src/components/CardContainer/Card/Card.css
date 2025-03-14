@@ -71,6 +71,11 @@
     font-size: 0.85rem;
     line-height: 1.5rem;
     margin-bottom: 1rem;
+
+    white-space: pre-wrap;
+    
+    word-wrap: break-word;
+    overflow-y: auto;
 }
 
 .card-image-attached {
@@ -155,7 +160,7 @@
     position: absolute;
 
     transform: translateX(-3.7rem) translateY(-2.5rem);
-    
+
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
