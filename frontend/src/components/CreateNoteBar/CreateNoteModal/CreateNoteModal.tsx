@@ -42,10 +42,10 @@ const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
                 </div>
                 <div className="cnm-fields">
                     <div className="cnm-text-field-container">
-                        <input type="text" className="cnm-field-title" placeholder='Title' onChange={(e) => setTitle(e.target.value)} />
+                        <input type="text" className="cnm-field-title" placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} />
                     </div>
                     <div className="cnm-text-field-container cnm-description-field-container">
-                        <textarea className="cnm-field-description" placeholder='Description' onChange={(e) => setDescription(e.target.value)} />
+                        <textarea className="cnm-field-description" placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)} />
                     </div>
                 </div>
                 <div className="cnm-footer">
