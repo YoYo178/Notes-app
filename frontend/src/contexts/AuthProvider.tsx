@@ -11,7 +11,7 @@ export interface AuthFields {
 }
 
 interface AuthValues {
-    auth: {} | null;
+    auth: Partial<AuthFields> | null;
     setAuth: React.Dispatch<React.SetStateAction<AuthFields | null>> | null;
 }
 
