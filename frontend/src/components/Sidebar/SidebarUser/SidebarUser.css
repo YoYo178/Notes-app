@@ -1,0 +1,36 @@
+.sidebar-user {
+    margin-top: auto;
+    display: flex;
+
+    border-radius: 1rem;
+
+    font-family: 'Inter';
+    font-weight: 500;
+    font-size: 0.9rem;
+
+    gap: 1rem;
+}
+
+.sidebar-user-items {
+    display: flex;
+    align-items: center;
+
+    gap: 1rem;
+    flex: 1;
+}
+
+.sidebar-user-name {
+    flex: 1;
+}
+
+.sidebar-user-profile-photo {
+    font-size: 3rem;
+}
+
+.sidebar-user-dropdown-button {
+    background-color: transparent;
+    border: none;
+    display: flex;
+
+    font-size: 1.1rem
+}

@@ -5,6 +5,7 @@ import AuthContext from '../../contexts/AuthProvider'
 import { SidebarBranding } from './SidebarBranding/SidebarBranding'
 import { SidebarLinks } from './SidebarLinks/SidebarLinks'
 import SidebarLogin from './SidebarLogin/SidebarLogin'
+import SidebarUser from './SidebarUser/SidebarUser'
 
 import './Sidebar.css'
 
@@ -17,7 +18,7 @@ export const Sidebar: FC = () => {
       <div className="separator" />
       <SidebarLinks />
       {!!auth ? (
-        null
+        <SidebarUser displayName={auth?.displayName} />
       ) : (
         <SidebarLogin />
       )}
