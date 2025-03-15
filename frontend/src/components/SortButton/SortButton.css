@@ -1,8 +1,9 @@
 .sort-button {
     height: 2.5rem;
-    width: calc(100% - 2rem);
+    width: 6rem;
     margin-top: 1rem;
     margin-left: 1rem;
+    margin-right: 1rem;
     background-color: #e7e7e7;
     border: none;
     border-radius: 1rem;
