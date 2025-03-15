@@ -55,7 +55,6 @@
 
 .record-note-button-container {
     margin-left: auto;
-    margin-right: 1rem;
     background-color: #fd302f;
     padding: 0.5rem 0.8rem;
     border-radius: 20px;
@@ -118,7 +117,7 @@
     }
 }
 
-@media screen and (max-width: 350px) {
+@media screen and (max-width: 318px) {
     .record-note-button-container {
         margin-left: 1rem;
     }
