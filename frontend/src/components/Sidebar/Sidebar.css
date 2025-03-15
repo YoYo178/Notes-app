@@ -17,4 +17,31 @@
   width: 100%;
   margin-top: 0.8rem;
   margin-bottom: 1.3rem;
-} 
+}
+
+.sidebar-hamburger-button {
+  height: 2.5rem;
+  padding: 1rem;
+  margin: 1rem;
+  background-color: #e7e7e7;
+  border: none;
+  border-radius: 1rem;
+  grid-area: sidebar-hamburger-button;
+  display: none;
+}
+
+.sidebar-hamburger-button:hover {
+  cursor: pointer;
+  background-color: #dadada;
+}
+
+@media screen and (max-width: 670px) {
+  .sidebar, .separator {
+    display: none;
+  }
+  .sidebar-hamburger-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
