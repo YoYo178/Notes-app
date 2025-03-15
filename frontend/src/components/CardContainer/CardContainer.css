@@ -11,3 +11,48 @@
     overflow-y: auto;
     margin-right: 1rem;
 }
+
+@media screen and (min-width: 2048px) {
+    .card-container {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    .card-container {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media screen and (max-width: 1120px) {
+    .card-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media screen and (max-width: 920px) {
+    .card-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 750px) {
+    .card-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Add margin when sidebar hides */
+@media screen and (max-width: 670px) {
+    .card-container {
+        margin-left: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 430px) {
+    .card-container {
+        margin-left: 1rem;
+        grid-template-columns: 1fr;
+    }
+}
