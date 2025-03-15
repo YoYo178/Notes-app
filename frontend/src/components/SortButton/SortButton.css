@@ -27,3 +27,14 @@
 .sort-button-icon {
     font-size: 1rem;
 }
+
+@media screen and (max-width: 500px) {
+    .sort-button-text {
+        display: none;
+    }
+    .sort-button {
+        height: 2.5rem;
+        width: auto;
+        padding: 1rem;
+    }
+}
