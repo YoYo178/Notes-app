@@ -4,6 +4,7 @@
     left: 50%;
     transform: translateX(-30%) scaleX(0);
     width: 50%;
+    min-width: fit-content;
     max-width: calc(100% - 2rem);
     margin: 0 1rem;
     background-color: white;
@@ -79,4 +80,46 @@
 
 .add-note-image-icon {
     color: rgb(119, 119, 119);
+}
+
+@media screen and (max-width: 905px) {
+    .create-note-bar {
+        transform: translateX(-20%) scaleX(0);
+    }
+
+    .create-note-bar.visible {
+        transform: translateX(-20%) scaleX(1);
+    }
+}
+
+@media screen and (max-width: 790px) {
+    .create-note-bar {
+        transform: translateX(-10%) scaleX(0);
+    }
+
+    .create-note-bar.visible {
+        transform: translateX(-10%) scaleX(1);
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .create-note-bar {
+        transform: translateX(-30%) scaleX(0);
+    }
+
+    .create-note-bar.visible {
+        transform: translateX(-50%) scaleX(1);
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .record-note-button-text {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 350px) {
+    .record-note-button-container {
+        margin-left: 1rem;
+    }
 }

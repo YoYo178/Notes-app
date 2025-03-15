@@ -29,7 +29,7 @@ export const CreateNoteBar: FC<CreateNoteBarProps> = ({ isVisible }) => {
                 </div>
                 <div className="record-note-button-container">
                     <BsRecord2 />
-                    Start Recording
+                    <span className="record-note-button-text">Start Recording</span>
                 </div>
             </div >
         </>
