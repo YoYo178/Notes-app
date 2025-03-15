@@ -10,14 +10,19 @@ interface SearchBoxProps {
 
 export const SearchBox: FC<SearchBoxProps> = ({ setFilterText }) => {
   return (
-    <div className="search-box">
-      <AiOutlineSearch className="search-icon" />
-      <input
-        type="text"
-        placeholder="Search"
-        className="search-input"
-        onChange={(e) => { setFilterText(e.target.value) }}
-      />
-    </div>
+    <>
+      <div className="search-box">
+        <AiOutlineSearch className="search-icon" />
+        <input
+          type="text"
+          placeholder="Search"
+          className="search-input"
+          onChange={(e) => { setFilterText(e.target.value) }}
+        />
+      </div>
+      <button className="search-button">
+        <AiOutlineSearch />
+      </button>
+    </>
   )
 } 

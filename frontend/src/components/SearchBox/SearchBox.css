@@ -26,3 +26,33 @@
   margin-right: 0.5rem;
   margin-left: 1rem;
 }
+
+.search-button {
+  display: none;
+
+  height: 2.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+
+  background-color: #e7e7e7;
+  border: none;
+  border-radius: 1rem;
+}
+
+.search-button:hover {
+  cursor: pointer;
+  background-color: #dadada;
+}
+
+@media screen and (max-width: 425px) {
+  .search-box {
+    display: none;
+  }
+
+  .search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
