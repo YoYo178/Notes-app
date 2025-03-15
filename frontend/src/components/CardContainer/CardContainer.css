@@ -43,7 +43,7 @@
 }
 
 /* Add margin when sidebar hides */
-@media screen and (max-width: 670px) {
+@media screen and (max-width: 680px) {
     .card-container {
         margin-left: 1rem;
         grid-template-columns: repeat(2, 1fr);
