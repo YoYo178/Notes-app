@@ -93,6 +93,16 @@
 
 @media screen and (max-width: 790px) {
     .create-note-bar {
+        transform: translateX(-15%) scaleX(0);
+    }
+
+    .create-note-bar.visible {
+        transform: translateX(-15%) scaleX(1);
+    }
+}
+
+@media screen and (max-width: 740px) {
+    .create-note-bar {
         transform: translateX(-10%) scaleX(0);
     }
 
