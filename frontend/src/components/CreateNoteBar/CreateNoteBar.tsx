@@ -18,7 +18,7 @@ export const CreateNoteBar: FC<CreateNoteBarProps> = ({ isVisible }) => {
     return (
         <>
             <CreateNoteModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-            <div className={`create-note-bar ${isVisible && !modalOpen ? 'visible' : 'hidden'}`}>
+            <div className={`create-note-bar ${isVisible ? 'visible' : 'hidden'}`}>
                 <div className="add-note-buttons-container">
                     <button className='add-note-button' onClick={() => setModalOpen(true)}>
                         <FiFilePlus className='add-note-icon' />
