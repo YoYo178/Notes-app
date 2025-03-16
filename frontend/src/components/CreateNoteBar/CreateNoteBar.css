@@ -1,12 +1,11 @@
 .create-note-bar {
-    position: fixed;
+    position: absolute;
     bottom: 1rem;
     left: 50%;
-    transform: translateX(-30%) scaleX(0);
     width: 50%;
     min-width: fit-content;
     max-width: calc(100% - 2rem);
-    margin: 0 1rem;
+    transform: translateX(calc(-50% - 1.5rem)) scaleX(0);
     background-color: white;
     padding: 1rem;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
@@ -18,9 +17,6 @@
     font-weight: bold;
 
     display: flex;
-    align-items: center;
-
-    text-align: center;
 }
 
 .create-note-bar.hidden {
@@ -29,7 +25,7 @@
 }
 
 .create-note-bar.visible {
-    transform: translateX(-30%) scaleX(1);
+    transform: translateX(calc(-50% - 1.5rem)) scaleX(1);
     opacity: 1;
 }
 
@@ -81,53 +77,28 @@
     color: rgb(119, 119, 119);
 }
 
-@media screen and (max-width: 905px) {
-    .create-note-bar {
-        transform: translateX(-20%) scaleX(0);
-    }
-
-    .create-note-bar.visible {
-        transform: translateX(-20%) scaleX(1);
-    }
-}
-
-@media screen and (max-width: 790px) {
-    .create-note-bar {
-        transform: translateX(-15%) scaleX(0);
-    }
-
-    .create-note-bar.visible {
-        transform: translateX(-15%) scaleX(1);
-    }
-}
-
-@media screen and (max-width: 740px) {
-    .create-note-bar {
-        transform: translateX(-10%) scaleX(0);
-    }
-
-    .create-note-bar.visible {
-        transform: translateX(-10%) scaleX(1);
-    }
-}
-
-@media screen and (max-width: 680px) {
-    .create-note-bar {
-        transform: translateX(-30%) scaleX(0);
-    }
-
-    .create-note-bar.visible {
-        transform: translateX(-50%) scaleX(1);
-    }
-}
-
-@media screen and (max-width: 575px) {
+@media screen and (max-width: 871px) {
     .record-note-button-text {
         display: none;
     }
 }
 
-@media screen and (max-width: 318px) {
+@media screen and (max-width: 680px) {
+    .create-note-bar {
+        margin-left: 1rem;
+    }
+    .record-note-button-text {
+        display: inline;
+    }
+}
+
+@media screen and (max-width: 540px) {
+    .record-note-button-text {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 314px) {
     .record-note-button-container {
         margin-left: 1rem;
     }

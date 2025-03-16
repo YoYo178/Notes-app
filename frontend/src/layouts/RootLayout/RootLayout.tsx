@@ -4,7 +4,6 @@ import { AxiosError } from 'axios'
 import { useAuthQuery } from '../../hooks/network/auth/useAuthQuery'
 import AuthContext from '../../contexts/AuthProvider'
 
-import { CreateNoteBar } from '../../components/CreateNoteBar/CreateNoteBar'
 import { SearchBox } from '../../components/SearchBox/SearchBox'
 import { Sidebar } from '../../components/Sidebar/Sidebar'
 import SortButton from '../../components/SortButton/SortButton'
@@ -14,10 +13,9 @@ import './RootLayout.css'
 interface RootLayoutProps {
   setFilterText: React.Dispatch<React.SetStateAction<string>>;
   children: React.ReactNode;
-  isCreateNoteBarVisible: boolean;
 }
 
-export const RootLayout: FC<RootLayoutProps> = ({ setFilterText, children, isCreateNoteBarVisible }) => {
+export const RootLayout: FC<RootLayoutProps> = ({ setFilterText, children }) => {
   const { setAuth } = useContext(AuthContext);
   const { data, isLoading, error } = useAuthQuery();
 
@@ -46,7 +44,6 @@ export const RootLayout: FC<RootLayoutProps> = ({ setFilterText, children, isCre
       <main className="main-content">
         {children}
       </main>
-      <CreateNoteBar isVisible={isCreateNoteBarVisible} />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { FC, useContext } from 'react'
+import { FC, useContext, useState } from 'react'
 
 import { useGetNotesQuery } from '../../hooks/network/note/useGetNotesQuery.ts';
 import AuthContext from '../../contexts/AuthProvider.tsx';
@@ -7,17 +7,19 @@ import { Note } from '../../types/NoteTypes';
 import { Card } from './Card/Card.tsx';
 
 import "./CardContainer.css"
+import { CreateNoteBar } from '../CreateNoteBar/CreateNoteBar.tsx';
 
 interface CardContainerProps {
     favoritesOnly: boolean;
     filterText: string;
-    setIsCreateNoteBarVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Special type just to add rawDate, to sort by date
 interface MNote extends Note { rawDate: Date };
 
-export const CardContainer: FC<CardContainerProps> = ({ favoritesOnly, filterText, setIsCreateNoteBarVisible }) => {
+export const CardContainer: FC<CardContainerProps> = ({ favoritesOnly, filterText }) => {
+    const [isCreateNoteBarVisible, setIsCreateNoteBarVisible] = useState(true);
+
     const { auth } = useContext(AuthContext);
     const { data, isLoading, error } = useGetNotesQuery();
 
@@ -60,27 +62,30 @@ export const CardContainer: FC<CardContainerProps> = ({ favoritesOnly, filterTex
     }
 
     return (
-        <div
-            className="card-container"
-            onScroll={
-                (e) => {
-                    // @ts-ignore
-                    setIsCreateNoteBarVisible(e.target?.scrollTop === 0)
+        <>
+            <CreateNoteBar isVisible={isCreateNoteBarVisible} />
+            <div
+                className="card-container"
+                onScroll={
+                    (e) => {
+                        // @ts-ignore
+                        setIsCreateNoteBarVisible(e.target?.scrollTop === 0)
+                    }
                 }
-            }
-        >
-            {filteredNotes.map(note => (
-                <Card
-                    key={note.id}
-                    id={note.id}
-                    title={note.title}
-                    description={note.description}
-                    date={note.date}
-                    duration={note.duration}
-                    isText={note.isText}
-                    isFavorite={note.isFavorite}
-                />
-            ))}
-        </div>
+            >
+                {filteredNotes.map(note => (
+                    <Card
+                        key={note.id}
+                        id={note.id}
+                        title={note.title}
+                        description={note.description}
+                        date={note.date}
+                        duration={note.duration}
+                        isText={note.isText}
+                        isFavorite={note.isFavorite}
+                    />
+                ))}
+            </div>
+        </>
     )
 }
