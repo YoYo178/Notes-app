@@ -8,11 +8,11 @@ import { AuthProvider } from './contexts/AuthProvider';
 import { RootLayout } from "./layouts/RootLayout/RootLayout";
 import { AuthLayout } from "./layouts/AuthLayout/AuthLayout";
 
-import { Home } from './pages/Home/Home';
-import { Favorites } from './pages/Favorites/Favorites';
+import { Home } from './pages/Home';
+import { Favorites } from './pages/Favorites';
 
-import { Login } from './pages/Login/Login';
-import { Register } from './pages/Register/Register'
+import { Login } from './pages/Login';
+import { Register } from './pages/Register'
 
 const queryClient = new QueryClient();
 
