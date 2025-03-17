@@ -7,7 +7,7 @@ import { Note } from '../../types/NoteTypes';
 import { Card } from './Card/Card.tsx';
 
 import "./CardContainer.css"
-import { CreateNoteBar } from '../CreateNoteBar/CreateNoteBar.tsx';
+import { CreateNoteBar } from './CreateNoteBar/CreateNoteBar.tsx';
 
 interface CardContainerProps {
     favoritesOnly: boolean;
