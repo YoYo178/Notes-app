@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { IoMdClose } from 'react-icons/io';
 import { FaCheck } from 'react-icons/fa';
 
-import { useCreateNoteMutation } from '../../../hooks/network/note/useCreateNoteMutation';
+import { useCreateNoteMutation } from '../../../../hooks/network/note/useCreateNoteMutation';
 
 import { ButtonHandler } from './CreateNoteModal';
 
