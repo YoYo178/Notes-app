@@ -1,4 +1,5 @@
 import { FC, useContext, useEffect, useState } from 'react'
+import { Outlet, useOutletContext } from 'react-router-dom'
 import { AxiosError } from 'axios'
 
 import { useAuthQuery } from '../../hooks/network/auth/useAuthQuery'
@@ -9,7 +10,6 @@ import { Sidebar } from '../../components/Sidebar/Sidebar'
 import SortButton from '../../components/SortButton/SortButton'
 
 import './RootLayout.css'
-import { Outlet, useOutletContext } from 'react-router-dom'
 
 interface RootLayoutContext {
   filterText: string;
