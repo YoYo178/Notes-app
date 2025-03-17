@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect } from 'react'
+import { FC, useContext, useEffect, useState } from 'react'
 import { AxiosError } from 'axios'
 
 import { useAuthQuery } from '../../hooks/network/auth/useAuthQuery'
@@ -9,15 +9,18 @@ import { Sidebar } from '../../components/Sidebar/Sidebar'
 import SortButton from '../../components/SortButton/SortButton'
 
 import './RootLayout.css'
+import { Outlet, useOutletContext } from 'react-router-dom'
 
-interface RootLayoutProps {
+interface RootLayoutContext {
+  filterText: string;
   setFilterText: React.Dispatch<React.SetStateAction<string>>;
-  children: React.ReactNode;
 }
 
-export const RootLayout: FC<RootLayoutProps> = ({ setFilterText, children }) => {
+export const RootLayout: FC = () => {
   const { setAuth } = useContext(AuthContext);
   const { data, isLoading, error } = useAuthQuery();
+
+  const [filterText, setFilterText] = useState('');
 
   useEffect(() => {
     if (!data || !setAuth)
@@ -42,8 +45,12 @@ export const RootLayout: FC<RootLayoutProps> = ({ setFilterText, children }) => 
       <SearchBox setFilterText={setFilterText} />
       <SortButton />
       <main className="main-content">
-        {children}
+        <Outlet context={{ filterText, setFilterText }} />
       </main>
     </div>
   )
+}
+
+export function useRootLayoutContext() {
+  return useOutletContext<RootLayoutContext>();
 }

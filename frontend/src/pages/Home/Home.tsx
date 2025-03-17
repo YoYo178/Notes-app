@@ -1,14 +1,12 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 
-import { RootLayout } from '../../layouts/RootLayout/RootLayout'
+import { useRootLayoutContext } from '../../layouts/RootLayout/RootLayout'
 import { CardContainer } from '../../components/CardContainer/CardContainer'
 
 export const Home: FC = () => {
-  const [filterText, setFilterText] = useState('');
+  const { filterText } = useRootLayoutContext();
 
   return (
-    <RootLayout setFilterText={setFilterText}>
-      <CardContainer favoritesOnly={false} filterText={filterText}/>
-    </RootLayout>
+    <CardContainer favoritesOnly={false} filterText={filterText} />
   )
 } 
