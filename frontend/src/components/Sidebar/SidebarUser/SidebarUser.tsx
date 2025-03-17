@@ -1,7 +1,9 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { IoMdArrowDropdown } from "react-icons/io";
+
+import { useLogoutMutation } from "../../../hooks/network/auth/useLogoutMutation";
 
 import { ButtonHandler, DropdownOptionHandler } from "./SidebarUser";
 
@@ -22,6 +24,14 @@ const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
     const [angle, setAngle] = useState(0);
     const [isDropdownMenuVisible, setIsDropdownMenuVisible] = useState(angle === 180);
 
+    const logoutMutation = useLogoutMutation();
+
+    useEffect(() => {
+        if (logoutMutation.isSuccess)
+            window.location.reload();
+
+    }, [logoutMutation.isSuccess])
+
     return (
         <div className="sidebar-user">
             <IoPersonCircleSharp className="sidebar-user-profile-photo" />
@@ -36,7 +46,7 @@ const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
                             return (
                                 <>
                                     {/* TODO: Function parameters */}
-                                    <li key={i} className="sidebar-user-dropdown-option" onClick={() => { optionCallbackFn() }}>{optionTitle}</li>
+                                    <li key={i} className="sidebar-user-dropdown-option" onClick={() => optionCallbackFn({ logoutMutation })}>{optionTitle}</li>
                                     {i < (dropdownMenuArr.length - 1) ? (
                                         <div className="sidebar-dropdown-menu-separator" />
                                     ) : (
