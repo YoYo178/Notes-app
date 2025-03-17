@@ -169,15 +169,13 @@ const logout = expressAsyncHandler(async (req: Request, res: Response) => {
     }
 
     res.clearCookie('jwt_rt', {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: process.env.NODE_ENV === "production"
+        ...cookieConfig,
+        maxAge: undefined
     });
 
     res.clearCookie('jwt_at', {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: process.env.NODE_ENV === "production"
+        ...cookieConfig,
+        maxAge: undefined
     });
 
     res.status(HttpStatusCodes.OK).send({ message: "User logged out successfully" });
