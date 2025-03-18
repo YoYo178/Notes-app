@@ -8,7 +8,7 @@ import { AuthProvider } from './contexts/AuthProvider';
 import { RootLayout } from "./layouts/RootLayout/RootLayout";
 import { AuthLayout } from "./layouts/AuthLayout/AuthLayout";
 
-import { Home } from './pages/Home';
+import { Dashboard } from './pages/Dashboard';
 import { Favorites } from './pages/Favorites';
 
 import { Login } from './pages/Login';
@@ -24,11 +24,12 @@ createRoot(document.getElementById('root')!).render(
           <Routes>
 
             <Route element={<RootLayout />}>
-              <Route index element={<Home />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/favorites" element={<Favorites />} />
             </Route>
 
             <Route element={<AuthLayout />}>
+              <Route index element={<h1>TODO: Home page</h1>} />
               <Route path="/login" element={<Login />} />
               <Route path='/register' element={<Register />} />
               <Route path='/reset' element={<h1>TODO: Reset password page</h1>} />
