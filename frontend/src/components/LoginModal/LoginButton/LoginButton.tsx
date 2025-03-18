@@ -61,8 +61,8 @@ export const LoginButton: FC<LoginButtonProps> = ({ username, password, setError
     return (
         <button
             className="login-button"
-            onClick={async () => { await ButtonHandler.loginButtonOnClick(username, password, loginMutation) }
-            }>
+            onClick={() => ButtonHandler.loginButtonOnClick(username, password, loginMutation)}
+        >
             Login
             {loginMutation.isSuccess ? (
                 <Navigate to="/" />

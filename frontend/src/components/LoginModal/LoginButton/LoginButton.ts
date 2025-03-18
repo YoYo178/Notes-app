@@ -1,11 +1,11 @@
 import { UseMutationResult } from "@tanstack/react-query";
 import { LoginFields } from "../../../types/AuthTypes";
 
-async function loginButtonOnClick(
+function loginButtonOnClick(
     username: string,
     password: string,
     loginMutation: UseMutationResult<any, Error, LoginFields | undefined, unknown>
-) {
+) {    
     if (!username|| !password)
         return;
 
