@@ -73,7 +73,7 @@ export const LoginModal: FC = () => {
 
             <div className="register-container">
                 <span className="register-text">Don't have an account?</span>
-                <Link to="/register" className='register-button' state={{ from: location }} replace>Register now</Link>
+                <Link to="/register" className='login-modal-register-button' state={{ from: location }} replace>Register now</Link>
             </div>
         </form>
     );
