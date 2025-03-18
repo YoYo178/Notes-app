@@ -138,8 +138,6 @@ export const RegisterModal: FC = () => {
                 />
             </div>
 
-            <Link to="/reset" className='rm-reset-password-button'>Forgot password?</Link>
-
             <div className="rm-error" style={{ display: errorMessage.length ? "block" : "none" }}>{errorMessage}</div>
             <div className="rm-info" style={{ display: successMessage.length ? "block" : "none" }}>{successMessage}</div>
 
