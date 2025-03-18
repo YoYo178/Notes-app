@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react';
+import { FC, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { IoAt, IoKeyOutline, IoPersonOutline } from 'react-icons/io5';
@@ -24,8 +24,7 @@ export const RegisterModal: FC = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
-    const passwordField = useRef<HTMLInputElement>(null); // Only needed for toggling password visibility
-    const confirmPasswordField = useRef<HTMLInputElement>(null); // Only needed for toggling password visibility
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const registerMutation = useRegisterMutation();
     const location = useLocation();
@@ -105,8 +104,7 @@ export const RegisterModal: FC = () => {
                 </div>
 
                 <input
-                    ref={passwordField}
-                    type="password"
+                    type={isPasswordVisible ? "text" : "password"}
                     placeholder='Password'
                     id="password-field"
                     className="rm-field-password"
@@ -115,7 +113,7 @@ export const RegisterModal: FC = () => {
                 />
 
                 <div className="rm-toggle-password-container">
-                    <button className='rm-toggle-password-button' onClick={() => ButtonHandler.togglePasswordVisibility(passwordField, confirmPasswordField)}>
+                    <button className='rm-toggle-password-button' onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
                         <FaRegEye />
                     </button>
                 </div>
@@ -128,8 +126,7 @@ export const RegisterModal: FC = () => {
                 </div>
 
                 <input
-                    ref={confirmPasswordField}
-                    type="password"
+                    type={isPasswordVisible ? "text" : "password"}
                     placeholder='Confirm Password'
                     id="confirm-password-field"
                     className="rm-field-confirm-password"

@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react';
+import { FC, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { FaRegEye } from 'react-icons/fa6';
@@ -15,9 +15,9 @@ export const LoginModal: FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const [errorMessage, setErrorMessage] = useState('');
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-    const passwordField = useRef<HTMLInputElement>(null); // Only needed for toggling password visibility
+    const [errorMessage, setErrorMessage] = useState('');
 
     const location = useLocation();
     const loginMutation = useLoginMutation();
@@ -49,7 +49,6 @@ export const LoginModal: FC = () => {
                 </div>
 
                 <input
-                    ref={passwordField}
                     type="password"
                     placeholder='Password'
                     id="password-field"
@@ -59,7 +58,7 @@ export const LoginModal: FC = () => {
                 />
 
                 <div className="password-visibility-container">
-                    <button className='toggle-password-visibility-button' onClick={() => ButtonHandler.togglePasswordVisibility(passwordField)}>
+                    <button className='toggle-password-visibility-button' onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
                         <FaRegEye />
                     </button>
                 </div>
