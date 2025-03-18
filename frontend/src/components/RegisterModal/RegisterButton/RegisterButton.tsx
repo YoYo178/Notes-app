@@ -59,7 +59,7 @@ export const RegisterButton: FC<RegisterButtonProps> = ({ registerData, setError
 
     return (
         <button
-            className="login-button"
+            className="register-button"
             onClick={async () => { await ButtonHandler.registerButtonOnClick(registerData, registerMutation) }
             }>
             Register

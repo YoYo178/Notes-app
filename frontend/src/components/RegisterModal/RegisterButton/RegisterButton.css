@@ -1,4 +1,4 @@
-.login-button {
+.register-button {
     padding: 0.8rem 0.6rem;
     border: none;
     border-radius: 10px;
@@ -12,6 +12,6 @@
     margin-top: 1rem;
 }
 
-.login-button:hover {
+.register-button:hover {
     background-color: #e8d3ff;
 }
