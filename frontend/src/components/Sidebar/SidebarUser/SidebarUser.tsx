@@ -1,5 +1,6 @@
 import { FC, Fragment, useContext, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { IoMdArrowDropdown } from "react-icons/io";
@@ -7,7 +8,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { useLogoutMutation } from "../../../hooks/network/auth/useLogoutMutation";
 import AuthContext from "../../../contexts/AuthProvider";
 
-import { ButtonHandler, DropdownOptionHandler } from "./SidebarUser";
+import { ButtonHandler, clearCachedData, DropdownOptionHandler } from "./SidebarUser";
 
 import "./SidebarUser.css";
 
@@ -23,6 +24,7 @@ const dropdownMenuOptions = {
 const dropdownMenuArr = Array.from(Object.entries(dropdownMenuOptions));
 
 const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
+    const queryClient = useQueryClient();
     const { setAuth } = useContext(AuthContext);
 
     const [angle, setAngle] = useState(0);
@@ -32,16 +34,21 @@ const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
 
     const logoutMutation = useLogoutMutation();
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         if (logoutMutation.isSuccess) {
-            navigate('/')
+            if (!!setAuth)
+                setAuth({});
+
+            clearCachedData(queryClient);
 
             // Need to delay this slightly
             setTimeout(() => {
-                if (!!setAuth)
-                    setAuth({});
-
+                navigate('/', {
+                    replace: true,
+                    state: { from: location }
+                });
             }, 0)
         }
 

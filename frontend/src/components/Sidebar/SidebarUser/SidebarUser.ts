@@ -1,15 +1,12 @@
-import { UseMutationResult } from "@tanstack/react-query";
+import { QueryClient, UseMutationResult } from "@tanstack/react-query";
 
+/***** Button handlers *****/
 function dropdownButtonOnClick(setAngle: React.Dispatch<React.SetStateAction<number>>, angle: number, setIsDropdownMenuVisible: React.Dispatch<React.SetStateAction<boolean>>) {
     setAngle(180 - angle);
     setIsDropdownMenuVisible((180 - angle) === 180);
 }
 
-export const ButtonHandler = {
-    dropdownButtonOnClick
-}
-
-// Dropdown options (TODO)
+/***** Dropdown Option handlers (TODO) *****/
 interface ProfileParameters {
 }
 function profileOnClick(params: ProfileParameters) {
@@ -24,8 +21,18 @@ function logOutOnClick(params: LogoutParameters) {
 
     if (!logoutMutation)
         return;
-    
+
     logoutMutation.mutate({});
+}
+
+/***** Miscellaneous *****/
+export function clearCachedData(queryClient: QueryClient) {
+    queryClient.invalidateQueries({ queryKey: ['notes'] });
+    queryClient.invalidateQueries({ queryKey: ['auth'] });
+}
+
+export const ButtonHandler = {
+    dropdownButtonOnClick
 }
 
 export const DropdownOptionHandler = {
