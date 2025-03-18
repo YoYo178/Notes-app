@@ -1,9 +1,11 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, Fragment, useContext, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { IoMdArrowDropdown } from "react-icons/io";
 
 import { useLogoutMutation } from "../../../hooks/network/auth/useLogoutMutation";
+import AuthContext from "../../../contexts/AuthProvider";
 
 import { ButtonHandler, DropdownOptionHandler } from "./SidebarUser";
 
@@ -21,16 +23,27 @@ const dropdownMenuOptions = {
 const dropdownMenuArr = Array.from(Object.entries(dropdownMenuOptions));
 
 const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
+    const { setAuth } = useContext(AuthContext);
+
     const [angle, setAngle] = useState(0);
     const [isDropdownMenuVisible, setIsDropdownMenuVisible] = useState(angle === 180);
 
     const sidebarItemsRef = useRef<HTMLDivElement>(null);
 
     const logoutMutation = useLogoutMutation();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        if (logoutMutation.isSuccess)
-            window.location.reload();
+        if (logoutMutation.isSuccess) {
+            navigate('/')
+
+            // Need to delay this slightly
+            setTimeout(() => {
+                if (!!setAuth)
+                    setAuth({});
+
+            }, 0)
+        }
 
     }, [logoutMutation.isSuccess]);
 
@@ -65,15 +78,15 @@ const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
                         {dropdownMenuArr.map((pair, i) => {
                             const [optionTitle, optionCallbackFn] = pair;
                             return (
-                                <>
+                                <Fragment key={"dmo-f-" + i}>
                                     {/* TODO: Function parameters */}
-                                    <li key={i} className="sidebar-user-dropdown-option" onClick={() => optionCallbackFn({ logoutMutation })}>{optionTitle}</li>
+                                    <li key={"dmo-" + i} className="sidebar-user-dropdown-option" onClick={() => optionCallbackFn({ logoutMutation })}>{optionTitle}</li>
                                     {i < (dropdownMenuArr.length - 1) ? (
-                                        <div className="sidebar-dropdown-menu-separator" />
+                                        <div key={"dmo-s-" + i} className="sidebar-dropdown-menu-separator" />
                                     ) : (
                                         null
                                     )}
-                                </>
+                                </Fragment>
                             )
                         })}
                     </ul>
