@@ -1,0 +1,101 @@
+.pm-backdrop {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(0, 0, 0, 0.6);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pm {
+    width: 60%;
+    height: 80%;
+    background-color: rgb(255, 255, 255);
+    padding: 2rem;
+    border-radius: 1rem;
+    border: 1px solid #d0d4d9;
+    /* box-shadow: 0px 0px 5px 1px #292929; */
+
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    color: #1b1b1b;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.pm-header {
+    display: flex;
+    justify-content: space-between;
+    color: grey;
+}
+
+.pm-close-button {
+    font-size: 2rem;
+    padding: 0.4rem;
+    border-radius: 8px;
+    border: none;
+    background-color: transparent;
+
+    display: flex;
+
+    transform: translate(1rem, -1rem);
+}
+
+.pm-close-button:hover {
+    background-color: rgb(216, 216, 216);
+    cursor: pointer;
+}
+
+.pm-close-button-icon {
+    color: grey;
+}
+
+.pm-fields {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 6rem);
+}
+
+.pm-field-id-container {
+    display: flex;
+    align-items: center;
+    justify-self: flex-start;
+
+    gap: 0.5rem;
+    color: grey;
+}
+
+.pm-footer {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    /* justify-content: flex-end; */
+}
+
+.pm-check-button {
+    margin-left: auto;
+    padding: 0.7rem;
+    border-radius: 8px;
+    color: grey;
+
+    display: flex;
+
+    /* Properties needed after changing from div to button */
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+.pm-check-button:hover {
+    background-color: rgb(216, 216, 216);
+
+    /* Properties needed after changing from div to button */
+    cursor: pointer;
+}

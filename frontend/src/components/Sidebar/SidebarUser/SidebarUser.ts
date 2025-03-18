@@ -8,9 +8,16 @@ function dropdownButtonOnClick(setAngle: React.Dispatch<React.SetStateAction<num
 
 /***** Dropdown Option handlers (TODO) *****/
 interface ProfileParameters {
+    isProfileModalOpen: boolean,
+    setIsProfileModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 function profileOnClick(params: ProfileParameters) {
-    console.log("Profile")
+    const { isProfileModalOpen, setIsProfileModalOpen } = params;
+
+    if (isProfileModalOpen === null || isProfileModalOpen === undefined || !setIsProfileModalOpen)
+        return;
+
+    setIsProfileModalOpen(!isProfileModalOpen);
 }
 
 interface LogoutParameters {
