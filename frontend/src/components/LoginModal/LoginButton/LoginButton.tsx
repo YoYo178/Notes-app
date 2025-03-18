@@ -1,6 +1,6 @@
 import { UseMutationResult } from '@tanstack/react-query';
 import { FC, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
 import AuthContext from '../../../contexts/AuthProvider';
@@ -20,6 +20,7 @@ interface LoginButtonProps {
 export const LoginButton: FC<LoginButtonProps> = ({ username, password, setErrorMessage, loginMutation }) => {
     const { auth, setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         if (loginMutation.isSuccess) {
@@ -59,8 +60,11 @@ export const LoginButton: FC<LoginButtonProps> = ({ username, password, setError
     }, [loginMutation.isSuccess, loginMutation.isError]);
 
     useEffect(() => {
-        if(auth?.id) {
-            navigate('/dashboard');
+        if (auth?.id) {
+            navigate('/dashboard', {
+                state: { from: location },
+                replace: true
+            });
             console.log("Welcome " + auth?.username)
         }
     }, [auth?.id])
