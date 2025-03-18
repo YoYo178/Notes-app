@@ -7,6 +7,7 @@ import { useAuthQuery } from "./hooks/network/auth/useAuthQuery"
 
 import { AuthLayout } from "./layouts/AuthLayout/AuthLayout"
 import { RootLayout } from "./layouts/RootLayout/RootLayout"
+import { PublicRouteLayout } from "./layouts/PublicRouteLayout/PublicRouteLayout"
 import { ProtectedRouteLayout } from "./layouts/ProtectedRouteLayout/ProtectedRouteLayout"
 
 import { Dashboard } from "./pages/Dashboard"
@@ -46,11 +47,13 @@ export const App = () => {
           </Route>
         </Route>
 
-        <Route element={<AuthLayout />}>
-          <Route index element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/reset' element={<h1>TODO: Reset password page</h1>} />
+        <Route element={<PublicRouteLayout />}>
+          <Route element={<AuthLayout />}>
+            <Route index element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/reset' element={<h1>TODO: Reset password page</h1>} />
+          </Route>
         </Route>
 
         <Route path="*" element={<h1>TODO: Not found page</h1>} />
