@@ -7,6 +7,7 @@ import { useAuthQuery } from "./hooks/network/auth/useAuthQuery"
 
 import { AuthLayout } from "./layouts/AuthLayout/AuthLayout"
 import { RootLayout } from "./layouts/RootLayout/RootLayout"
+import { ProtectedRouteLayout } from "./layouts/ProtectedRouteLayout/ProtectedRouteLayout"
 
 import { Dashboard } from "./pages/Dashboard"
 import { Favorites } from "./pages/Favorites"
@@ -38,13 +39,15 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<RootLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/favorites" element={<Favorites />} />
+        <Route element={<ProtectedRouteLayout />}>
+          <Route element={<RootLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/favorites" element={<Favorites />} />
+          </Route>
         </Route>
 
         <Route element={<AuthLayout />}>
-          <Route index element={<h1>TODO: Home page</h1>} />
+          <Route index element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/reset' element={<h1>TODO: Reset password page</h1>} />
