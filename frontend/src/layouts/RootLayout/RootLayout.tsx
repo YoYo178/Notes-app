@@ -1,9 +1,5 @@
-import { FC, useContext, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { Outlet, useOutletContext } from 'react-router-dom'
-import { AxiosError } from 'axios'
-
-import { useAuthQuery } from '../../hooks/network/auth/useAuthQuery'
-import AuthContext from '../../contexts/AuthProvider'
 
 import { SearchBox } from '../../components/SearchBox/SearchBox'
 import { Sidebar } from '../../components/Sidebar/Sidebar'
@@ -17,27 +13,7 @@ interface RootLayoutContext {
 }
 
 export const RootLayout: FC = () => {
-  const { setAuth } = useContext(AuthContext);
-  const { data, isLoading, error } = useAuthQuery();
-
   const [filterText, setFilterText] = useState('');
-
-  useEffect(() => {
-    if (!data || !setAuth)
-      return;
-
-    const { id, username, displayName } = data.user;
-    setAuth({ id, username, displayName });
-  }, [data])
-
-  if (error) {
-    if ((error as AxiosError).status !== 401)
-      return <div>Error!</div>
-  }
-
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
 
   return (
     <div className="app-container">
