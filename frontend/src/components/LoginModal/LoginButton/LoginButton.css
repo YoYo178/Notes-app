@@ -9,7 +9,7 @@
     color: #6d33aa;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
-    margin-top: 1rem;
+    margin-top: 0rem;
 }
 
 .login-button:hover {
