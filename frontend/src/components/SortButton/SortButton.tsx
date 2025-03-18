@@ -2,7 +2,7 @@ import { GrSort } from "react-icons/gr";
 
 import "./SortButton.css"
 
-export default function SortButton() {
+export const SortButton = () => {
   return (
     <button className="sort-button">
       <GrSort className='sort-button-icon' />

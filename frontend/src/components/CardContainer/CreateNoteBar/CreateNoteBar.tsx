@@ -4,7 +4,7 @@ import { RiImageAddLine } from 'react-icons/ri';
 import { FiFilePlus } from 'react-icons/fi';
 import { BsRecord2 } from 'react-icons/bs';
 
-import CreateNoteModal from './CreateNoteModal/CreateNoteModal.tsx';
+import { CreateNoteModal } from './CreateNoteModal/CreateNoteModal.tsx';
 
 import './CreateNoteBar.css'
 

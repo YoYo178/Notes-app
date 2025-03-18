@@ -23,7 +23,7 @@ const dropdownMenuOptions = {
 
 const dropdownMenuArr = Array.from(Object.entries(dropdownMenuOptions));
 
-const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
+export const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
     const queryClient = useQueryClient();
     const { setAuth } = useContext(AuthContext);
 
@@ -103,5 +103,3 @@ const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
         </div>
     )
 }
-
-export default SidebarUser

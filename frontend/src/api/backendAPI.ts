@@ -2,6 +2,6 @@ import axios from 'axios';
 
 import { BACKEND_URL } from '../config/backendConfig';
 
-export default axios.create({
+export const API = axios.create({
     baseURL: BACKEND_URL
 });

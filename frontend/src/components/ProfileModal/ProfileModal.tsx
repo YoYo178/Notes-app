@@ -15,7 +15,7 @@ interface CreateNoteModelProps {
     onClose: () => void;
 }
 
-export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
+const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
@@ -58,3 +58,5 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) =
         document.getElementById("modal-root")!
     )
 }
+
+export default CreateNoteModal

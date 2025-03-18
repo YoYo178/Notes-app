@@ -3,7 +3,7 @@ import { Outlet, useOutletContext } from 'react-router-dom'
 
 import { SearchBox } from '../../components/SearchBox/SearchBox'
 import { Sidebar } from '../../components/Sidebar/Sidebar'
-import SortButton from '../../components/SortButton/SortButton'
+import { SortButton } from '../../components/SortButton/SortButton'
 
 import './RootLayout.css'
 

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError, AxiosResponse } from "axios";
 
-import API from '../../api/backendAPI'
+import { API } from '../../api/backendAPI'
 import { HTTP_METHODS } from "../../types/APITypes";
 
 export const useMutationBase = <T>(endpoint: { URL: string, METHOD: HTTP_METHODS }, queryKeys: string[], actionName: string, sendCookies: boolean = false) => {

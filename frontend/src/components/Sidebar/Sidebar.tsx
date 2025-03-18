@@ -6,8 +6,8 @@ import AuthContext from '../../contexts/AuthProvider'
 
 import { SidebarBranding } from './SidebarBranding/SidebarBranding'
 import { SidebarLinks } from './SidebarLinks/SidebarLinks'
-import SidebarLogin from './SidebarLogin/SidebarLogin'
-import SidebarUser from './SidebarUser/SidebarUser.tsx'
+import { SidebarLogin } from './SidebarLogin/SidebarLogin'
+import { SidebarUser } from './SidebarUser/SidebarUser.tsx'
 
 import './Sidebar.css'
 
