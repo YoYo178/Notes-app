@@ -1,6 +1,6 @@
 import { UseMutationResult } from '@tanstack/react-query';
 import { FC, useContext, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
 import AuthContext from '../../../contexts/AuthProvider';
@@ -18,7 +18,8 @@ interface LoginButtonProps {
 }
 
 export const LoginButton: FC<LoginButtonProps> = ({ username, password, setErrorMessage, loginMutation }) => {
-    const { setAuth } = useContext(AuthContext);
+    const { auth, setAuth } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (loginMutation.isSuccess) {
@@ -35,7 +36,6 @@ export const LoginButton: FC<LoginButtonProps> = ({ username, password, setError
                     displayName: data.user.displayName,
                     id: data.user.id
                 })
-                console.log("Welcome " + username)
             }
         } else if (loginMutation.isError) {
             if (loginMutation.error?.message) {
@@ -56,7 +56,14 @@ export const LoginButton: FC<LoginButtonProps> = ({ username, password, setError
             }
         }
 
-    }, [loginMutation.isSuccess, loginMutation.isError])
+    }, [loginMutation.isSuccess, loginMutation.isError]);
+
+    useEffect(() => {
+        if(auth?.id) {
+            navigate('/dashboard');
+            console.log("Welcome " + auth?.username)
+        }
+    }, [auth?.id])
 
     return (
         <button
@@ -64,11 +71,6 @@ export const LoginButton: FC<LoginButtonProps> = ({ username, password, setError
             onClick={() => ButtonHandler.loginButtonOnClick(username, password, loginMutation)}
         >
             Login
-            {loginMutation.isSuccess ? (
-                <Navigate to="/" />
-            ) : (
-                null
-            )}
         </button>
     )
 }
