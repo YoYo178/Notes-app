@@ -2,26 +2,21 @@ import { createContext, FC, ReactNode, useEffect, useState } from "react";
 import { AxiosError } from "axios";
 
 import { useAuthQuery } from "../hooks/network/auth/useAuthQuery";
+import { User } from "../types/user.types";
 
 interface AuthProviderProps {
     children: ReactNode;
 }
 
-export interface AuthFields {
-    displayName: string | undefined;
-    username: string | undefined;
-    id: string | undefined;
-}
-
 interface AuthValues {
-    auth: Partial<AuthFields> | null;
-    setAuth: React.Dispatch<React.SetStateAction<Partial<AuthFields> | null>> | null;
+    auth: Partial<User> | null;
+    setAuth: React.Dispatch<React.SetStateAction<Partial<User> | null>> | null;
 }
 
 const AuthContext = createContext<AuthValues>({ auth: null, setAuth: null })
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-    const [auth, setAuth] = useState<Partial<AuthFields> | null>(null)
+    const [auth, setAuth] = useState<Partial<User> | null>(null)
     const { data, isLoading, error } = useAuthQuery();
 
     useEffect(() => {
