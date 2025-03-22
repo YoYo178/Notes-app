@@ -83,19 +83,12 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const duplicateUsername = await User.findOne({ username }).exec()
-    if (duplicateUsername && (duplicateUsername._id as ObjectId).toString() !== id) {
-        res.status(HttpStatusCodes.CONFLICT).send({ message: "Username already exists" });
-        return;
-    }
-
     const duplicateEmail = await User.findOne({ email }).exec();
-    if (duplicateEmail && (duplicateEmail._id as ObjectId).toString() !== id) {
+    if (duplicateEmail && (duplicateEmail._id as ObjectId).toString() !== req.user?.id) {
         res.status(HttpStatusCodes.CONFLICT).send({ message: "Email is already registered" });
         return;
     }
 
-    user.username = username || user.username;
     user.displayName = displayName || user.displayName;
     user.password = password ? await bcrypt.hash(password, 10) : user.password;
     user.email = email || user.email;
