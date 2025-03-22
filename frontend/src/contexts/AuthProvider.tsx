@@ -42,9 +42,9 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth }}>
+        <AuthContext value={{ auth, setAuth }}>
             {children}
-        </AuthContext.Provider>
+        </AuthContext>
     )
 }
 
