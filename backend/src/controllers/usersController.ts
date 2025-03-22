@@ -121,22 +121,10 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
 /**
  * @route DELETE /users
  * @description Deletes a user.
- * @returns HTTP 200, 401, 404
+ * @returns HTTP 200, 404
  */
 const deleteUser = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { id } = req.body;
-
-    if (!id) {
-        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "User ID is required" })
-        return;
-    }
-
-    if (!isObjectIdOrHexString(id)) {
-        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Invalid ID provided" });
-        return;
-    }
-
-    const user = await User.findById(id);
+    const user = await User.findById(req.user?.id);
 
     if (!user) {
         res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
