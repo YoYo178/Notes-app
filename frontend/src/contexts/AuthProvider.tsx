@@ -23,8 +23,8 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         if (!data)
             return;
 
-        const { id, username, displayName } = data.user;
-        setAuth({ id, username, displayName });
+        const { id, username, displayName, email } = data.user;
+        setAuth({ id, username, displayName, email });
     }, [data])
 
     if (error) {
