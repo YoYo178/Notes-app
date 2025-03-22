@@ -9,7 +9,7 @@ import { useLogoutMutation } from "../../../hooks/network/auth/useLogoutMutation
 import AuthContext from "../../../contexts/AuthProvider";
 
 import { ButtonHandler, clearCachedData, DropdownOptionHandler } from "./SidebarUser";
-import { ProfileModal } from "../../ProfileModal/ProfileModal";
+import { ProfileModal } from "../../ProfileModal/ProfileModal.tsx";
 
 import "./SidebarUser.css";
 

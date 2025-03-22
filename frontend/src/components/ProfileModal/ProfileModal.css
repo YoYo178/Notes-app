@@ -13,6 +13,7 @@
 
 .pm {
     width: 60%;
+    min-width: fit-content;
     height: 80%;
     background-color: rgb(255, 255, 255);
     padding: 2rem;
@@ -59,6 +60,55 @@
     display: flex;
     flex-direction: column;
     height: calc(100% - 6rem);
+    gap: 2rem;
+}
+
+.pm-field-username-container,
+.pm-field-display-name-container,
+.pm-field-email-container,
+.pm-field-current-password-container,
+.pm-field-new-password-container,
+.pm-field-confirm-new-password-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.pm-field-password-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.pm-field-username-label,
+.pm-field-display-name-label,
+.pm-field-email-label,
+.pm-field-current-password-label,
+.pm-field-new-password-label,
+.pm-field-confirm-new-password-label {
+    min-width: max(12rem, 30%)
+}
+
+.pm-field-username,
+.pm-field-display-name,
+.pm-field-email,
+.pm-field-current-password,
+.pm-field-new-password,
+.pm-field-confirm-new-password {
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #858585;
+    width: 25rem;
+}
+
+.pm-field-username:hover {
+    cursor: not-allowed
+}
+
+.pm-footer {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
 }
 
 .pm-field-id-container {
@@ -68,14 +118,6 @@
 
     gap: 0.5rem;
     color: grey;
-}
-
-.pm-footer {
-    flex: 1;
-
-    display: flex;
-    align-items: center;
-    /* justify-content: flex-end; */
 }
 
 .pm-check-button {
