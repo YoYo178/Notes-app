@@ -68,7 +68,7 @@ const createUser = expressAsyncHandler(async (req: Request, res: Response) => {
  * @returns HTTP 200, 400, 404, 409
  */
 const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { id, username, password, displayName, email } = req.body;
+    const { currentPassword, newPassword, confirmNewPassword, displayName, email } = req.body;
 
     // only supporting gmail for now, lol
     if (email && !email.endsWith("@gmail.com")) {
@@ -76,17 +76,7 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    if (!id) {
-        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "User ID is required" });
-        return;
-    }
-
-    if (!isObjectIdOrHexString(id)) {
-        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Invalid ID provided" });
-        return;
-    }
-
-    const user = await User.findById(id).exec();
+    const user = await User.findById(req.user?.id).exec();
 
     if (!user) {
         res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
