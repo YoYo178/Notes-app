@@ -15,6 +15,7 @@ declare global {
                 id: string;
                 username: string;
                 displayName: string;
+                email: string;
             }
         }
     }
@@ -99,7 +100,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
         res.cookie("jwt_at", accessToken, cookieConfig);
 
         // Add the user's id and username in the request for other handlers
-        req.user = { id: (user._id as ObjectId).toString(), username: user.username, displayName: user.displayName };
+        req.user = { id: (user._id as ObjectId).toString(), username: user.username, displayName: user.displayName, email: user.email };
 
         // Move to other routes
         next();
@@ -141,7 +142,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
         }
 
         // Everything was valid, add the user's id and username in the request for other handlers
-        req.user = { id: decoded.User.id, username: decoded.User.username, displayName: decoded.User.displayName };
+        req.user = { id: decoded.User.id, username: decoded.User.username, displayName: decoded.User.displayName, email: user.email };
 
         // Move to other routes
         next();
@@ -157,7 +158,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
             res.cookie("jwt_at", accessToken, cookieConfig);
 
             // Add the user's id and username in the request for other handlers
-            req.user = { id: (user._id as ObjectId).toString(), username: user.username, displayName: user.displayName };
+            req.user = { id: (user._id as ObjectId).toString(), username: user.username, displayName: user.displayName, email: user.email };
 
             // Move to other routes
             next();
