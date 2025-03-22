@@ -3,7 +3,7 @@ import { UseMutationResult } from '@tanstack/react-query';
 import { Navigate, useLocation } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
-import { RegisterFields } from '../../../types/AuthTypes';
+import { RegisterFields } from '../../../types/auth.types';
 
 import { ButtonHandler } from './RegisterButton';
 

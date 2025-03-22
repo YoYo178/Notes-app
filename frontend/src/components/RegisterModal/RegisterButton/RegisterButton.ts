@@ -1,5 +1,5 @@
 import { UseMutationResult } from "@tanstack/react-query";
-import { RegisterFields } from "../../../types/AuthTypes";
+import { RegisterFields } from "../../../types/auth.types";
 
 async function registerButtonOnClick(
     registerData: RegisterFields,

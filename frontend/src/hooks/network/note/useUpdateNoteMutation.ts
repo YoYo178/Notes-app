@@ -1,6 +1,6 @@
 import { useMutationBase } from "../useMutationBase";
 import APIEndpoints from "../../../config/APIEndpoints";
-import { Note } from "../../../types/NoteTypes";
+import { Note } from "../../../types/note.types";
 
 type NotePartial = Partial<Note>;
 

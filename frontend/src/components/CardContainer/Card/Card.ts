@@ -1,5 +1,5 @@
 import { UseMutationResult } from "@tanstack/react-query"
-import { Note } from "../../../types/NoteTypes"
+import { Note } from "../../../types/note.types"
 
 function favoriteOnClick(useUpdateNoteMutation: UseMutationResult<any, Error, Partial<Note> | undefined, unknown>, id: string, isFavorite: boolean | undefined) {
     useUpdateNoteMutation.mutate({

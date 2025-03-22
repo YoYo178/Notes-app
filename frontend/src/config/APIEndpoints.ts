@@ -1,4 +1,4 @@
-import { Endpoints } from "../types/APITypes";
+import { Endpoints } from "../types/api.types";
 
 const APIEndpoints: Endpoints = {
 

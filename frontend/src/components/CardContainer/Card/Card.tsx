@@ -9,7 +9,7 @@ import { TiEdit } from 'react-icons/ti';
 
 import { useUpdateNoteMutation } from '../../../hooks/network/note/useUpdateNoteMutation';
 import { useDeleteNoteMutation } from '../../../hooks/network/note/useDeleteNoteMutation';
-import { Note } from '../../../types/NoteTypes';
+import { Note } from '../../../types/note.types.ts';
 
 import { EditNoteModal } from './EditNoteModal/EditNoteModal.tsx'
 import { ButtonHandler } from './Card';

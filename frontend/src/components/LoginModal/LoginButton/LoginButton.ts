@@ -1,5 +1,5 @@
 import { UseMutationResult } from "@tanstack/react-query";
-import { LoginFields } from "../../../types/AuthTypes";
+import { LoginFields } from "../../../types/auth.types";
 
 function loginButtonOnClick(
     username: string,

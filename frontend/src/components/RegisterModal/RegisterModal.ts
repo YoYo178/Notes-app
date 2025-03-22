@@ -1,6 +1,6 @@
 import { UseMutationResult } from "@tanstack/react-query";
 
-import { RegisterFields } from "../../types/AuthTypes";
+import { RegisterFields } from "../../types/auth.types";
 
 import { ButtonHandler as RegisterButtonHandler } from "./RegisterButton/RegisterButton";
 

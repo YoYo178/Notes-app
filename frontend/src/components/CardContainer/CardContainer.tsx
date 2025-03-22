@@ -2,7 +2,7 @@ import { FC, useContext, useState } from 'react'
 
 import { useGetNotesQuery } from '../../hooks/network/note/useGetNotesQuery.ts';
 import AuthContext from '../../contexts/AuthProvider.tsx';
-import { Note } from '../../types/NoteTypes';
+import { Note } from '../../types/note.types.ts';
 
 import { Card } from './Card/Card.tsx';
 import { CreateNoteBar } from './CreateNoteBar/CreateNoteBar.tsx';

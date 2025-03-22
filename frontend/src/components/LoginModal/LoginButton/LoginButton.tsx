@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
 import AuthContext from '../../../contexts/AuthProvider';
-import { LoginFields } from '../../../types/AuthTypes';
+import { LoginFields } from '../../../types/auth.types';
 
 import { ButtonHandler } from './LoginButton';
 
