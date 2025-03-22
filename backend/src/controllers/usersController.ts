@@ -89,8 +89,28 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
+    const isChangingPassword = currentPassword || newPassword || confirmNewPassword
+    if (isChangingPassword) {
+        const passwordMatches = await bcrypt.compare(currentPassword, user.password);
+        if (!passwordMatches) {
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Invalid password" })
+            return;
+        }
+
+        if (!newPassword || !confirmNewPassword) {
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Both new password fields are required" })
+            return;
+        }
+
+        if (newPassword != confirmNewPassword) {
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "New passwords do not match" })
+            return;
+        }
+
+        user.password = await bcrypt.hash(newPassword, 10);
+    }
+
     user.displayName = displayName || user.displayName;
-    user.password = password ? await bcrypt.hash(password, 10) : user.password;
     user.email = email || user.email;
 
     await user.save();
