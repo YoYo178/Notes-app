@@ -11,9 +11,9 @@ import { isObjectIdOrHexString, ObjectId } from "mongoose";
  * @returns HTTP 201, 400, 409, 500
  */
 const createUser = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { username, password, displayName, email } = req.body;
+    const { username, password, confirmPassword, displayName, email } = req.body;
 
-    if (!username || !password || !displayName || !email) {
+    if (!username || !password || !confirmPassword || !displayName || !email) {
         res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "All fields are required" })
         return;
     }
@@ -37,6 +37,11 @@ const createUser = expressAsyncHandler(async (req: Request, res: Response) => {
 
     if (userEmailExists) {
         res.status(HttpStatusCodes.CONFLICT).send({ message: "A user already exists with the provided email" })
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Passwords do not match" })
         return;
     }
 
