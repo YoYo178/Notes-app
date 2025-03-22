@@ -11,7 +11,7 @@ import { Note } from "@src/models/Note";
  * @returns HTTP 200, 404
  */
 const getAllNotes = expressAsyncHandler(async (req: Request, res: Response) => {
-    const user = await User.findOne({ username: req.user?.username }).select('-password').lean().exec();
+    const user = await User.findById(req.user?.id).select('-password').lean().exec();
 
     if (!user) {
         res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
@@ -34,7 +34,7 @@ const getAllNotes = expressAsyncHandler(async (req: Request, res: Response) => {
  * @returns HTTP 200, 400, 404
  */
 const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
-    const user = await User.findOne({ username: req.user?.username }).select('-password').lean().exec();
+    const user = await User.findById(req.user?.id).select('-password').lean().exec();
 
     if (!user) {
         res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
@@ -70,7 +70,7 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
  * @returns HTTP 200, 404
  */
 const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
-    const user = await User.findOne({ username: req.user?.username }).select('-password').lean().exec();
+    const user = await User.findById(req.user?.id).select('-password').lean().exec();
 
     if (!user) {
         res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
@@ -118,7 +118,7 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
  * @returns HTTP 200, 404
  */
 const deleteNote = expressAsyncHandler(async (req: Request, res: Response) => {
-    const user = await User.findOne({ username: req.user?.username }).select('-password').lean().exec();
+    const user = await User.findById(req.user?.id).select('-password').lean().exec();
 
     if (!user) {
         res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
