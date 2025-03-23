@@ -6,6 +6,7 @@ import { IoPersonCircleSharp } from "react-icons/io5";
 import { IoMdArrowDropdown } from "react-icons/io";
 
 import { useLogoutMutation } from "../../../hooks/network/auth/useLogoutMutation";
+import { useLostFocus } from "../../../hooks/ui/useLostFocus.ts";
 import AuthContext from "../../../contexts/AuthProvider";
 
 import { ButtonHandler, clearCachedData, DropdownOptionHandler } from "./SidebarUser";
@@ -57,24 +58,10 @@ export const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
 
     }, [logoutMutation.isSuccess]);
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (sidebarItemsRef.current && !sidebarItemsRef.current.contains(event.target as Node)) {
-                setIsDropdownMenuVisible(false);
-                setAngle(0); // Reset arrow angle
-            }
-        };
-
-        if (isDropdownMenuVisible) {
-            document.addEventListener("mousedown", handleClickOutside);
-        } else {
-            document.removeEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isDropdownMenuVisible]);
+    useLostFocus(sidebarItemsRef, isDropdownMenuVisible, () => {
+        setIsDropdownMenuVisible(false);
+        setAngle(0);
+    })
 
     return (
         <div className="sidebar-user">

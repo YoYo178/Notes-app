@@ -1,6 +1,8 @@
-import { FC, useEffect, useRef } from 'react'
+import { FC, useRef } from 'react'
 
 import { AiOutlineSearch } from 'react-icons/ai'
+
+import { useLostFocus } from '../../hooks/ui/useLostFocus';
 
 import './SearchBox.css'
 
@@ -14,23 +16,7 @@ interface SearchBoxProps {
 export const SearchBox: FC<SearchBoxProps> = ({ setFilterText, isSearchBoxOpen, setIsSearchBoxOpen, isMediaQueryActive }) => {
   const searchBoxRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchBoxRef.current && !searchBoxRef.current.contains(event.target as Node)) {
-        setIsSearchBoxOpen(false);
-      }
-    };
-
-    if (isSearchBoxOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isSearchBoxOpen]);
+  useLostFocus(searchBoxRef, isSearchBoxOpen, () => setIsSearchBoxOpen(false));
 
   return (
     <>
