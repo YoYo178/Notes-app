@@ -11,7 +11,12 @@ import { SidebarUser } from './SidebarUser/SidebarUser.tsx'
 
 import './Sidebar.css'
 
-export const Sidebar: FC = () => {
+interface SidebarProps {
+  isSearchBoxOpen: boolean;
+  isMediaQueryActive: boolean;
+}
+
+export const Sidebar: FC<SidebarProps> = ({ isSearchBoxOpen, isMediaQueryActive }) => {
   const { auth } = useContext(AuthContext);
 
   return (
@@ -26,9 +31,11 @@ export const Sidebar: FC = () => {
           <SidebarLogin />
         )}
       </nav>
-      <button className="sidebar-hamburger-button">
-        <GiHamburgerMenu />
-      </button>
+      {((isMediaQueryActive && !isSearchBoxOpen) || !isMediaQueryActive) &&
+        <button className="sidebar-hamburger-button">
+          <GiHamburgerMenu />
+        </button>
+      }
     </>
   )
 } 
