@@ -18,7 +18,7 @@ import "./Card.css"
 
 type CardProps = Note;
 
-export const Card: FC<CardProps> = ({ date, duration, isText, title, description, isFavorite, id }) => {
+export const Card: FC<CardProps> = ({ date, duration, isText, title, description, isFavorite, id, images }) => {
     const [isCopied, setIsCopied] = useState(false);
     const timeoutRef = useRef<number>(0);
 
@@ -46,10 +46,10 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
             </div>
             <div className="card-title">{title}</div>
             <div className="card-description">{description}</div>
-            <div className="card-image-attached">
+            {images?.length && <div className="card-image-attached">
                 <CiImageOn className="card-image-attached-logo" />
-                <span className='card-image-attached-text'>1 Image</span>
-            </div>
+                <span className='card-image-attached-text'>{images.length > 1 ? `${images.length} Images` : `${images.length} Image`}</span>
+            </div>}
 
             <div className="card-buttons-container">
                 <button className='card-favorite-button' onClick={() => ButtonHandler.favoriteOnClick(updateNoteMutation, id, isFavorite)}>
