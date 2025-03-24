@@ -4,38 +4,40 @@ import { FaSortAlphaDown, FaSortAlphaDownAlt, FaSortAmountDown, FaSortAmountDown
 
 import { useLostFocus } from "../../../hooks/ui/useLostFocus.ts";
 
-import { DropdownOptionHandler } from "./SortDropdownMenu";
+import { NoteSortMethods } from "../../../types/note.types.ts";
 
 import "./SortDropdownMenu.css";
 
 interface SortDropdownMenuProps {
     sortButtonRef: RefObject<HTMLButtonElement | null>;
     isOpen: boolean;
-    onClose: () => any
+    onClose: () => void;
+    sortOrder: NoteSortMethods;
+    setSortOrder: (order: NoteSortMethods) => void;
 };
 
 const dropdownMenuOptions = {
     "A to Z": {
-        callbackFn: DropdownOptionHandler.sortByNameAscending,
-        icon: <FaSortAlphaDown />
+        icon: <FaSortAlphaDown />,
+        value: NoteSortMethods.SORT_BY_NAME_ASC
     },
     "Z to A": {
-        callbackFn: DropdownOptionHandler.sortByNameDescending,
-        icon: <FaSortAlphaDownAlt />
+        icon: <FaSortAlphaDownAlt />,
+        value: NoteSortMethods.SORT_BY_NAME_DESC
     },
     "Newest to Oldest": {
-        callbackFn: DropdownOptionHandler.sortByDateAscending,
-        icon: <FaSortAmountDownAlt />
+        icon: <FaSortAmountDownAlt />,
+        value: NoteSortMethods.SORT_BY_DATE_ASC
     },
     "Oldest to Newest": {
-        callbackFn: DropdownOptionHandler.sortByDateDescending,
-        icon: <FaSortAmountDown />
+        icon: <FaSortAmountDown />,
+        value: NoteSortMethods.SORT_BY_DATE_DESC
     }
 };
 
 const dropdownMenuArr = Array.from(Object.entries(dropdownMenuOptions));
 
-export const SortDropdownMenu: FC<SortDropdownMenuProps> = ({ sortButtonRef, isOpen, onClose }) => {
+export const SortDropdownMenu: FC<SortDropdownMenuProps> = ({ sortButtonRef, isOpen, onClose, sortOrder, setSortOrder }) => {
 
     useLostFocus(sortButtonRef, isOpen, () => onClose())
 
@@ -43,10 +45,17 @@ export const SortDropdownMenu: FC<SortDropdownMenuProps> = ({ sortButtonRef, isO
         <ul className={`sort-dropdown-menu ${isOpen ? 'visible' : 'hidden'}`} onClick={e => e.stopPropagation()} >
             {dropdownMenuArr.map((pair, i) => {
                 const [optionTitle, optionDetails] = pair;
-                const { callbackFn, icon } = optionDetails
+                const { icon, value } = optionDetails;
+
                 return (
                     <Fragment key={"dmo-f-" + i}>
-                        <div className={"sort-dropdown-option-container"} onClick={() => callbackFn({})}>
+                        <div
+                            className={`sort-dropdown-option-container ${value === sortOrder ? 'selected' : ''}`}
+                            onClick={() => {
+                                setSortOrder(value);
+                                onClose();
+                            }}
+                        >
                             <div className="sort-dropdown-option-icon">{icon}</div>
                             <li key={"dmo-c-option" + i} className="sort-dropdown-option">{optionTitle}</li>
                         </div>

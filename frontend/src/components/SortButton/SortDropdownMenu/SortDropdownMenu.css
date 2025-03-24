@@ -37,6 +37,8 @@
 }
 
 .sort-dropdown-option-container {
+    color: grey;
+
     display: flex;
     gap: 1rem;
 
@@ -49,6 +51,10 @@
 .sort-dropdown-option-container:hover {
     cursor: pointer;
     scale: 105%;
+}
+
+.sort-dropdown-option-container.selected {
+    color: black;
 }
 
 .sort-dropdown-menu-separator {

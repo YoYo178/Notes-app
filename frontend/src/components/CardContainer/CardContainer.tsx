@@ -2,7 +2,8 @@ import { FC, useContext, useState } from 'react'
 
 import { useGetNotesQuery } from '../../hooks/network/note/useGetNotesQuery.ts';
 import AuthContext from '../../contexts/AuthProvider.tsx';
-import { Note } from '../../types/note.types.ts';
+import { Note, NoteSortMethods } from '../../types/note.types.ts';
+import { useRootLayoutContext } from '../../layouts/RootLayout/RootLayout.tsx';
 
 import { Card } from './Card/Card.tsx';
 import { CreateNoteBar } from './CreateNoteBar/CreateNoteBar.tsx';
@@ -22,6 +23,7 @@ export const CardContainer: FC<CardContainerProps> = ({ favoritesOnly, filterTex
 
     const { auth } = useContext(AuthContext);
     const { data, isLoading, error } = useGetNotesQuery();
+    const { sortOrder } = useRootLayoutContext();
 
     const notes: MNote[] = data?.notes?.map((note: any) => {
         const date = new Date(note.createdAt);
@@ -48,6 +50,23 @@ export const CardContainer: FC<CardContainerProps> = ({ favoritesOnly, filterTex
             note.description.toLowerCase().includes(filterText.toLowerCase())
         )
     }) : filteredNotes;
+
+    switch (sortOrder) {
+        case NoteSortMethods.SORT_BY_NAME_ASC:
+            filteredNotes = [...filteredNotes].sort((a, b) => a.title.localeCompare(b.title));
+            break;
+        case NoteSortMethods.SORT_BY_NAME_DESC:
+            filteredNotes = [...filteredNotes].sort((a, b) => b.title.localeCompare(a.title));
+            break;
+        case NoteSortMethods.SORT_BY_DATE_ASC:
+            filteredNotes = [...filteredNotes].sort((a, b) => b.rawDate.valueOf() - a.rawDate.valueOf());
+            break;
+        case NoteSortMethods.SORT_BY_DATE_DESC:
+            filteredNotes = [...filteredNotes].sort((a, b) => a.rawDate.valueOf() - b.rawDate.valueOf());
+            break;
+        default:
+            break;
+    }
 
     if (!auth) {
         return <div>Not logged in!</div>
