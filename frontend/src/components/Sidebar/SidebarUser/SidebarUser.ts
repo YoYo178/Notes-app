@@ -6,6 +6,7 @@ function dropdownButtonOnClick(setAngle: React.Dispatch<React.SetStateAction<num
     setIsDropdownMenuVisible((180 - angle) === 180);
 }
 
+/***** Dropdown option handlers *****/
 interface ProfileParameters {
     isProfileModalOpen: boolean,
     setIsProfileModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -37,6 +38,7 @@ export function clearCachedData(queryClient: QueryClient) {
     queryClient.invalidateQueries({ queryKey: ['auth'] });
 }
 
+/***** Handler exports *****/
 export const ButtonHandler = {
     dropdownButtonOnClick
 }
