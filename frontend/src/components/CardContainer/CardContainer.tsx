@@ -44,8 +44,8 @@ export const CardContainer: FC<CardContainerProps> = ({ favoritesOnly, filterTex
     let filteredNotes = favoritesOnly ? notes.filter(note => note.isFavorite) : notes;
     filteredNotes = !!filterText.length ? filteredNotes.filter(note => {
         return (
-            note.title.toLowerCase().includes(filterText) ||
-            note.description.toLowerCase().includes(filterText)
+            note.title.toLowerCase().includes(filterText.toLowerCase()) ||
+            note.description.toLowerCase().includes(filterText.toLowerCase())
         )
     }) : filteredNotes;
 
