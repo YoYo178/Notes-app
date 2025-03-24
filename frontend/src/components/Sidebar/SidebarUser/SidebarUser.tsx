@@ -77,7 +77,6 @@ export const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
                             const [optionTitle, optionCallbackFn] = pair;
                             return (
                                 <Fragment key={"dmo-f-" + i}>
-                                    {/* TODO: Function parameters */}
                                     <li key={"dmo-" + i} className="sidebar-user-dropdown-option" onClick={() => optionCallbackFn({ logoutMutation, isProfileModalOpen, setIsProfileModalOpen })}>{optionTitle}</li>
                                     {i < (dropdownMenuArr.length - 1) ? (
                                         <div key={"dmo-s-" + i} className="sidebar-dropdown-menu-separator" />
