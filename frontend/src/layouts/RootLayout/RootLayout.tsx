@@ -1,12 +1,13 @@
 import { FC, useEffect, useState } from 'react'
 import { Outlet, useOutletContext } from 'react-router-dom'
 
+import { NoteSortMethods } from '../../types/note.types'
+
 import { SearchBox } from '../../components/SearchBox/SearchBox'
 import { Sidebar } from '../../components/Sidebar/Sidebar'
 import { SortButton } from '../../components/SortButton/SortButton'
 
 import './RootLayout.css'
-import { NoteSortMethods } from '../../types/note.types'
 
 interface RootLayoutContext {
   filterText: string;

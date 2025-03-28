@@ -5,11 +5,11 @@ import { IoMdClose } from 'react-icons/io';
 import { FaCheck } from 'react-icons/fa';
 
 import AuthContext from '../../contexts/AuthProvider';
+import { useUpdateUserMutation } from '../../hooks/network/user/useUpdateUserMutation';
 
 import { ButtonHandler } from './ProfileModal';
 
 import "./ProfileModal.css"
-import { useUpdateUserMutation } from '../../hooks/network/user/useUpdateUserMutation';
 
 interface CreateNoteModelProps {
     isOpen: boolean;
