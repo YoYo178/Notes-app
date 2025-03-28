@@ -49,6 +49,14 @@
     cursor: pointer;
 }
 
+.add-note-icon {
+    color: rgb(119, 119, 119);
+}
+
+.add-note-image-icon {
+    color: rgb(119, 119, 119);
+}
+
 .record-note-button-container {
     margin-left: auto;
     background-color: #fd302f;
@@ -69,14 +77,6 @@
     scale: 105%
 }
 
-.add-note-icon {
-    color: rgb(119, 119, 119);
-}
-
-.add-note-image-icon {
-    color: rgb(119, 119, 119);
-}
-
 @media screen and (max-width: 871px) {
     .record-note-button-text {
         display: none;
@@ -87,6 +87,7 @@
     .create-note-bar {
         margin-left: 1rem;
     }
+
     .record-note-button-text {
         display: inline;
     }
