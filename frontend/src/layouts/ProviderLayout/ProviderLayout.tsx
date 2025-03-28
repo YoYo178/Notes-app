@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FC, ReactNode } from 'react'
 
 import { AuthProvider } from '../../contexts/AuthProvider';
+import { RecordingProvider } from '../../contexts/RecordingProvider';
 
 interface ProviderLayoutProps {
     children: ReactNode;
@@ -13,7 +14,9 @@ export const ProviderLayout: FC<ProviderLayoutProps> = ({ children }) => {
     return (
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
-                {children}
+                <RecordingProvider>
+                    {children}
+                </RecordingProvider>
             </AuthProvider>
         </QueryClientProvider>
     )
