@@ -87,6 +87,13 @@ export const RecordingProvider: FC<AuthProviderProps> = ({ children }) => {
         return recordedAudio || null;
     }
 
+    const deleteRecording = () => {
+        if (recordedAudio) {
+            URL.revokeObjectURL(recordedAudio);
+            setRecordedAudio('');
+        }
+    }
+
     return (
         <RecordingContext value={
             {
@@ -95,7 +102,8 @@ export const RecordingProvider: FC<AuthProviderProps> = ({ children }) => {
                 hasMicPermissions, setHasMicPermissions,
                 recordedAudio, setRecordedAudio,
 
-                startRecording, stopRecording
+                startRecording, stopRecording,
+                deleteRecording
             }
         }>
             {children}
