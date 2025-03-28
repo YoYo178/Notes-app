@@ -3,6 +3,7 @@ import { FC, ReactNode } from 'react'
 
 import { AuthProvider } from '../../contexts/AuthProvider';
 import { RecordingProvider } from '../../contexts/RecordingProvider';
+import { TranscriptionProvider } from '../../contexts/TranscriptionProvider';
 
 interface ProviderLayoutProps {
     children: ReactNode;
@@ -15,7 +16,9 @@ export const ProviderLayout: FC<ProviderLayoutProps> = ({ children }) => {
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
                 <RecordingProvider>
-                    {children}
+                    <TranscriptionProvider>
+                        {children}
+                    </TranscriptionProvider>
                 </RecordingProvider>
             </AuthProvider>
         </QueryClientProvider>
