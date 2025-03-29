@@ -1,5 +1,6 @@
 import { UseMutationResult } from "@tanstack/react-query"
 import { BaseNote } from "../../../../hooks/network/note/useCreateNoteMutation";
+import { BaseSyntheticEvent, RefObject } from "react";
 
 function addNoteOnClick(
     createNoteMutation: UseMutationResult<any, Error, BaseNote | undefined, unknown>,
@@ -21,6 +22,31 @@ function addNoteOnClick(
         images
     })
 }
+
+function uploadImageOnClick(fileInputRef: RefObject<HTMLInputElement | null>, images: File[], setImages: React.Dispatch<React.SetStateAction<File[]>>) {
+    if (!fileInputRef.current)
+        return;
+
+    const inputButton = fileInputRef.current;
+
+    inputButton.click();
+    inputButton.onchange = () => {
+        if (inputButton.files)
+            setImages(Array.from(inputButton.files).concat(images));
+    }
+}
+
+function deleteImageOnClick(e: React.MouseEvent<HTMLButtonElement>, images: File[], setImages: React.Dispatch<React.SetStateAction<File[]>>) {
+    const event = e as BaseSyntheticEvent;
+
+    const ID = parseInt(event.target.closest(".cnm-image-delete-button").id.split("-button-")[1]);
+
+    const newArr = images.filter((_, i) => i != (ID - 1));
+    setImages(newArr);
+}
+
 export const ButtonHandler = {
-    addNoteOnClick
+    addNoteOnClick,
+    uploadImageOnClick,
+    deleteImageOnClick
 }

@@ -1,8 +1,9 @@
-import { FC, useContext, useEffect, useState } from 'react'
+import { FC, useContext, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom';
 
 import { IoMdClose } from 'react-icons/io';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaPlus } from 'react-icons/fa';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 import TranscriptionContext from '../../../../contexts/TranscriptionProvider';
 import RecordingContext from '../../../../contexts/RecordingProvider';
@@ -26,8 +27,10 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState(transcript || '');
+    const [images, setImages] = useState<File[]>([])
 
     const createNoteMutation = useCreateNoteMutation();
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         if (!isOpen)
@@ -55,6 +58,7 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
         onClose();
         setTitle('');
         setDescription('');
+        setImages([]);
     };
 
     if (!isOpen) return null;
@@ -76,6 +80,30 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
                     <div className="cnm-text-field-container cnm-description-field-container">
                         <textarea className="cnm-field-description" placeholder='Description' value={description || transcript} onChange={(e) => setDescription(e.target.value)} />
                     </div>
+                    <div className="cnm-images-container">
+                        {images.map((image, i) => {
+                            const imageURL = URL.createObjectURL(image)
+                            return (
+                                <div key={`cnm-image-container-${i + 1}`} className="cnm-image-container">
+                                    <img id={`cnm-image-${i + 1}`} className="cnm-image" src={imageURL || undefined}></img>
+                                    <button id={`cnm-image-delete-button-${i + 1}`} className="cnm-image-delete-button" onClick={(e) => ButtonHandler.deleteImageOnClick(e, images, setImages)}>
+                                        <RiDeleteBin6Line />
+                                    </button>
+                                </div>
+                            )
+                        }
+                        )}
+                        <div className="cnm-upload-image-button" onClick={() => ButtonHandler.uploadImageOnClick(fileInputRef, images, setImages)}>
+                            <input
+                                ref={fileInputRef}
+                                name="Upload Image"
+                                type="file"
+                                accept='image/*'
+                                hidden
+                                multiple
+                            />
+                            <FaPlus />
+                        </div>
                     </div>
                 </div>
                 <div className="cnm-footer">

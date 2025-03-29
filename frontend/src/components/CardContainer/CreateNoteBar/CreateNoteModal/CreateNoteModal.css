@@ -124,6 +124,62 @@
     font-size: 1.1rem;
 }
 
+.cnm-images-container {
+    display: grid;
+    grid-template-rows: 8rem;
+    grid-auto-flow: column;
+    grid-auto-columns: calc(100px + 1rem);
+    border: 1px solid #d0d4d9;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.cnm-upload-image-button,
+.cnm-image-container {
+    margin: 0.7rem;
+    height: calc(90% - 0.7rem);
+    width: 100px;
+    border: 1px solid #d0d4d9;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #adadad;
+
+    transition: scale 300ms ease-out;
+
+    position: relative;
+}
+
+.cnm-upload-image-button:hover,
+.cnm-image-container:hover {
+    cursor: pointer;
+    scale: 105%;
+}
+
+.cnm-image {
+    width: 100%;
+    height: 100%;
+}
+
+.cnm-image-delete-button {
+    position: absolute;
+    top: 0.2rem;
+    right: 0.2rem;
+    padding: 0.2rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+
+    transition: background-color 100ms ease-in-out;
+}
+
+.cnm-image-delete-button:hover {
+    cursor: pointer;
+    background-color: red;
+    color: white;
+}
+
 .cnm-footer {
     flex: 1;
 
