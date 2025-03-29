@@ -1,6 +1,6 @@
-export const MAX_AUDIO_RECORD_DURATION = 60; // In seconds
+import { ReactSetState } from "./react.types";
 
-type ReactSetState<T> = React.Dispatch<React.SetStateAction<T>>;
+export const MAX_AUDIO_RECORD_DURATION = 60; // In seconds
 
 export interface RecordingState {
     /* React States */

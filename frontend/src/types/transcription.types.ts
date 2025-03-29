@@ -1,4 +1,4 @@
-type ReactSetState<T> = React.Dispatch<React.SetStateAction<T>>;
+import { ReactSetState } from "./react.types";
 
 export interface TranscriptionState {
     /* React States */
