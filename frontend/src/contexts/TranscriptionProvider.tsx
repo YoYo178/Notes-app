@@ -99,6 +99,13 @@ export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children
         }
     };
 
+    const deleteTranscription = () => {
+        // Stop speech recognition if started
+        stopTranscription()
+        setTranscript('');
+        transcriptPartsRef.current = [];
+    }
+
     return (
         <TranscriptionContext value={
             {
@@ -108,7 +115,8 @@ export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children
                 transcript, setTranscript,
 
                 startTranscription,
-                stopTranscription
+                stopTranscription,
+                deleteTranscription
             }
         }>
             {children}

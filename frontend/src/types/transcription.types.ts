@@ -17,4 +17,6 @@ export interface TranscriptionState {
     /* Miscellaneous */
     startTranscription: () => void;
     stopTranscription: () => void;
+
+    deleteTranscription: () => void;
 }
