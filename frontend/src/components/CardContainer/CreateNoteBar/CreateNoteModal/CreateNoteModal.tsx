@@ -1,10 +1,14 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useContext, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom';
 
 import { IoMdClose } from 'react-icons/io';
 import { FaCheck } from 'react-icons/fa';
 
+import TranscriptionContext from '../../../../contexts/TranscriptionProvider';
+import RecordingContext from '../../../../contexts/RecordingProvider';
 import { useCreateNoteMutation } from '../../../../hooks/network/note/useCreateNoteMutation';
+
+import { NoteType } from '../../../../types/note.types';
 
 import { ButtonHandler } from './CreateNoteModal';
 
@@ -13,15 +17,22 @@ import "./CreateNoteModal.css"
 interface CreateNoteModelProps {
     isOpen: boolean;
     onClose: () => void;
+    noteType: NoteType
 }
 
-export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
+export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, noteType }) => {
+    const { recordingTime, recordedAudio } = useContext(RecordingContext);
+    const { transcript } = useContext(TranscriptionContext);
+
     const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+    const [description, setDescription] = useState(transcript || '');
 
     const createNoteMutation = useCreateNoteMutation();
 
     useEffect(() => {
+        if (!isOpen)
+            return
+
         if (!createNoteMutation.error) {
             onClose();
             setTitle('');
@@ -29,27 +40,56 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) =
         }
     }, [createNoteMutation.isSuccess])
 
+    useEffect(() => {
+        if (!isOpen)
+            return
+
+        if (transcript?.length)
+            setDescription(transcript);
+    }, [transcript]);
+
+    const handleClose = () => {
+        if (!isOpen)
+            return
+
+        onClose();
+        setTitle('');
+        setDescription('');
+    };
+
     if (!isOpen) return null;
 
     return createPortal(
-        <div className='cnm-backdrop' onMouseDown={onClose}>
+        <div className='cnm-backdrop' onMouseDown={handleClose}>
             <div className='cnm' onMouseDown={(e) => e.stopPropagation()}>
                 <div className="cnm-header">
                     <h2 className='cnm-title'>Add new note</h2>
-                    <button className='cnm-close-button' onClick={onClose}>
+                    <button className='cnm-close-button' onClick={handleClose}>
                         <IoMdClose className='cnm-close-button-icon' />
                     </button>
                 </div>
                 <div className="cnm-fields">
+                    {noteType === 'audio' && (<audio controls src={recordedAudio || undefined} className="cnm-audio-player" />)}
                     <div className="cnm-text-field-container">
                         <input type="text" className="cnm-field-title" placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} />
                     </div>
                     <div className="cnm-text-field-container cnm-description-field-container">
-                        <textarea className="cnm-field-description" placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)} />
+                        <textarea className="cnm-field-description" placeholder='Description' value={description || transcript} onChange={(e) => setDescription(e.target.value)} />
+                    </div>
                     </div>
                 </div>
                 <div className="cnm-footer">
-                    <button className="cnm-check-button" onClick={() => ButtonHandler.addNoteOnClick(createNoteMutation, { title, description, isText: true, duration: null })}>
+                    <button className="cnm-check-button" onClick={() => {
+                        ButtonHandler.addNoteOnClick(
+                            createNoteMutation,
+                            {
+                                title,
+                                description,
+                                isText: noteType === 'text',
+                                duration: `00:${String(recordingTime).padStart(2, '0')}`,
+                            }
+                        )
+                    }}>
                         <FaCheck />
                     </button>
                 </div>

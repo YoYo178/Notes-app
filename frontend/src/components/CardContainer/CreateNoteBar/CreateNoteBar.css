@@ -77,6 +77,58 @@
     scale: 105%
 }
 
+/* Mic permission denied popup */
+.mic-permission-denied-popup-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+}
+
+.mic-permission-denied-popup {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.mic-permission-denied-title {
+    margin-top: 0;
+    color: #d32f2f;
+}
+
+.mic-permission-denied-description {
+    font-weight: 400;
+}
+
+.mic-permission-denied-dismiss-btn {
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.mic-permission-denied-dismiss-btn:hover {
+    background-color: #3367d6;
+}
+
 @media screen and (max-width: 871px) {
     .record-note-button-text {
         display: none;
