@@ -27,16 +27,13 @@ export const LoginButton: FC<LoginButtonProps> = ({ username, password, setError
             if (loginMutation.data) {
                 const data = loginMutation.data;
 
-                if (!setAuth) {
-                    console.error("setAuth() is null!")
-                    return;
+                if (!!setAuth) {
+                    setAuth({
+                        username: username,
+                        displayName: data.user.displayName,
+                        id: data.user.id
+                    })
                 }
-
-                setAuth({
-                    username: username,
-                    displayName: data.user.displayName,
-                    id: data.user.id
-                })
             }
         } else if (loginMutation.isError) {
             if (loginMutation.error?.message) {
@@ -52,8 +49,7 @@ export const LoginButton: FC<LoginButtonProps> = ({ username, password, setError
                 const errorMessage = loginMutation.error?.message;
                 setErrorMessage(errorMessage);
 
-                console.log("An error occured while trying to sign-in.")
-                console.log(errorMessage);
+                console.error("An error occured while trying to sign-in.", errorMessage)
             }
         }
 

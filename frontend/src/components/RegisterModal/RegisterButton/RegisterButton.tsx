@@ -50,8 +50,7 @@ export const RegisterButton: FC<RegisterButtonProps> = ({ registerData, setError
                 const errorMessage = registerMutation.error?.message;
                 setErrorMessage(errorMessage);
 
-                console.log("An error occured while trying to register.")
-                console.log(errorMessage);
+                console.error("An error occured while trying to register.", errorMessage);
             }
         }
 
