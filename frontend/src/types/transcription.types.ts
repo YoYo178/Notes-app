@@ -2,8 +2,8 @@ import { ReactSetState } from "./react.types";
 
 export interface TranscriptionState {
     /* React States */
-    isTranscripting: boolean;
-    setIsTranscripting: ReactSetState<boolean>;
+    isTranscribing: boolean;
+    setIsTranscribing: ReactSetState<boolean>;
 
     hasSpeechRecognitionSupport: boolean;
     setHasSpeechRecognitionSupport: ReactSetState<boolean>;
@@ -15,8 +15,8 @@ export interface TranscriptionState {
     setTranscript: ReactSetState<string>;
 
     /* Miscellaneous */
-    startTranscription: () => void;
-    stopTranscription: () => void;
+    startTranscribing: () => void;
+    stopTranscribing: () => void;
 
     deleteTranscription: () => void;
 }

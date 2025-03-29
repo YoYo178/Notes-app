@@ -8,7 +8,7 @@ interface TranscriptionProviderProps {
 const TranscriptionContext = createContext<Partial<TranscriptionState>>({});
 
 export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children }) => {
-    const [isTranscripting, setIsTranscripting] = useState(false);
+    const [isTranscribing, setIsTranscribing] = useState(false);
     const [hasSpeechRecognitionSupport, setHasSpeechRecognitionSupport] = useState(false);
     const [hasMicPermissions, setHasMicPermissions] = useState(true);
     const [transcript, setTranscript] = useState('');
@@ -67,7 +67,7 @@ export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children
             if (speechRecognitionRef.current) {
                 try {
                     speechRecognitionRef.current.stop();
-                    setIsTranscripting(false);
+                    setIsTranscribing(false);
                 } catch (e) {
                     console.error("An error occured while stopping Speech Recognition.");
                 };
@@ -75,24 +75,24 @@ export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children
         };
     }, []);
 
-    const startTranscription = () => {
+    const startTranscribing = () => {
         // Start speech recognition if supported
-        if (!isTranscripting && hasSpeechRecognitionSupport && speechRecognitionRef.current) {
+        if (!isTranscribing && hasSpeechRecognitionSupport && speechRecognitionRef.current) {
             try {
                 speechRecognitionRef.current.start();
-                setIsTranscripting(true);
+                setIsTranscribing(true);
             } catch (e) {
                 console.error("Error starting speech recognition:", e);
             }
         }
     };
 
-    const stopTranscription = () => {
+    const stopTranscribing = () => {
         // Stop speech recognition if started
-        if (hasSpeechRecognitionSupport && speechRecognitionRef.current && isTranscripting) {
+        if (hasSpeechRecognitionSupport && speechRecognitionRef.current && isTranscribing) {
             try {
                 speechRecognitionRef.current.stop();
-                setIsTranscripting(false);
+                setIsTranscribing(false);
             } catch (e) {
                 console.error("Error stopping speech recognition:", e);
             };
@@ -101,7 +101,7 @@ export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children
 
     const deleteTranscription = () => {
         // Stop speech recognition if started
-        stopTranscription()
+        stopTranscribing()
         setTranscript('');
         transcriptPartsRef.current = [];
     }
@@ -109,13 +109,13 @@ export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children
     return (
         <TranscriptionContext value={
             {
-                isTranscripting, setIsTranscripting,
+                isTranscribing, setIsTranscribing,
                 hasSpeechRecognitionSupport, setHasSpeechRecognitionSupport,
                 hasMicPermissions, setHasMicPermissions,
                 transcript, setTranscript,
 
-                startTranscription,
-                stopTranscription,
+                startTranscribing,
+                stopTranscribing,
                 deleteTranscription
             }
         }>
