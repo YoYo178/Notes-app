@@ -14,6 +14,7 @@ export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children
     const [transcript, setTranscript] = useState('');
 
     const speechRecognitionRef = useRef<SpeechRecognition | null>(null);
+    const transcriptPartsRef = useRef<string[]>([]);
 
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -27,16 +28,14 @@ export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children
                 speechRecognitionRef.current.interimResults = true;
                 speechRecognitionRef.current.lang = 'en-US';
 
-                const transcriptParts: string[] = [];
-
                 speechRecognitionRef.current.onresult = (event) => {
                     let interimTranscript = '';
 
                     for (let i = event.resultIndex; i < event.results.length; i++) {
                         const transcript = event.results[i][0].transcript;
                         if (event.results[i].isFinal) {
-                            transcriptParts.push(transcript);
-                            const fullText = transcriptParts.join(' ');
+                            transcriptPartsRef.current.push(transcript);
+                            const fullText = transcriptPartsRef.current.join(' ');
                             setTranscript(fullText);
                         } else {
                             interimTranscript = transcript;
@@ -44,7 +43,7 @@ export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children
                     };
 
                     if (interimTranscript) {
-                        const tempText = [...transcriptParts, interimTranscript].join(' ');
+                        const tempText = [...transcriptPartsRef.current, interimTranscript].join(' ');
                         setTranscript(tempText);
                     }
                 };
@@ -90,7 +89,7 @@ export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children
 
     const stopTranscription = () => {
         // Stop speech recognition if started
-        if (isTranscripting && hasSpeechRecognitionSupport && speechRecognitionRef.current) {
+        if (hasSpeechRecognitionSupport && speechRecognitionRef.current && isTranscripting) {
             try {
                 speechRecognitionRef.current.stop();
                 setIsTranscripting(false);
