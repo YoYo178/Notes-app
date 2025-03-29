@@ -34,27 +34,21 @@
     gap: 0.6rem
 }
 
-.add-note-button,
-.add-note-image-button {
+.add-note-button {
     font-size: 1rem;
     padding: 0.4rem;
     border-radius: 8px;
     border: none;
     background-color: transparent;
+    color: rgb(119, 119, 119);
+
+    display: flex;
+    align-items: center;
 }
 
-.add-note-button:hover,
-.add-note-image-button:hover {
+.add-note-button:hover {
     background-color: rgb(216, 216, 216);
     cursor: pointer;
-}
-
-.add-note-icon {
-    color: rgb(119, 119, 119);
-}
-
-.add-note-image-icon {
-    color: rgb(119, 119, 119);
 }
 
 .record-note-button-container {
@@ -129,7 +123,7 @@
     background-color: #3367d6;
 }
 
-@media screen and (max-width: 871px) {
+@media screen and (max-width: 771px) {
     .record-note-button-text {
         display: none;
     }
@@ -145,13 +139,13 @@
     }
 }
 
-@media screen and (max-width: 540px) {
+@media screen and (max-width: 440px) {
     .record-note-button-text {
         display: none;
     }
 }
 
-@media screen and (max-width: 314px) {
+@media screen and (max-width: 240px) {
     .record-note-button-container {
         margin-left: 1rem;
     }
