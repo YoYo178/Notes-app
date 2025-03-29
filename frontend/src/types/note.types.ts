@@ -9,6 +9,8 @@ export interface Note {
     duration: string | null;
 }
 
+export type NoteType = 'text' | 'audio'; 
+
 export enum NoteSortMethods {
     SORT_BY_NAME_ASC,
     SORT_BY_NAME_DESC,
