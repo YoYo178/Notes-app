@@ -44,9 +44,6 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
     }, [createNoteMutation.isSuccess])
 
     useEffect(() => {
-        if (!isOpen)
-            return
-
         if (transcript?.length)
             setDescription(transcript);
     }, [transcript]);
