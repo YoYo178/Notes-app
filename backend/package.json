@@ -35,7 +35,7 @@
     "jsonfile": "^6.1.0",
     "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
-    "mongoose": "^8.12.2",
+    "mongoose": "^8.13.1",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
@@ -55,10 +55,10 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/module-alias": "^2.0.4",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^22.13.13",
-    "@types/supertest": "^6.0.2",
+    "@types/node": "^22.13.14",
+    "@types/supertest": "^6.0.3",
     "eslint": "^9.23.0",
-    "eslint-plugin-n": "^17.16.2",
+    "eslint-plugin-n": "^17.17.0",
     "find": "^0.3.0",
     "fs-extra": "^11.3.0",
     "jasmine": "^5.6.0",
@@ -68,7 +68,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.27.0"
+    "typescript-eslint": "^8.28.0"
   },
   "packageManager": "yarn@4.8.0"
 }
