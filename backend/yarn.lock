@@ -1115,7 +1115,6 @@ __metadata:
     eslint: "npm:^9.23.0"
     eslint-plugin-n: "npm:^17.17.0"
     express: "npm:^5.1.0"
-    express-async-errors: "npm:^3.1.1"
     express-async-handler: "npm:^1.2.0"
     express-rate-limit: "npm:^7.5.0"
     find: "npm:^0.3.0"
@@ -1858,15 +1857,6 @@ __metadata:
   version: 3.1.1
   resolution: "exponential-backoff@npm:3.1.1"
   checksum: 10c0/160456d2d647e6019640bd07111634d8c353038d9fa40176afb7cd49b0548bdae83b56d05e907c2cce2300b81cae35d800ef92fefb9d0208e190fa3b7d6bb579
-  languageName: node
-  linkType: hard
-
-"express-async-errors@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "express-async-errors@npm:3.1.1"
-  peerDependencies:
-    express: ^4.16.2
-  checksum: 10c0/56c4e90c44e98c7edc5bd38e18dd23b0d9a7139cb94ff3e25943ba257415b433e0e52ea8f9bc1fb5b70a5e6c5246eaace4fb69ab171edfb8896580928bb97ec6
   languageName: node
   linkType: hard
 

@@ -6,8 +6,6 @@ import logger from 'jet-logger';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
-import 'express-async-errors';
-
 import BaseRouter from '@src/routes';
 
 import Env from '@src/common/Env';
