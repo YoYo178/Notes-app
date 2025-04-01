@@ -34,6 +34,8 @@ function uploadImageOnClick(fileInputRef: RefObject<HTMLInputElement | null>, im
         if (inputButton.files)
             setImages(Array.from(inputButton.files).concat(images));
     }
+
+    inputButton.value = '';
 }
 
 function deleteImageOnClick(e: React.MouseEvent<HTMLButtonElement>, images: File[], setImages: React.Dispatch<React.SetStateAction<File[]>>) {
