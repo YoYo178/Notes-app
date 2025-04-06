@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from 'react'
+import { FC, useState } from 'react'
 
 import { useGetNotesQuery } from '../../hooks/network/note/useGetNotesQuery.ts';
 import { useAuthContext } from '../../contexts/AuthContext.tsx';
