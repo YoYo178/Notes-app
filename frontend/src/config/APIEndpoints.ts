@@ -51,6 +51,20 @@ const APIEndpoints: Endpoints = {
         URL: "/api/users",
         METHOD: "DELETE"
     },
+
+    /***** FILES *****/
+    GET_FILE_URL: {
+        URL: "/api/files/getURL",
+        METHOD: "GET"
+    },
+    GET_FILE_UPLOAD_URL: {
+        URL: "/api/files/getUploadURL",
+        METHOD: "POST"
+    },
+    DELETE_FILE: {
+        URL: "/api/files/delete",
+        METHOD: "DELETE"
+    }
 }
 
 export default APIEndpoints;
