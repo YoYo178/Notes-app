@@ -1,3 +1,18 @@
+type DateString = string;
+
+export interface ServerNote {
+    _id: string, // Note ID
+    user: string; // User ID,
+    title: string;
+    description: string;
+    isText: boolean;
+    images: string[];
+    isFavorite: boolean;
+    duration: string | null;
+    createdAt: DateString;
+    updatedAt: DateString;
+}
+
 export interface Note {
     id: string;
     title: string;
@@ -13,7 +28,7 @@ export interface Note {
 
 export type NotePayload = Omit<Note, 'id' | 'date' | 'rawDate'>;
 
-export type NoteType = 'text' | 'audio'; 
+export type NoteType = 'text' | 'audio';
 
 export enum NoteSortMethods {
     SORT_BY_NAME_ASC,
