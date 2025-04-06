@@ -208,3 +208,8 @@
     /* Properties needed after changing from div to button */
     cursor: pointer;
 }
+
+.cnm-check-button:disabled {
+    color: rgb(143, 143, 143);
+    cursor: not-allowed;
+}
