@@ -59,6 +59,7 @@ async function addNoteOnClick(
                 fileType: 'audio',
                 contentType: file.type,
                 fileSize: file.size,
+                audioDuration: recordingTime
             });
 
             // Upload to S3
