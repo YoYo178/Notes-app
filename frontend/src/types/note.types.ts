@@ -9,6 +9,8 @@ export interface Note {
     duration: string | null;
 }
 
+export type BaseNote = Omit<Omit<Note, 'id'>, 'date'>;
+
 export type NoteType = 'text' | 'audio'; 
 
 export enum NoteSortMethods {

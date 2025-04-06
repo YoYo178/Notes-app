@@ -1,5 +1,5 @@
 import { UseMutationResult } from "@tanstack/react-query"
-import { BaseNote } from "../../../../hooks/network/note/useCreateNoteMutation";
+import { BaseNote } from "../../../../types/note.types";
 import { BaseSyntheticEvent, RefObject } from "react";
 
 function addNoteOnClick(
