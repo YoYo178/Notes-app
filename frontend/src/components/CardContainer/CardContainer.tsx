@@ -15,9 +15,6 @@ interface CardContainerProps {
     filterText: string;
 }
 
-// Special type just to add rawDate, to sort by date
-interface MNote extends Note { rawDate: Date };
-
 export const CardContainer: FC<CardContainerProps> = ({ favoritesOnly, filterText }) => {
     const [isCreateNoteBarVisible, setIsCreateNoteBarVisible] = useState(true);
 

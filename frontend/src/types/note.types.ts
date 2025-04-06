@@ -8,6 +8,7 @@ export interface Note {
     isFavorite?: boolean;
     isText: boolean;
     duration: string | null;
+    rawDate: Date;
 }
 
 export type NotePayload = Omit<Note, 'id' | 'date' | 'rawDate'>;
