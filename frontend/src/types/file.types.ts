@@ -4,3 +4,7 @@ export interface GetFileUploadURLParameters {
     contentType: string;
     fileSize: number;
 }
+
+export interface ImageFile extends File {
+    localUrl: string;
+}
