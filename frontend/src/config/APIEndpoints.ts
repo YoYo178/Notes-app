@@ -54,7 +54,7 @@ const APIEndpoints: Endpoints = {
 
     /***** FILES *****/
     GET_FILE_URL: {
-        URL: "/api/files/getURL",
+        URL: "/api/files/getURL/:fileKey",
         METHOD: "GET"
     },
     GET_FILE_UPLOAD_URL: {
@@ -62,7 +62,7 @@ const APIEndpoints: Endpoints = {
         METHOD: "POST"
     },
     DELETE_FILE: {
-        URL: "/api/files/delete",
+        URL: "/api/files/delete/:fileKey",
         METHOD: "DELETE"
     }
 }
