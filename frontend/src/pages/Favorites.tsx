@@ -1,12 +1,16 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 
-import { useRootLayoutContext } from '../layouts/RootLayout/RootLayout'
+import { useNotesContext } from '../contexts/NotesContext';
 import { CardContainer } from '../components/CardContainer/CardContainer'
 
 export const Favorites: FC = () => {
-  const { filterText } = useRootLayoutContext();
+  const { setFavoritesOnly } = useNotesContext();
+
+  useEffect(() => {
+    setFavoritesOnly(true);
+  }, [])
 
   return (
-    <CardContainer favoritesOnly={true} filterText={filterText} />
+    <CardContainer />
   )
 } 

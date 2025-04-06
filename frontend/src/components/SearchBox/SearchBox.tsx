@@ -2,18 +2,20 @@ import { FC, useRef } from 'react'
 
 import { AiOutlineSearch } from 'react-icons/ai'
 
+import { useNotesContext } from '../../contexts/NotesContext';
+
 import { useLostFocus } from '../../hooks/ui/useLostFocus';
 
 import './SearchBox.css'
 
 interface SearchBoxProps {
-  setFilterText: React.Dispatch<React.SetStateAction<string>>;
   isSearchBoxOpen: boolean;
   setIsSearchBoxOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isMediaQueryActive: boolean;
 }
 
-export const SearchBox: FC<SearchBoxProps> = ({ setFilterText, isSearchBoxOpen, setIsSearchBoxOpen, isMediaQueryActive }) => {
+export const SearchBox: FC<SearchBoxProps> = ({ isSearchBoxOpen, setIsSearchBoxOpen, isMediaQueryActive }) => {
+  const { setFilter } = useNotesContext();
   const searchBoxRef = useRef<HTMLDivElement>(null);
 
   useLostFocus(searchBoxRef, isSearchBoxOpen, () => setIsSearchBoxOpen(false));
@@ -32,7 +34,7 @@ export const SearchBox: FC<SearchBoxProps> = ({ setFilterText, isSearchBoxOpen, 
           type="text"
           placeholder="Search"
           className="search-input"
-          onChange={(e) => { setFilterText(e.target.value) }}
+          onChange={(e) => { setFilter(e.target.value) }}
         />
       </div>
       <button

@@ -5,6 +5,7 @@ import { FaSortAlphaDown, FaSortAlphaDownAlt, FaSortAmountDown, FaSortAmountDown
 import { useLostFocus } from "../../../hooks/ui/useLostFocus.ts";
 
 import { NoteSortMethods } from "../../../types/note.types.ts";
+import { ReactSetState } from "../../../types/react.types.ts";
 
 import "./SortDropdownMenu.css";
 
@@ -13,7 +14,7 @@ interface SortDropdownMenuProps {
     isOpen: boolean;
     onClose: () => void;
     sortOrder: NoteSortMethods;
-    setSortOrder: (order: NoteSortMethods) => void;
+    setSortOrder: ReactSetState<NoteSortMethods>;
 };
 
 const dropdownMenuOptions = {

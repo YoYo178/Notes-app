@@ -1,7 +1,5 @@
 import { FC, useEffect, useState } from 'react'
-import { Outlet, useOutletContext } from 'react-router-dom'
-
-import { NoteSortMethods } from '../../types/note.types'
+import { Outlet } from 'react-router-dom'
 
 import { SearchBox } from '../../components/SearchBox/SearchBox'
 import { Sidebar } from '../../components/Sidebar/Sidebar'
@@ -9,17 +7,7 @@ import { SortButton } from '../../components/SortButton/SortButton'
 
 import './RootLayout.css'
 
-interface RootLayoutContext {
-  filterText: string;
-  setFilterText: React.Dispatch<React.SetStateAction<string>>;
-  sortOrder: NoteSortMethods;
-  setSortOrder: React.Dispatch<React.SetStateAction<NoteSortMethods>>;
-}
-
 export const RootLayout: FC = () => {
-  const [filterText, setFilterText] = useState('');
-  const [sortOrder, setSortOrder] = useState<NoteSortMethods>(NoteSortMethods.SORT_BY_DATE_ASC);
-
   // Search box media query: (max-width: 425px)
   // See SearchBox.css, Sidebar.css, and SortButton.css
   const [isMediaQueryActive, setIsMediaQueryActive] = useState(window.matchMedia("(max-width: 425px)").matches)
@@ -38,7 +26,6 @@ export const RootLayout: FC = () => {
       />
 
       <SearchBox
-        setFilterText={setFilterText}
         isSearchBoxOpen={isSearchBoxOpen}
         setIsSearchBoxOpen={setIsSearchBoxOpen}
         isMediaQueryActive={isMediaQueryActive}
@@ -47,17 +34,11 @@ export const RootLayout: FC = () => {
       <SortButton
         isSearchBoxOpen={isSearchBoxOpen}
         isMediaQueryActive={isMediaQueryActive}
-        sortOrder={sortOrder}
-        setSortOrder={setSortOrder}
       />
 
       <main className="main-content">
-        <Outlet context={{ filterText, setFilterText, sortOrder, setSortOrder }} />
+        <Outlet />
       </main>
     </div>
   )
-}
-
-export function useRootLayoutContext() {
-  return useOutletContext<RootLayoutContext>();
 }
