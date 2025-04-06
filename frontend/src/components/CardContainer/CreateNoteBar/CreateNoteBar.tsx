@@ -3,8 +3,8 @@ import { FC, useEffect, useRef, useState } from 'react'
 import { FiFilePlus } from 'react-icons/fi';
 import { BsRecord2, BsStopFill } from 'react-icons/bs';
 
-import { useRecordingContext } from '../../../contexts/RecordingProvider.tsx';
-import { useTranscriptionContext } from '../../../contexts/TranscriptionProvider.tsx';
+import { useRecordingContext } from '../../../contexts/RecordingContext.tsx';
+import { useTranscriptionContext } from '../../../contexts/TranscriptionContext.tsx';
 import { useLostFocus } from '../../../hooks/ui/useLostFocus.ts';
 
 import { MAX_AUDIO_RECORD_DURATION } from '../../../types/recording.types.ts';

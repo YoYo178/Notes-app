@@ -5,8 +5,8 @@ import { IoMdClose } from 'react-icons/io';
 import { FaCheck, FaPlus } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
-import { useTranscriptionContext } from '../../../../contexts/TranscriptionProvider';
-import { useRecordingContext } from '../../../../contexts/RecordingProvider';
+import { useTranscriptionContext } from '../../../../contexts/TranscriptionContext';
+import { useRecordingContext } from '../../../../contexts/RecordingContext';
 
 import { useCreateNoteMutation } from '../../../../hooks/network/note/useCreateNoteMutation';
 import { useGetFileUploadURLMutation } from '../../../../hooks/network/upload/useGetFileUploadURLMutation';

@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from 'react'
 
 import { useGetNotesQuery } from '../../hooks/network/note/useGetNotesQuery.ts';
-import AuthContext from '../../contexts/AuthProvider.tsx';
+import AuthContext from '../../contexts/AuthContext.tsx';
 import { Note, NoteSortMethods } from '../../types/note.types.ts';
 import { useRootLayoutContext } from '../../layouts/RootLayout/RootLayout.tsx';
 

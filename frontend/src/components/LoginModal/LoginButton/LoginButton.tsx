@@ -3,7 +3,7 @@ import { FC, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
-import { useAuthContext } from '../../../contexts/AuthProvider';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { LoginFields } from '../../../types/auth.types';
 
 import { ButtonHandler } from './LoginButton';

@@ -3,9 +3,9 @@ import { FC } from 'react'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { IoIosWarning } from 'react-icons/io'
 
-import { useAuthContext } from '../../contexts/AuthProvider.tsx'
-import { useRecordingContext } from '../../contexts/RecordingProvider.tsx'
-import { useTranscriptionContext } from '../../contexts/TranscriptionProvider.tsx'
+import { useAuthContext } from '../../contexts/AuthContext.tsx'
+import { useRecordingContext } from '../../contexts/RecordingContext.tsx'
+import { useTranscriptionContext } from '../../contexts/TranscriptionContext.tsx'
 
 import { MAX_AUDIO_RECORD_DURATION } from '../../types/recording.types.ts'
 

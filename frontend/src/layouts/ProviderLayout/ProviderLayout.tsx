@@ -1,9 +1,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FC, ReactNode } from 'react'
 
-import { AuthProvider } from '../../contexts/AuthProvider';
-import { RecordingProvider } from '../../contexts/RecordingProvider';
-import { TranscriptionProvider } from '../../contexts/TranscriptionProvider';
+import { AuthProvider } from '../../contexts/AuthContext';
+import { RecordingProvider } from '../../contexts/RecordingContext';
+import { TranscriptionProvider } from '../../contexts/TranscriptionContext';
 
 interface ProviderLayoutProps {
     children: ReactNode;

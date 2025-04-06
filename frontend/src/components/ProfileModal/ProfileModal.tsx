@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { IoMdClose } from 'react-icons/io';
 import { FaCheck } from 'react-icons/fa';
 
-import { useAuthContext } from '../../contexts/AuthProvider';
+import { useAuthContext } from '../../contexts/AuthContext';
 import { useUpdateUserMutation } from '../../hooks/network/user/useUpdateUserMutation';
 
 import { ButtonHandler } from './ProfileModal';

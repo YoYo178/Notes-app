@@ -7,7 +7,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 
 import { useLogoutMutation } from "../../../hooks/network/auth/useLogoutMutation";
 import { useLostFocus } from "../../../hooks/ui/useLostFocus.ts";
-import { useAuthContext } from "../../../contexts/AuthProvider.tsx";
+import { useAuthContext } from "../../../contexts/AuthContext.tsx";
 
 import { ButtonHandler, clearCachedData, DropdownOptionHandler } from "./SidebarUser";
 import { ProfileModal } from "../../ProfileModal/ProfileModal.tsx";
