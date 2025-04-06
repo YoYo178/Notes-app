@@ -2,11 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
 import { API } from '../../api/backendAPI'
-import { HTTP_METHODS } from "../../types/api.types";
+import { Endpoint } from "../../types/api.types";
 
-export function useQueryBase(endpoint: { URL: string, METHOD: HTTP_METHODS }, queryKey: string[], sendCookies: boolean = false, shouldRetry: boolean | ((failureCount: number, error: any) => boolean) = false, staleTime: number | undefined = undefined) {
-    return () => useQuery({
-        queryKey,
+export function useQueryBase(endpoint: Endpoint, queryKey: string[], sendCookies: boolean = false, shouldRetry: boolean | ((failureCount: number, error: any) => boolean) = false, staleTime: number | undefined = undefined) {
         queryFn: async () => {
             const { data } = await API.get(endpoint.URL, { withCredentials: sendCookies })
             return data;
