@@ -22,7 +22,7 @@ export const EditNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, origi
     const [title, setTitle] = useState(originalTitle);
     const [description, setDescription] = useState(originalDescription);
 
-    const updateNoteMutation = useUpdateNoteMutation();
+    const updateNoteMutation = useUpdateNoteMutation({ queryKey: ['notes'] });
 
     useEffect(() => {
         if (isOpen && !updateNoteMutation.error) {

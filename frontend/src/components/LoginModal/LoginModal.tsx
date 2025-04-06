@@ -20,7 +20,7 @@ export const LoginModal: FC = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const location = useLocation();
-    const loginMutation = useLoginMutation();
+    const loginMutation = useLoginMutation({ queryKey: ['auth'] });
 
     return (
         <form className="login-modal" onSubmit={(e) => e.preventDefault()} onKeyDown={(e) => ButtonHandler.onKeyDown(e, username, password, loginMutation)}>

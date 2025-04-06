@@ -26,7 +26,7 @@ export const RegisterModal: FC = () => {
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-    const registerMutation = useRegisterMutation();
+    const registerMutation = useRegisterMutation({ queryKey: [] });
     const location = useLocation();
 
     return (

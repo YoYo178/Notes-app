@@ -22,8 +22,8 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
     const [isCopied, setIsCopied] = useState(false);
     const timeoutRef = useRef<number>(0);
 
-    const updateNoteMutation = useUpdateNoteMutation();
-    const deleteNoteMutation = useDeleteNoteMutation();
+    const updateNoteMutation = useUpdateNoteMutation({ queryKey: ['notes'] });
+    const deleteNoteMutation = useDeleteNoteMutation({ queryKey: ['notes'] });
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 

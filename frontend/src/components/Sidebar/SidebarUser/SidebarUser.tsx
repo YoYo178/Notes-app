@@ -36,7 +36,7 @@ export const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
 
     const sidebarItemsRef = useRef<HTMLDivElement>(null);
 
-    const logoutMutation = useLogoutMutation();
+    const logoutMutation = useLogoutMutation({ queryKey: ['auth'] });
     const navigate = useNavigate();
     const location = useLocation();
 

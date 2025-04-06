@@ -4,4 +4,4 @@ import { Note } from "../../../types/note.types";
 
 type NotePartial = Partial<Note>;
 
-export const useUpdateNoteMutation = useMutationBase<NotePartial>(APIEndpoints.UPDATE_NOTE, ['notes'], "Updating Notes", true);
+export const useUpdateNoteMutation = useMutationBase<NotePartial>(APIEndpoints.UPDATE_NOTE, "Updating Notes", true);

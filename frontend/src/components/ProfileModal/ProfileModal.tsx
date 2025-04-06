@@ -17,7 +17,7 @@ interface CreateNoteModelProps {
 }
 
 export const ProfileModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
-    const updateUserMutation = useUpdateUserMutation();
+    const updateUserMutation = useUpdateUserMutation({ queryKey: ['auth'] });
     const { auth, setAuth } = useContext(AuthContext);
 
     const [displayName, setDisplayName] = useState(auth?.displayName);
