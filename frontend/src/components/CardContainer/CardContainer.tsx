@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from 'react'
 
 import { useGetNotesQuery } from '../../hooks/network/note/useGetNotesQuery.ts';
-import AuthContext from '../../contexts/AuthContext.tsx';
+import { useAuthContext } from '../../contexts/AuthContext.tsx';
 import { Note, NoteSortMethods } from '../../types/note.types.ts';
 import { useRootLayoutContext } from '../../layouts/RootLayout/RootLayout.tsx';
 
@@ -21,7 +21,7 @@ interface MNote extends Note { rawDate: Date };
 export const CardContainer: FC<CardContainerProps> = ({ favoritesOnly, filterText }) => {
     const [isCreateNoteBarVisible, setIsCreateNoteBarVisible] = useState(true);
 
-    const { auth } = useContext(AuthContext);
+    const { auth } = useAuthContext();
     const { data, isLoading, error } = useGetNotesQuery({ queryKey: ['notes'] });
     const { sortOrder } = useRootLayoutContext();
 
