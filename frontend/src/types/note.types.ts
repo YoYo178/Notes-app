@@ -10,7 +10,7 @@ export interface Note {
     duration: string | null;
 }
 
-export type BaseNote = Omit<Omit<Note, 'id'>, 'date'>;
+export type NotePayload = Omit<Note, 'id' | 'date' | 'rawDate'>;
 
 export type NoteType = 'text' | 'audio'; 
 

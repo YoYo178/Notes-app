@@ -1,12 +1,12 @@
 import { UseMutationResult } from "@tanstack/react-query"
-import { BaseNote } from "../../../../types/note.types";
+import { NotePayload } from "../../../../types/note.types";
 import { BaseSyntheticEvent, RefObject } from "react";
 import { ReactSetState } from "../../../../types/react.types";
 import { GetFileUploadURLParameters, ImageFile } from "../../../../types/file.types";
 
 async function addNoteOnClick(
-    createNoteMutation: UseMutationResult<any, Error, BaseNote | undefined, unknown>,
-    fields: BaseNote,
+    createNoteMutation: UseMutationResult<any, Error, NotePayload | undefined, unknown>,
+    fields: NotePayload,
     setIsUploading: ReactSetState<boolean>,
     images: ImageFile[],
     getUploadUrlMutation: UseMutationResult<any, Error, GetFileUploadURLParameters | undefined, unknown>,
