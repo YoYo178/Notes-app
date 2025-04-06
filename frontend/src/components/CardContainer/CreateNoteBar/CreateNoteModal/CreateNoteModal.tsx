@@ -7,9 +7,13 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 
 import TranscriptionContext from '../../../../contexts/TranscriptionProvider';
 import RecordingContext from '../../../../contexts/RecordingProvider';
+
 import { useCreateNoteMutation } from '../../../../hooks/network/note/useCreateNoteMutation';
+import { useGetFileUploadURLMutation } from '../../../../hooks/network/upload/useGetFileUploadURLMutation';
+import { useUploadToS3Mutation } from '../../../../hooks/network/s3/useS3UploadMutation';
 
 import { NoteType } from '../../../../types/note.types';
+import { ImageFile } from '../../../../types/file.types';
 
 import { ButtonHandler } from './CreateNoteModal';
 
@@ -27,10 +31,21 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState(transcript || '');
-    const [images, setImages] = useState<File[]>([])
+    const [images, setImages] = useState<ImageFile[]>([]);
+    const [isUploading, setIsUploading] = useState(false);
 
-    const createNoteMutation = useCreateNoteMutation();
+    const createNoteMutation = useCreateNoteMutation({ queryKey: ['notes'] });
+    const getUploadUrlMutation = useGetFileUploadURLMutation({ queryKey: ['notes', 'file-upload-urls'] });
+    const uploadToS3Mutation = useUploadToS3Mutation();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    function cleanupImages() {
+        images.forEach(image => {
+            if (image.localUrl) {
+                URL.revokeObjectURL(image.localUrl);
+            }
+        });
+    }
 
     useEffect(() => {
         if (!isOpen)
@@ -40,6 +55,7 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
             onClose();
             setTitle('');
             setDescription('');
+            setImages([]);
         }
     }, [createNoteMutation.isSuccess])
 
@@ -48,9 +64,14 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
             setDescription(transcript);
     }, [transcript]);
 
+    // Cleanup local URLs when component unmounts
+    useEffect(() => cleanupImages, [images]);
+
     const handleClose = () => {
         if (!isOpen)
             return
+
+        cleanupImages();
 
         onClose();
         setTitle('');
@@ -78,41 +99,52 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
                         <textarea className="cnm-field-description" placeholder='Description' value={description || transcript} onChange={(e) => setDescription(e.target.value)} />
                     </div>
                     <div className="cnm-images-container">
-                        {images.map((image, i) => {
-                            const imageURL = URL.createObjectURL(image)
-                            return (
-                                <div key={`cnm-image-container-${i + 1}`} className="cnm-image-container">
-                                    <img id={`cnm-image-${i + 1}`} className="cnm-image" src={imageURL || undefined}></img>
-                                    <button id={`cnm-image-delete-button-${i + 1}`} className="cnm-image-delete-button" onClick={(e) => ButtonHandler.deleteImageOnClick(e, images, setImages)}>
-                                        <RiDeleteBin6Line />
-                                    </button>
-                                </div>
-                            )
-                        }
+                        {images.map((image, i) => (
+                            <div key={`cnm-image-container-${i + 1}`} className="cnm-image-container">
+                                <img id={`cnm-image-${i + 1}`} className="cnm-image" src={image.localUrl} />
+                                <button
+                                    id={`cnm-image-delete-button-${i + 1}`}
+                                    className="cnm-image-delete-button"
+                                    onClick={(e) => ButtonHandler.deleteImageOnClick(e, images, setImages)}
+                                    disabled={isUploading}
+                                >
+                                    <RiDeleteBin6Line />
+                                </button>
+                            </div>
+                        ))}
+                        {images.length < 5 && (
+                            <div className="cnm-upload-image-button" onClick={() => ButtonHandler.uploadImageOnClick(fileInputRef, images, setImages)}>
+                                <input
+                                    ref={fileInputRef}
+                                    name="Upload Image"
+                                    type="file"
+                                    accept='image/*'
+                                    hidden
+                                    multiple
+                                    disabled={isUploading}
+                                />
+                                <FaPlus />
+                            </div>
                         )}
-                        <div className="cnm-upload-image-button" onClick={() => ButtonHandler.uploadImageOnClick(fileInputRef, images, setImages)}>
-                            <input
-                                ref={fileInputRef}
-                                name="Upload Image"
-                                type="file"
-                                accept='image/*'
-                                hidden
-                                multiple
-                            />
-                            <FaPlus />
-                        </div>
                     </div>
                 </div>
                 <div className="cnm-footer">
-                    <button className="cnm-check-button" onClick={() => {
-                        ButtonHandler.addNoteOnClick(
+                    <button className="cnm-check-button" onClick={async () => {
+                        await ButtonHandler.addNoteOnClick(
                             createNoteMutation,
                             {
                                 title,
                                 description,
                                 isText: noteType === 'text',
-                                duration: `00:${String(recordingTime).padStart(2, '0')}`,
-                            }
+                                duration: noteType === 'audio' ? `00:${String(recordingTime).padStart(2, '0')}` : null,
+                            },
+                            setIsUploading,
+                            images,
+                            getUploadUrlMutation,
+                            uploadToS3Mutation,
+                            noteType,
+                            recordedAudio,
+                            recordingTime
                         )
                     }}>
                         <FaCheck />
