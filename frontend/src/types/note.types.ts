@@ -18,7 +18,7 @@ export interface Note {
     title: string;
     description: string;
     images?: string[];
-    audio?: string;
+    audioKey?: string;
     date: string;
     isFavorite?: boolean;
     isText: boolean;

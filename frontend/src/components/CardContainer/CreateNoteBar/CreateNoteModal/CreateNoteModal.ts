@@ -78,7 +78,7 @@ async function addNoteOnClick(
             description,
             isText: noteType === 'text',
             duration: `00:${String(recordingTime).padStart(2, '0')}`,
-            audio: audioKey,
+            audioKey,
             images: imageKeys,
             isFavorite
         });
