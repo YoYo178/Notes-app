@@ -2,7 +2,8 @@ export interface Note {
     id: string;
     title: string;
     description: string;
-    images?: [],
+    images?: string[];
+    audio?: string;
     date: string;
     isFavorite?: boolean;
     isText: boolean;
