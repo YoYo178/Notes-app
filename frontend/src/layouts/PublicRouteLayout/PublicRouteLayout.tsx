@@ -1,10 +1,9 @@
-import { useContext } from "react"
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-import AuthContext from "../../contexts/AuthProvider";
+import { useAuthContext } from "../../contexts/AuthProvider";
 
 export const PublicRouteLayout = () => {
-    const { auth } = useContext(AuthContext);
+    const { auth } = useAuthContext();
     const location = useLocation();
 
     return (

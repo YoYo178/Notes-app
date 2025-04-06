@@ -1,10 +1,10 @@
-import { FC, useContext, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 
 import { FiFilePlus } from 'react-icons/fi';
 import { BsRecord2, BsStopFill } from 'react-icons/bs';
 
-import RecordingContext from '../../../contexts/RecordingProvider.tsx';
-import TranscriptionContext from '../../../contexts/TranscriptionProvider.tsx';
+import { useRecordingContext } from '../../../contexts/RecordingProvider.tsx';
+import { useTranscriptionContext } from '../../../contexts/TranscriptionProvider.tsx';
 import { useLostFocus } from '../../../hooks/ui/useLostFocus.ts';
 
 import { MAX_AUDIO_RECORD_DURATION } from '../../../types/recording.types.ts';
@@ -33,7 +33,7 @@ export const CreateNoteBar: FC<CreateNoteBarProps> = ({ isVisible }) => {
         startTranscribing,
         stopTranscribing,
         deleteTranscription
-    } = useContext(TranscriptionContext);
+    } = useTranscriptionContext();
 
     const {
         isRecording,
@@ -44,7 +44,7 @@ export const CreateNoteBar: FC<CreateNoteBarProps> = ({ isVisible }) => {
         startRecording,
         stopRecording,
         deleteRecording
-    } = useContext(RecordingContext);
+    } = useRecordingContext();
 
     useEffect(() => {
         if (recordedAudio) {
@@ -58,12 +58,8 @@ export const CreateNoteBar: FC<CreateNoteBarProps> = ({ isVisible }) => {
 
     const handleModalClose = () => {
         setModalOpen(false);
-
-        if (!!deleteRecording)
-            deleteRecording();
-
-        if (!!deleteTranscription)
-            deleteTranscription();
+        deleteRecording();
+        deleteTranscription();
     }
 
     return (

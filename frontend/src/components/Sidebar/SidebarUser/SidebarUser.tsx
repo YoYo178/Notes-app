@@ -1,4 +1,4 @@
-import { FC, Fragment, useContext, useEffect, useRef, useState } from "react";
+import { FC, Fragment, useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -7,7 +7,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 
 import { useLogoutMutation } from "../../../hooks/network/auth/useLogoutMutation";
 import { useLostFocus } from "../../../hooks/ui/useLostFocus.ts";
-import AuthContext from "../../../contexts/AuthProvider";
+import { useAuthContext } from "../../../contexts/AuthProvider.tsx";
 
 import { ButtonHandler, clearCachedData, DropdownOptionHandler } from "./SidebarUser";
 import { ProfileModal } from "../../ProfileModal/ProfileModal.tsx";
@@ -27,7 +27,7 @@ const dropdownMenuArr = Array.from(Object.entries(dropdownMenuOptions));
 
 export const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
     const queryClient = useQueryClient();
-    const { setAuth } = useContext(AuthContext);
+    const { setAuth } = useAuthContext();
 
     const [angle, setAngle] = useState(0);
     const [isDropdownMenuVisible, setIsDropdownMenuVisible] = useState(angle === 180);
@@ -42,9 +42,7 @@ export const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
 
     useEffect(() => {
         if (logoutMutation.isSuccess) {
-            if (!!setAuth)
-                setAuth({});
-
+            setAuth({});
             clearCachedData(queryClient);
 
             // Need to delay this slightly

@@ -1,10 +1,10 @@
-import { FC, useContext, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom';
 
 import { IoMdClose } from 'react-icons/io';
 import { FaCheck } from 'react-icons/fa';
 
-import AuthContext from '../../contexts/AuthProvider';
+import { useAuthContext } from '../../contexts/AuthProvider';
 import { useUpdateUserMutation } from '../../hooks/network/user/useUpdateUserMutation';
 
 import { ButtonHandler } from './ProfileModal';
@@ -18,7 +18,7 @@ interface CreateNoteModelProps {
 
 export const ProfileModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
     const updateUserMutation = useUpdateUserMutation({ queryKey: ['auth'] });
-    const { auth, setAuth } = useContext(AuthContext);
+    const { auth, setAuth } = useAuthContext();
 
     const [displayName, setDisplayName] = useState(auth?.displayName);
     const [email, setEmail] = useState(auth?.email);
@@ -28,7 +28,7 @@ export const ProfileModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
     useEffect(() => {
-        if (updateUserMutation.isSuccess && !!setAuth) {
+        if (updateUserMutation.isSuccess) {
             setAuth({ ...auth, displayName, email });
             onClose();
 

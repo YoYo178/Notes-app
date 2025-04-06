@@ -1,8 +1,9 @@
-import { createContext, FC, ReactNode, useEffect, useState } from "react";
+import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
 import { AxiosError } from "axios";
 
 import { useAuthQuery } from "../hooks/network/auth/useAuthQuery";
 import { User } from "../types/user.types";
+import { ReactSetState } from "../types/react.types";
 
 interface AuthProviderProps {
     children: ReactNode;
@@ -10,10 +11,10 @@ interface AuthProviderProps {
 
 interface AuthValues {
     auth: Partial<User> | null;
-    setAuth: React.Dispatch<React.SetStateAction<Partial<User> | null>> | null;
+    setAuth: ReactSetState<Partial<User> | null>;
 }
 
-const AuthContext = createContext<AuthValues>({ auth: null, setAuth: null })
+export const AuthContext = createContext<AuthValues | null>(null)
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     const [auth, setAuth] = useState<Partial<User> | null>(null)
@@ -43,4 +44,10 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     )
 }
 
-export default AuthContext;
+export function useAuthContext() {
+    const context = useContext(AuthContext);
+    if (!context)
+        throw new Error("[useAuthContext] Context is NULL!");
+
+    return context;
+}

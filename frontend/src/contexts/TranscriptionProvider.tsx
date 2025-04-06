@@ -1,11 +1,11 @@
-import { createContext, FC, ReactNode, useEffect, useRef, useState } from 'react'
+import { createContext, FC, ReactNode, useContext, useEffect, useRef, useState } from 'react'
 import { TranscriptionState } from '../types/transcription.types';
 
 interface TranscriptionProviderProps {
     children: ReactNode
 }
 
-const TranscriptionContext = createContext<Partial<TranscriptionState>>({});
+export const TranscriptionContext = createContext<TranscriptionState | null>(null);
 
 export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children }) => {
     const [isTranscribing, setIsTranscribing] = useState(false);
@@ -124,4 +124,10 @@ export const TranscriptionProvider: FC<TranscriptionProviderProps> = ({ children
     );
 }
 
-export default TranscriptionContext;
+export function useTranscriptionContext() {
+    const context = useContext(TranscriptionContext);
+    if (!context)
+        throw new Error("[useTranscriptionContext] Context is NULL!");
+
+    return context;
+}

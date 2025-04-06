@@ -1,12 +1,12 @@
-import { FC, useContext, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom';
 
 import { IoMdClose } from 'react-icons/io';
 import { FaCheck, FaPlus } from 'react-icons/fa';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 
-import TranscriptionContext from '../../../../contexts/TranscriptionProvider';
-import RecordingContext from '../../../../contexts/RecordingProvider';
+import { useTranscriptionContext } from '../../../../contexts/TranscriptionProvider';
+import { useRecordingContext } from '../../../../contexts/RecordingProvider';
 
 import { useCreateNoteMutation } from '../../../../hooks/network/note/useCreateNoteMutation';
 import { useGetFileUploadURLMutation } from '../../../../hooks/network/upload/useGetFileUploadURLMutation';
@@ -26,8 +26,8 @@ interface CreateNoteModelProps {
 }
 
 export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, noteType }) => {
-    const { recordingTime, recordedAudio } = useContext(RecordingContext);
-    const { transcript } = useContext(TranscriptionContext);
+    const { recordingTime, recordedAudio } = useRecordingContext();
+    const { transcript } = useTranscriptionContext();
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState(transcript || '');

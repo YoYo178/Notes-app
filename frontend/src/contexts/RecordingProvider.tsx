@@ -1,11 +1,11 @@
-import { createContext, FC, ReactNode, useEffect, useRef, useState } from 'react'
+import { createContext, FC, ReactNode, useContext, useEffect, useRef, useState } from 'react'
 import { RecordingState } from '../types/recording.types'
 
 interface AuthProviderProps {
     children: ReactNode;
 }
 
-const RecordingContext = createContext<Partial<RecordingState>>({})
+export const RecordingContext = createContext<RecordingState | null>(null)
 
 export const RecordingProvider: FC<AuthProviderProps> = ({ children }) => {
     const [isRecording, setIsRecording] = useState(false);
@@ -111,4 +111,10 @@ export const RecordingProvider: FC<AuthProviderProps> = ({ children }) => {
     )
 }
 
-export default RecordingContext;
+export function useRecordingContext() {
+    const context = useContext(RecordingContext);
+    if (!context)
+        throw new Error("[useRecordingContext] Context is NULL!");
+
+    return context;
+}

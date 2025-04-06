@@ -1,9 +1,9 @@
 import { UseMutationResult } from '@tanstack/react-query';
-import { FC, useContext, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 
-import AuthContext from '../../../contexts/AuthProvider';
+import { useAuthContext } from '../../../contexts/AuthProvider';
 import { LoginFields } from '../../../types/auth.types';
 
 import { ButtonHandler } from './LoginButton';
@@ -18,7 +18,7 @@ interface LoginButtonProps {
 }
 
 export const LoginButton: FC<LoginButtonProps> = ({ username, password, setErrorMessage, loginMutation }) => {
-    const { auth, setAuth } = useContext(AuthContext);
+    const { auth, setAuth } = useAuthContext();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -27,13 +27,11 @@ export const LoginButton: FC<LoginButtonProps> = ({ username, password, setError
             if (loginMutation.data) {
                 const data = loginMutation.data;
 
-                if (!!setAuth) {
-                    setAuth({
-                        username: username,
-                        displayName: data.user.displayName,
-                        id: data.user.id
-                    })
-                }
+                setAuth({
+                    username: username,
+                    displayName: data.user.displayName,
+                    id: data.user.id
+                })
             }
         } else if (loginMutation.isError) {
             if (loginMutation.error?.message) {

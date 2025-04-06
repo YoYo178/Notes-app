@@ -1,11 +1,11 @@
-import { FC, useContext } from 'react'
+import { FC } from 'react'
 
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { IoIosWarning } from 'react-icons/io'
 
-import AuthContext from '../../contexts/AuthProvider'
-import RecordingContext from '../../contexts/RecordingProvider.tsx'
-import TranscriptionContext from '../../contexts/TranscriptionProvider.tsx'
+import { useAuthContext } from '../../contexts/AuthProvider.tsx'
+import { useRecordingContext } from '../../contexts/RecordingProvider.tsx'
+import { useTranscriptionContext } from '../../contexts/TranscriptionProvider.tsx'
 
 import { MAX_AUDIO_RECORD_DURATION } from '../../types/recording.types.ts'
 
@@ -22,9 +22,9 @@ interface SidebarProps {
 }
 
 export const Sidebar: FC<SidebarProps> = ({ isSearchBoxOpen, isMediaQueryActive }) => {
-  const { transcript, hasSpeechRecognitionSupport } = useContext(TranscriptionContext)
-  const { isRecording, recordingTime } = useContext(RecordingContext);
-  const { auth } = useContext(AuthContext);
+  const { transcript, hasSpeechRecognitionSupport } = useTranscriptionContext();
+  const { isRecording, recordingTime } = useRecordingContext();
+  const { auth } = useAuthContext();
 
   return (
     <>
