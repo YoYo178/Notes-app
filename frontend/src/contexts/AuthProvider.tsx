@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthValues>({ auth: null, setAuth: null })
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     const [auth, setAuth] = useState<Partial<User> | null>(null)
-    const { data, isLoading, error } = useAuthQuery();
+    const { data, isLoading, error } = useAuthQuery({ queryKey: ['auth'] });
 
     useEffect(() => {
         if (!data)

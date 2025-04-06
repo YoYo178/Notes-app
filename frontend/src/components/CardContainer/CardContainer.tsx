@@ -22,7 +22,7 @@ export const CardContainer: FC<CardContainerProps> = ({ favoritesOnly, filterTex
     const [isCreateNoteBarVisible, setIsCreateNoteBarVisible] = useState(true);
 
     const { auth } = useContext(AuthContext);
-    const { data, isLoading, error } = useGetNotesQuery();
+    const { data, isLoading, error } = useGetNotesQuery({ queryKey: ['notes'] });
     const { sortOrder } = useRootLayoutContext();
 
     const notes: MNote[] = data?.notes?.map((note: any) => {
