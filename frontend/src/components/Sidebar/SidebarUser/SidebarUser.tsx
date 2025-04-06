@@ -5,9 +5,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { IoMdArrowDropdown } from "react-icons/io";
 
+import { useAuthContext } from "../../../contexts/AuthContext.tsx";
+
 import { useLogoutMutation } from "../../../hooks/network/auth/useLogoutMutation";
 import { useLostFocus } from "../../../hooks/ui/useLostFocus.ts";
-import { useAuthContext } from "../../../contexts/AuthContext.tsx";
 
 import { ButtonHandler, clearCachedData, DropdownOptionHandler } from "./SidebarUser";
 import { ProfileModal } from "../../ProfileModal/ProfileModal.tsx";

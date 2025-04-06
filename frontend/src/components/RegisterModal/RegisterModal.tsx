@@ -1,14 +1,14 @@
 import { FC, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { IoAt, IoKeyOutline, IoPersonOutline } from 'react-icons/io5';
 import { HiOutlineUserCircle } from 'react-icons/hi2';
+import { IoAt, IoKeyOutline, IoPersonOutline } from 'react-icons/io5';
 import { FaRegEye } from 'react-icons/fa6';
 
 import { useRegisterMutation } from '../../hooks/network/auth/useRegisterMutation.ts';
 
-import { RegisterButton } from './RegisterButton/RegisterButton.tsx';
 import { ButtonHandler } from './RegisterModal.ts';
+import { RegisterButton } from './RegisterButton/RegisterButton.tsx';
 
 import './RegisterModal.css';
 

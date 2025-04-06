@@ -7,10 +7,10 @@ export interface TranscriptionState {
 
     hasSpeechRecognitionSupport: boolean;
     setHasSpeechRecognitionSupport: ReactSetState<boolean>;
-    
+
     hasMicPermissions: boolean;
     setHasMicPermissions: ReactSetState<boolean>;
-    
+
     transcript: string;
     setTranscript: ReactSetState<string>;
 

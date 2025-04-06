@@ -1,4 +1,5 @@
 import { createContext, FC, ReactNode, useContext, useEffect, useRef, useState } from 'react'
+
 import { TranscriptionState } from '../types/transcription.types';
 
 interface TranscriptionProviderProps {

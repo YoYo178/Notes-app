@@ -1,9 +1,10 @@
-import { UseMutationResult } from '@tanstack/react-query';
 import { FC, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
+import { UseMutationResult } from '@tanstack/react-query';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuthContext } from '../../../contexts/AuthContext';
+
 import { LoginFields } from '../../../types/auth.types';
 
 import { ButtonHandler } from './LoginButton';

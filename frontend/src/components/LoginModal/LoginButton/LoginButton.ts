@@ -5,8 +5,8 @@ function loginButtonOnClick(
     username: string,
     password: string,
     loginMutation: UseMutationResult<any, Error, LoginFields | undefined, unknown>
-) {    
-    if (!username|| !password)
+) {
+    if (!username || !password)
         return;
 
     loginMutation.mutate({ username, password });

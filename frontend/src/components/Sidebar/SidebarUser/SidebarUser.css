@@ -57,10 +57,10 @@
     padding: 1rem;
     border: 1px solid #d0d4d9;
     border-radius: 1rem;
-    
+
     display: flex;
     flex-direction: column;
-    
+
     list-style-type: none;
 
     transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;

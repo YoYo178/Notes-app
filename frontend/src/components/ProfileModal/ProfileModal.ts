@@ -1,4 +1,5 @@
 import { UseMutationResult } from "@tanstack/react-query";
+
 import { User, UserUpdateFields } from "../../types/user.types";
 
 function profileModalOnSubmit(
@@ -6,7 +7,7 @@ function profileModalOnSubmit(
     currentAuthFields: Partial<User> | null,
     fields: Partial<UserUpdateFields>
 ) {
-    if(!currentAuthFields)
+    if (!currentAuthFields)
         return true;
 
     const { displayName, email } = currentAuthFields;

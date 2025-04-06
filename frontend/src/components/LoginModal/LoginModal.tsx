@@ -6,8 +6,8 @@ import { IoKeyOutline, IoPersonOutline } from 'react-icons/io5';
 
 import { useLoginMutation } from '../../hooks/network/auth/useLoginMutation.ts';
 
-import { LoginButton } from './LoginButton/LoginButton.tsx';
 import { ButtonHandler } from './LoginModal.ts';
+import { LoginButton } from './LoginButton/LoginButton.tsx';
 
 import './LoginModal.css';
 

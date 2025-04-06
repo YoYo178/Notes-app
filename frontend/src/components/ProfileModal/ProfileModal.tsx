@@ -5,6 +5,7 @@ import { IoMdClose } from 'react-icons/io';
 import { FaCheck } from 'react-icons/fa';
 
 import { useAuthContext } from '../../contexts/AuthContext';
+
 import { useUpdateUserMutation } from '../../hooks/network/user/useUpdateUserMutation';
 
 import { ButtonHandler } from './ProfileModal';

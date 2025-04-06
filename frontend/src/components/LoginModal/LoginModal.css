@@ -50,9 +50,9 @@
 .password-field {
     border: none;
     outline: none;
-    
+
     flex: 1;
-    
+
     padding: 0.5rem;
     margin-right: 0.5rem;
 }
@@ -82,7 +82,7 @@
     font-family: 'Inter';
     font-weight: bold;
 
-    color:#6d6d6d;
+    color: #6d6d6d;
 }
 
 .forgot-password-button {
@@ -90,7 +90,7 @@
     font-family: 'Inter';
     font-weight: bold;
 
-    color:#6d6d6d;
+    color: #6d6d6d;
     text-decoration: none;
     margin-top: 0.2rem;
     margin-bottom: 1rem;
@@ -101,7 +101,7 @@
     padding: 1rem;
     text-align: center;
     border-radius: 1rem;
-    
+
     font-family: 'Inter';
     font-weight: bold;
     font-size: 0.9rem;
@@ -135,7 +135,8 @@
     transition: background-color 0.1s ease-out;
     font-size: 1rem;
 }
-.toggle-password-visibility-button > svg {
+
+.toggle-password-visibility-button>svg {
     transform: translateY(8%);
 }
 

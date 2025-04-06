@@ -54,12 +54,13 @@
     background-color: rgb(163, 163, 163);
 }
 
-.sm-login-button, .sm-register-button {
+.sm-login-button,
+.sm-register-button {
     color: #f4eaff;
     background-color: #6d33aa;
     padding: 1rem;
     width: 10rem;
-    
+
     text-align: center;
     border-radius: 1rem;
 
@@ -70,10 +71,12 @@
     transition: scale 200ms ease-out;
 }
 
-.sm-login-button:hover, .sm-register-button:hover {
+.sm-login-button:hover,
+.sm-register-button:hover {
     scale: 105%;
 }
 
-.sm-login-button:visited, .sm-register-button:visited {
+.sm-login-button:visited,
+.sm-register-button:visited {
     color: #f4eaff;
 }

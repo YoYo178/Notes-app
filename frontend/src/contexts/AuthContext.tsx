@@ -2,6 +2,7 @@ import { createContext, FC, ReactNode, useContext, useEffect, useState } from "r
 import { AxiosError } from "axios";
 
 import { useAuthQuery } from "../hooks/network/auth/useAuthQuery";
+
 import { User } from "../types/user.types";
 import { ReactSetState } from "../types/react.types";
 

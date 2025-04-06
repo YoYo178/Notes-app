@@ -46,7 +46,7 @@
     width: 13rem;
 }
 
-.rm-display-name-container .rm-field-container > input {
+.rm-display-name-container .rm-field-container>input {
     width: 10rem;
 }
 
@@ -58,9 +58,9 @@
 .rm-field-confirm-password {
     border: none;
     outline: none;
-    
+
     flex: 1;
-    
+
     padding: 0.5rem;
     margin-right: 0.5rem;
 }
@@ -80,7 +80,7 @@
     font-family: 'Inter';
     font-weight: bold;
 
-    color:#6d6d6d;
+    color: #6d6d6d;
     text-decoration: none;
     margin-top: 0.2rem;
     margin-bottom: 1rem;
@@ -106,7 +106,7 @@
     font-size: 1rem;
 }
 
-.rm-toggle-password-button > svg {
+.rm-toggle-password-button>svg {
     transform: translateY(8%);
 }
 
@@ -130,7 +130,7 @@
     font-family: 'Inter';
     font-weight: bold;
 
-    color:#6d6d6d;
+    color: #6d6d6d;
 }
 
 .rm-existing-acc-button {
@@ -150,7 +150,7 @@
     padding: 1rem;
     text-align: center;
     border-radius: 1rem;
-    
+
     font-family: 'Inter';
     font-weight: bold;
     font-size: 0.9rem;
@@ -161,7 +161,7 @@
     padding: 1rem;
     text-align: center;
     border-radius: 1rem;
-    
+
     font-family: 'Inter';
     font-weight: bold;
     font-size: 0.9rem;

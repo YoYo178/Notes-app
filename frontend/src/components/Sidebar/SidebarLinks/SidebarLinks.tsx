@@ -8,14 +8,14 @@ import './SidebarLinks.css'
 export const SidebarLinks: FC = () => {
   return (
     <div className="sidebar-links">
-      <SidebarButton 
-        icon={<AiOutlineHome className="sidebar-icon" />} 
-        text="Home" 
+      <SidebarButton
+        icon={<AiOutlineHome className="sidebar-icon" />}
+        text="Home"
         to="/dashboard"
       />
-      <SidebarButton 
-        icon={<AiOutlineStar className="sidebar-icon" />} 
-        text="Favourites" 
+      <SidebarButton
+        icon={<AiOutlineStar className="sidebar-icon" />}
+        text="Favourites"
         to="/favorites"
       />
     </div>

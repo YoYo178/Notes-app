@@ -9,10 +9,10 @@
     padding: 1rem;
     border: 1px solid #d0d4d9;
     border-radius: 1rem;
-    
+
     display: flex;
     flex-direction: column;
-    
+
     list-style-type: none;
 
     transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;

@@ -1,4 +1,5 @@
 import { UseMutationResult } from "@tanstack/react-query";
+
 import { Note } from "../../../../types/note.types";
 
 function saveNoteOnClick(

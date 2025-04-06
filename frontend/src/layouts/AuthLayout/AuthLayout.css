@@ -1,7 +1,7 @@
 .auth-form-container {
     width: 100vw;
     height: 100vh;
-    
+
     background: linear-gradient(90deg, hsla(53, 84%, 74%, 1) 0%, hsla(336, 87%, 61%, 1) 50%, hsla(262, 81%, 71%, 1) 100%);
 
     display: flex;

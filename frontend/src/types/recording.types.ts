@@ -19,6 +19,6 @@ export interface RecordingState {
     /* Miscellaneous */
     startRecording: (duration: number) => Promise<boolean>;
     stopRecording: () => string | null;
-    
+
     deleteRecording: () => void;
 }

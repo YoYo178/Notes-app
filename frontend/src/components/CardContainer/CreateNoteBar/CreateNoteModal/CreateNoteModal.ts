@@ -1,6 +1,7 @@
-import { UseMutationResult } from "@tanstack/react-query"
-import { NotePayload } from "../../../../types/note.types";
 import { BaseSyntheticEvent, RefObject } from "react";
+import { UseMutationResult } from "@tanstack/react-query";
+
+import { NotePayload } from "../../../../types/note.types";
 import { ReactSetState } from "../../../../types/react.types";
 import { GetFileUploadURLParameters, ImageFile } from "../../../../types/file.types";
 

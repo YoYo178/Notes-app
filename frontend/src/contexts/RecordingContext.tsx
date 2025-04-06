@@ -1,4 +1,5 @@
 import { createContext, FC, ReactNode, useContext, useEffect, useRef, useState } from 'react'
+
 import { RecordingState } from '../types/recording.types'
 
 interface AuthProviderProps {

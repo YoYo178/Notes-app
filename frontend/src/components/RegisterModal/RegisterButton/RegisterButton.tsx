@@ -1,7 +1,7 @@
-import { FC, ReactNode, useEffect, useState } from 'react';
+import axios, { AxiosError } from 'axios';
 import { UseMutationResult } from '@tanstack/react-query';
 import { Navigate, useLocation } from 'react-router-dom';
-import axios, { AxiosError } from 'axios';
+import { FC, ReactNode, useEffect, useState } from 'react';
 
 import { RegisterFields } from '../../../types/auth.types';
 
