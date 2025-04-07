@@ -3,7 +3,7 @@ import expressAsyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import HttpStatusCodes from "@src/common/HttpStatusCodes";
 import { isObjectIdOrHexString, ObjectId } from "mongoose";
-import { Note } from "@src/models/Note";
+import { INote, Note } from "@src/models/Note";
 
 /**
  * @route GET /notes
@@ -41,7 +41,7 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const { title, description, images, isText, isFavorite, duration } = req.body;
+    const { title, description, images, isText, isFavorite, duration, audioKey } = req.body as INote;
 
     if (
         !title || !description || duration === undefined ||
@@ -55,10 +55,11 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
         user: (user._id as ObjectId).toString(),
         title,
         description,
-        images: (images && images.length) ? images : [],
+        images: images ?? [],
         isText,
-        isFavorite: isFavorite !== undefined && isFavorite !== null ? isFavorite : false,
-        duration: duration !== null ? duration : null
+        isFavorite: isFavorite ?? false,
+        duration: duration ?? null,
+        audioKey
     })
 
     res.status(HttpStatusCodes.OK).send({ message: "Note created successfully", id: (note._id as ObjectId).toString() });
@@ -77,7 +78,7 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const { id, title, description, images, isText, isFavorite, duration } = req.body;
+    const { id, title, description, images, isFavorite } = req.body;
 
     if (!id) {
         res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Note ID is required" });
@@ -98,13 +99,8 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
 
     note.title = title || note.title;
     note.description = description || note.description;
-    note.images = (images && images.length) ? images : note.images;
-    note.isText = isText || note.isText; // TODO: should users be allowed to change this?
-    note.duration = duration || note.duration; // TODO: should users be allowed to change this?
-
-    if (isFavorite !== null && isFavorite !== undefined && isFavorite != note.isFavorite) {
-        note.isFavorite = isFavorite;
-    }
+    note.images = images ?? note.images;
+    note.isFavorite = isFavorite ?? note.isFavorite;
 
     await note.save();
 
