@@ -72,11 +72,16 @@ const getUploadURL = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const getURL = asyncHandler(async (req: Request, res: Response) => {
-  const { fileKey } = req.params;
+  const { fileKey } = req.query;
   const userId = req.user?.id;
 
   if (!userId) {
     res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized' });
+    return;
+  }
+
+  if (!fileKey || typeof fileKey != 'string') {
+    res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Invalid payload, fileKey must be a string!' });
     return;
   }
 
@@ -97,6 +102,40 @@ const getURL = asyncHandler(async (req: Request, res: Response) => {
     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
   }
 });
+
+const getMultipleURL = asyncHandler(async (req: Request, res: Response) => {
+  const { fileKeys } = req.body;
+  const userId = req.user?.id;
+
+  console.log(fileKeys)
+
+  if (!fileKeys || !Array.isArray(fileKeys) || !fileKeys?.length) {
+    res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Invalid payload, fileKeys must be a non-empty array!' });
+    return;
+  }
+
+  const urlArray = await Promise.all(
+    fileKeys.map(async key => {
+      // Verify that the file belongs to the user
+      if (!key.includes(`/${userId}/`)) {
+        res.status(HttpStatusCodes.FORBIDDEN).json({ message: 'Forbidden' });
+        return;
+      }
+
+      try {
+        return await s3Service.generateFileUrl(key);
+      } catch (error) {
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+        return;
+      }
+    })
+  )
+
+  res.status(HttpStatusCodes.OK).json({
+    urlArray,
+    expiresIn: S3_CONFIG.urlExpirationTime
+  })
+})
 
 const deleteFile = asyncHandler(async (req: Request, res: Response) => {
   const { fileKey } = req.params;
@@ -124,5 +163,6 @@ const deleteFile = asyncHandler(async (req: Request, res: Response) => {
 export default {
   getUploadURL,
   getURL,
+  getMultipleURL,
   deleteFile,
 }
