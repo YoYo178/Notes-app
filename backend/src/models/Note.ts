@@ -6,6 +6,7 @@ interface INote {
     title: string;
     description: string;
     images?: string[];
+    audioKey?: string;
     isFavorite?: boolean;
     isText: boolean;
     duration: null | number;
@@ -18,6 +19,7 @@ const noteSchema: Schema = new Schema<INote>(
         description: { type: String, required: true },
         isText: { type: Boolean, required: true, default: true },
         images: [{ type: String, required: false }],
+        audioKey: { type: String, required: false },
         isFavorite: { type: Boolean, required: false, default: false },
         duration: { type: Schema.Types.Mixed, required: false, default: null }
     },
