@@ -16,7 +16,7 @@ export const SidebarLinks: FC = () => {
       <SidebarButton
         icon={<AiOutlineStar className="sidebar-icon" />}
         text="Favourites"
-        to="/favorites"
+        to="/dashboard/favorites"
       />
     </div>
   )

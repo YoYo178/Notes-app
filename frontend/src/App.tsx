@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"
 
 import { AuthLayout } from "./layouts/AuthLayout/AuthLayout"
 import { RootLayout } from "./layouts/RootLayout/RootLayout"
@@ -6,7 +6,6 @@ import { PublicRouteLayout } from "./layouts/PublicRouteLayout/PublicRouteLayout
 import { ProtectedRouteLayout } from "./layouts/ProtectedRouteLayout/ProtectedRouteLayout"
 
 import { Dashboard } from "./pages/Dashboard"
-import { Favorites } from "./pages/Favorites"
 
 import { Home } from "./pages/Home"
 import { Login } from "./pages/Login"
@@ -18,8 +17,10 @@ export const App = () => {
       <Routes>
         <Route element={<ProtectedRouteLayout />}>
           <Route element={<RootLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/dashboard" element={<Outlet />}>
+              <Route index element={<Dashboard />} />
+              <Route path="favorites" element={<Dashboard />} />
+            </Route>
           </Route>
         </Route>
 
