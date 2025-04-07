@@ -58,7 +58,7 @@ export const RecordingProvider: FC<AuthProviderProps> = ({ children }) => {
                 setRecordingTime(prev => {
                     if (prev >= duration - 1) {
                         stopRecording();
-                        return 0;
+                        return prev;
                     }
                     return prev + 1;
                 });
