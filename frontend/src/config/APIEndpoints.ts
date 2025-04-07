@@ -54,8 +54,12 @@ const APIEndpoints: Endpoints = {
 
     /***** FILES *****/
     GET_FILE_URL: {
-        URL: "/api/files/getURL/:fileKey",
+        URL: "/api/files/getURL",
         METHOD: "GET"
+    },
+    GET_MULTIPLE_FILES_URL: {
+        URL: "/api/files/getMultipleURL",
+        METHOD: "POST"
     },
     GET_FILE_UPLOAD_URL: {
         URL: "/api/files/getUploadURL",
