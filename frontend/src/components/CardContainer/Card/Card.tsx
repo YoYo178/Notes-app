@@ -46,10 +46,12 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
             </div>
             <div className="card-title">{title}</div>
             <div className="card-description">{description}</div>
-            {images?.length && <div className="card-image-attached">
-                <CiImageOn className="card-image-attached-logo" />
-                <span className='card-image-attached-text'>{images.length > 1 ? `${images.length} Images` : `${images.length} Image`}</span>
-            </div>}
+            {!!images?.length && (
+                <div className="card-image-attached">
+                    <CiImageOn className="card-image-attached-logo" />
+                    <span className='card-image-attached-text'>{images.length > 1 ? `${images.length} Images` : `${images.length} Image`}</span>
+                </div>
+            )}
 
             <div className="card-buttons-container">
                 <button className='card-favorite-button' onClick={() => ButtonHandler.favoriteOnClick(updateNoteMutation, id, isFavorite)}>
