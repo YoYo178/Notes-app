@@ -33,7 +33,7 @@ export const useMutationBase = <T>(
                     response = await HTTPFunc(URL, payload, { withCredentials: sendCookies });
 
                 if (endpoint.METHOD === "DELETE")
-                    response = await HTTPFunc(URL, { withCredentials: sendCookies, payload });
+                    response = await HTTPFunc(URL, { withCredentials: sendCookies, data: payload });
 
                 if (endpoint.METHOD === "OPTIONS")
                     response = await HTTPFunc(URL, { withCredentials: sendCookies });
