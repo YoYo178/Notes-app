@@ -1,10 +1,10 @@
-import { UseMutationResult } from "@tanstack/react-query";
-
 import { RegisterFields } from "../../types/auth.types";
 
 import { ButtonHandler as RegisterButtonHandler } from "./RegisterButton/RegisterButton";
 
-function onKeyDown(e: React.KeyboardEvent<HTMLFormElement>, registerData: RegisterFields, registerMutation: UseMutationResult<any, Error, RegisterFields | undefined, unknown>) {
+import { TMutation } from "../../types/react.types";
+
+function onKeyDown(e: React.KeyboardEvent<HTMLFormElement>, registerData: RegisterFields, registerMutation: TMutation<RegisterFields>) {
     if (e.key === "Enter") {
         e.preventDefault();
         RegisterButtonHandler.registerButtonOnClick(registerData, registerMutation)

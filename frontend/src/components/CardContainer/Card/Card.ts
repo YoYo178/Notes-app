@@ -1,21 +1,35 @@
-import { UseMutationResult } from "@tanstack/react-query"
-
 import { Note } from "../../../types/note.types"
+import { ReactSetState, TOptimisticMutation } from "../../../types/react.types";
 
-function favoriteOnClick(useUpdateNoteMutation: UseMutationResult<any, Error, Partial<Note> | undefined, unknown>, id: string, isFavorite: boolean | undefined) {
+function favoriteOnClick(useUpdateNoteMutation: TOptimisticMutation<Partial<Note>>, id: string, isFavorite: boolean | undefined) {
     useUpdateNoteMutation.mutate({
-        id,
-        isFavorite: !isFavorite
+        payload: {
+            id,
+            isFavorite: !isFavorite
+        }
     });
 }
 
-function deleteOnClick(useDeleteNoteMutation: UseMutationResult<any, Error, { id: string } | undefined, unknown>, id: string) {
-    useDeleteNoteMutation.mutate({
-        id
+function deleteOnClick(deleteNoteMutation: TOptimisticMutation<{ id: string }>, note: Note) {
+
+    if (note.audio) {
+        // TODO
+    }
+
+    if (note.images?.length) {
+        note.images.forEach(async imageFile => {
+            // TODO
+        })
+    }
+
+    deleteNoteMutation.mutate({
+        payload: {
+            id: note.id
+        }
     });
 }
 
-function copyOnClick(title: string, description: string, setIsCopied: React.Dispatch<React.SetStateAction<boolean>>, timeoutRef: React.MutableRefObject<number>) {
+function copyOnClick(title: string, description: string, setIsCopied: ReactSetState<boolean>, timeoutRef: React.MutableRefObject<number>) {
     navigator.clipboard.writeText(`${title}\n${description}`);
 
     setIsCopied(true);

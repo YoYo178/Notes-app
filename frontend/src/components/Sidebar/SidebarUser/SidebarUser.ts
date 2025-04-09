@@ -1,7 +1,9 @@
-import { QueryClient, UseMutationResult } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+
+import { ReactSetState, TMutation } from "../../../types/react.types";
 
 /***** Button handlers *****/
-function dropdownButtonOnClick(setAngle: React.Dispatch<React.SetStateAction<number>>, angle: number, setIsDropdownMenuVisible: React.Dispatch<React.SetStateAction<boolean>>) {
+function dropdownButtonOnClick(setAngle: ReactSetState<number>, angle: number, setIsDropdownMenuVisible: ReactSetState<boolean>) {
     setAngle(180 - angle);
     setIsDropdownMenuVisible((180 - angle) === 180);
 }
@@ -9,7 +11,7 @@ function dropdownButtonOnClick(setAngle: React.Dispatch<React.SetStateAction<num
 /***** Dropdown option handlers *****/
 interface ProfileParameters {
     isProfileModalOpen: boolean,
-    setIsProfileModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setIsProfileModalOpen: ReactSetState<boolean>
 }
 function profileOnClick(params: ProfileParameters) {
     const { isProfileModalOpen, setIsProfileModalOpen } = params;
@@ -21,7 +23,7 @@ function profileOnClick(params: ProfileParameters) {
 }
 
 interface LogoutParameters {
-    logoutMutation: UseMutationResult<any, Error, unknown, unknown>
+    logoutMutation: TMutation<unknown>
 }
 function logOutOnClick(params: LogoutParameters) {
     const { logoutMutation } = params;

@@ -1,9 +1,9 @@
 import axios, { AxiosError } from 'axios';
-import { UseMutationResult } from '@tanstack/react-query';
 import { Navigate, useLocation } from 'react-router-dom';
 import { FC, ReactNode, useEffect, useState } from 'react';
 
 import { RegisterFields } from '../../../types/auth.types';
+import { ReactSetState, TMutation } from '../../../types/react.types';
 
 import { ButtonHandler } from './RegisterButton';
 
@@ -11,9 +11,9 @@ import './RegisterButton.css';
 
 interface RegisterButtonProps {
     registerData: RegisterFields;
-    setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-    setSuccessMessage: React.Dispatch<React.SetStateAction<string>>;
-    registerMutation: UseMutationResult<any, Error, RegisterFields | undefined, unknown>
+    setErrorMessage: ReactSetState<string>;
+    setSuccessMessage: ReactSetState<string>;
+    registerMutation: TMutation<RegisterFields>
 }
 
 export const RegisterButton: FC<RegisterButtonProps> = ({ registerData, setErrorMessage, setSuccessMessage, registerMutation }) => {

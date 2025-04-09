@@ -1,11 +1,11 @@
 import { FC, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
-import { UseMutationResult } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuthContext } from '../../../contexts/AuthContext';
 
 import { LoginFields } from '../../../types/auth.types';
+import { ReactSetState, TMutation } from '../../../types/react.types';
 
 import { ButtonHandler } from './LoginButton';
 
@@ -14,8 +14,8 @@ import './LoginButton.css';
 interface LoginButtonProps {
     username: string;
     password: string;
-    setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-    loginMutation: UseMutationResult<any, Error, LoginFields | undefined, unknown>
+    setErrorMessage: ReactSetState<string>;
+    loginMutation: TMutation<LoginFields>
 }
 
 export const LoginButton: FC<LoginButtonProps> = ({ username, password, setErrorMessage, loginMutation }) => {

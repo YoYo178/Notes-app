@@ -1,9 +1,8 @@
-import { UseMutationResult } from "@tanstack/react-query";
-
 import { User, UserUpdateFields } from "../../types/user.types";
+import { TOptimisticMutation } from "../../types/react.types";
 
 function profileModalOnSubmit(
-    updateUserMutation: UseMutationResult<any, Error, Partial<UserUpdateFields> | undefined, unknown>,
+    updateUserMutation: TOptimisticMutation<Partial<UserUpdateFields>>,
     currentAuthFields: Partial<User> | null,
     fields: Partial<UserUpdateFields>
 ) {
@@ -16,7 +15,9 @@ function profileModalOnSubmit(
     if (displayName === newDisplayName && email === newEmail && !currentPassword && !newPassword && !confirmNewPassword)
         return true;
 
-    updateUserMutation.mutate(fields);
+    updateUserMutation.mutate({
+        payload: fields
+    });
 }
 
 export const ButtonHandler = {

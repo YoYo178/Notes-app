@@ -67,7 +67,7 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
                     <FaRegCopy />
                 </button>
 
-                <button className='card-delete-button' onClick={() => ButtonHandler.deleteOnClick(deleteNoteMutation, id)}>
+                <button className='card-delete-button' onClick={() => ButtonHandler.deleteOnClick(deleteNoteMutation, { date, duration, isText, title, description, isFavorite, id, images, audio, rawDate })}>
                     <RiDeleteBin6Line />
                 </button>
 

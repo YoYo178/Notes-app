@@ -2,16 +2,16 @@ import { BaseSyntheticEvent, RefObject } from "react";
 import { UseMutationResult } from "@tanstack/react-query";
 
 import { NotePayload } from "../../../../types/note.types";
-import { ReactSetState } from "../../../../types/react.types";
+import { ReactSetState, TMutation, TOptimisticMutation } from "../../../../types/react.types";
 import { GetFileUploadURLParameters, ImageFile } from "../../../../types/file.types";
 
 async function addNoteOnClick(
-    createNoteMutation: UseMutationResult<any, Error, NotePayload | undefined, unknown>,
+    createNoteMutation: TOptimisticMutation<NotePayload>,
     fields: NotePayload,
     setIsUploading: ReactSetState<boolean>,
     images: ImageFile[],
-    getUploadUrlMutation: UseMutationResult<any, Error, GetFileUploadURLParameters | undefined, unknown>,
-    uploadToS3Mutation: UseMutationResult<any, Error, { url: string, file: File }, unknown>,
+    getUploadUrlMutation: TMutation<GetFileUploadURLParameters>,
+    uploadToS3Mutation: UseMutationResult<any, Error, { url: string; file: File; }, unknown>,
     noteType: 'text' | 'audio',
     recordedAudio: string | undefined,
     recordingTime: number | undefined
@@ -29,10 +29,12 @@ async function addNoteOnClick(
         const imageUploadPromises = images.map(async (image) => {
             // Get pre-signed URL
             const { uploadUrl, key } = await getUploadUrlMutation.mutateAsync({
-                fileName: image.name,
-                fileType: 'image',
-                contentType: image.type,
-                fileSize: image.size,
+                payload: {
+                    fileName: image.name,
+                    fileType: 'image',
+                    contentType: image.type,
+                    fileSize: image.size,
+                }
             });
 
             // Upload to S3
@@ -56,11 +58,13 @@ async function addNoteOnClick(
 
             // Get pre-signed URL
             const { uploadUrl, key } = await getUploadUrlMutation.mutateAsync({
-                fileName: file.name,
-                fileType: 'audio',
-                contentType: file.type,
-                fileSize: file.size,
-                audioDuration: recordingTime
+                payload: {
+                    fileName: file.name,
+                    fileType: 'audio',
+                    contentType: file.type,
+                    fileSize: file.size,
+                    audioDuration: recordingTime
+                }
             });
 
             // Upload to S3
@@ -74,13 +78,15 @@ async function addNoteOnClick(
 
         // Create the note with uploaded file keys
         createNoteMutation.mutate({
-            title,
-            description,
-            isText: noteType === 'text',
-            duration: `00:${String(recordingTime).padStart(2, '0')}`,
-            audioKey,
-            images: imageKeys,
-            isFavorite
+            payload: {
+                title,
+                description,
+                isText: noteType === 'text',
+                duration: `00:${String(recordingTime).padStart(2, '0')}`,
+                audioKey,
+                images: imageKeys,
+                isFavorite
+            }
         });
 
     } catch (error: any) {
@@ -89,7 +95,7 @@ async function addNoteOnClick(
     }
 }
 
-function uploadImageOnClick(fileInputRef: RefObject<HTMLInputElement | null>, images: ImageFile[], setImages: React.Dispatch<React.SetStateAction<ImageFile[]>>) {
+function uploadImageOnClick(fileInputRef: RefObject<HTMLInputElement | null>, images: ImageFile[], setImages: ReactSetState<ImageFile[]>) {
     if (!fileInputRef.current)
         return;
 
@@ -132,7 +138,7 @@ function uploadImageOnClick(fileInputRef: RefObject<HTMLInputElement | null>, im
     inputButton.value = '';
 }
 
-function deleteImageOnClick(e: React.MouseEvent<HTMLButtonElement>, images: ImageFile[], setImages: React.Dispatch<React.SetStateAction<ImageFile[]>>) {
+function deleteImageOnClick(e: React.MouseEvent<HTMLButtonElement>, images: ImageFile[], setImages: ReactSetState<ImageFile[]>) {
     const event = e as BaseSyntheticEvent;
 
     const ID = parseInt(event.target.closest(".cnm-image-delete-button").id.split("-button-")[1]);

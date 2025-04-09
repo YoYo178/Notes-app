@@ -6,11 +6,13 @@ import { useNotesContext } from '../../contexts/NotesContext';
 
 import { useLostFocus } from '../../hooks/ui/useLostFocus';
 
+import { ReactSetState } from '../../types/react.types';
+
 import './SearchBox.css'
 
 interface SearchBoxProps {
   isSearchBoxOpen: boolean;
-  setIsSearchBoxOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsSearchBoxOpen: ReactSetState<boolean>;
   isMediaQueryActive: boolean;
 }
 

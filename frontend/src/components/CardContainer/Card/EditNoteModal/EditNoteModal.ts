@@ -1,10 +1,9 @@
-import { UseMutationResult } from "@tanstack/react-query";
-
 import { Note } from "../../../../types/note.types";
+import { TMutation } from "../../../../types/react.types";
 
 function saveNoteOnClick(
-    createNoteMutation: UseMutationResult<any, Error, Partial<Note> | undefined, unknown>,
     fields: Partial<Note>
+    createNoteMutation: TMutation<Partial<Note>>,
 ) {
     const { id, title, description, isText, isFavorite, images, duration } = fields;
 
@@ -14,13 +13,15 @@ function saveNoteOnClick(
     }
 
     createNoteMutation.mutate({
-        id,
-        title,
-        description,
-        isText,
-        duration,
-        isFavorite,
-        images
+        payload: {
+            id,
+            title,
+            description,
+            isText,
+            duration,
+            isFavorite,
+            images
+        }
     })
 }
 
