@@ -19,7 +19,7 @@ export const AuthContext = createContext<AuthValues | null>(null)
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     const [auth, setAuth] = useState<Partial<User> | null>(null)
-    const { data, isLoading, error } = useAuthQuery({ queryKey: ['auth'] });
+    const { data, error } = useAuthQuery({ queryKey: ['auth'] });
 
     useEffect(() => {
         if (!data)
@@ -32,10 +32,6 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     if (error) {
         if ((error as AxiosError).status !== 401)
             return <div>Error!</div>
-    }
-
-    if (isLoading) {
-        return <div>Loading...</div>
     }
 
     return (
