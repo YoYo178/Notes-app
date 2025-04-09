@@ -5,3 +5,10 @@ export function injectPathParams(url: string, pathParams: Record<string, string>
     }
     return updatedUrl;
 }
+
+export const injectQueryParams = (url: string, queryParams?: Record<string, string>) => {
+    if (!queryParams) return url;
+
+    const queryString = new URLSearchParams(queryParams).toString();
+    return `${url}?${queryString}`;
+};
