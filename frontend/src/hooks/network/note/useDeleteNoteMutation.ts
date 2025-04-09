@@ -8,12 +8,12 @@ export const useDeleteNoteMutation = useMutationBase<{ id: string }>(
     "Deleting Notes",
     true,
     {
-        optimisticUpdate: ({ id }, oldData: { notes: ServerNote[] }) => {
-            if (!oldData || !oldData.notes || !id) return oldData;
+        optimisticUpdate: ({ payload }, oldData: { notes: ServerNote[] }) => {
+            if (!oldData || !oldData.notes || !payload?.id) return oldData;
 
             return {
                 notes: oldData.notes.map((note: ServerNote) =>
-                    note._id === id
+                    note._id === payload.id
                         ? null
                         : note
                 ).filter(note => !!note)

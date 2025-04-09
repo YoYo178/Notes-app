@@ -10,7 +10,7 @@ export const useMutationBase = <T>(
     actionName: string,
     sendCookies: boolean = false,
     options?: {
-        optimisticUpdate?: (variables: T, oldData: any) => any;
+        optimisticUpdate?: (variables: { payload: T }, oldData: any) => any;
     }
 ) => {
     return ({ queryKey = [] }: { queryKey?: string[]; }) => {
@@ -47,7 +47,7 @@ export const useMutationBase = <T>(
                 const previousData = queryClient.getQueryData(queryKey);
 
                 if (queryKey.length && options?.optimisticUpdate) {
-                    const updated = options.optimisticUpdate(variables as T, previousData);
+                    const updated = options.optimisticUpdate(variables as { payload: T }, previousData);
                     queryClient.setQueryData(queryKey, updated);
                 }
 

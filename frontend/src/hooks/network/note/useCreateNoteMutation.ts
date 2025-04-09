@@ -8,10 +8,10 @@ export const useCreateNoteMutation = useMutationBase<NotePayload>(
     "Creating note",
     true,
     {
-        optimisticUpdate: (newNote, oldData: { notes: ServerNote[] }) => {
-            if (!oldData || !oldData.notes || !newNote) return oldData;
+        optimisticUpdate: ({ payload }, oldData: { notes: ServerNote[] }) => {
+            if (!oldData || !oldData.notes || !payload) return oldData;
             return {
-                notes: [{ ...newNote, _id: crypto.randomUUID(), createdAt: Date.now() }, ...oldData.notes]
+                notes: [{ ...payload, _id: crypto.randomUUID(), createdAt: Date.now() }, ...oldData.notes]
             };
         }
     }

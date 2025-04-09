@@ -10,13 +10,13 @@ export const useUpdateNoteMutation = useMutationBase<NotePartial>(
     "Updating Notes",
     true,
     {
-        optimisticUpdate: (variables, oldData) => {
-            if (!oldData || !oldData.notes || !variables?.id) return oldData;
+        optimisticUpdate: ({ payload }, oldData) => {
+            if (!oldData || !oldData.notes || !payload?.id) return oldData;
 
             return {
                 notes: oldData.notes.map((note: ServerNote) =>
-                    note._id === variables.id
-                        ? { ...note, ...variables }
+                    note._id === payload.id
+                        ? { ...note, ...payload }
                         : note
                 )
             }
