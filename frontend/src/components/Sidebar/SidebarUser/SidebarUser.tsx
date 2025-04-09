@@ -43,7 +43,7 @@ export const SidebarUser: FC<SidebarUserProps> = ({ displayName }) => {
 
     useEffect(() => {
         if (logoutMutation.isSuccess) {
-            setAuth({});
+            setAuth(null);
             clearCachedData(queryClient);
 
             // Need to delay this slightly
