@@ -7,8 +7,8 @@ import { Endpoint } from "../../types/api.types";
 import { injectPathParams } from "../../util/api.utils";
 
 export function useQueryBase(endpoint: Endpoint, sendCookies: boolean = false, shouldRetry: boolean | ((failureCount: number, error: any) => boolean) = false, staleTime: number | undefined = undefined) {
-    return ({ queryKey, pathParams = {}, enabled = true }: { queryKey?: string[]; pathParams?: Record<string, string>; enabled?: boolean }) => {
-        const URL = injectPathParams(endpoint.URL, pathParams);
+    return ({ queryKey, pathParams, enabled = true }: { queryKey?: string[]; pathParams?: Record<string, string>; enabled?: boolean }) => {
+        const URL = pathParams ? injectPathParams(endpoint.URL, pathParams) : endpoint.URL;
 
         return useQuery({
             queryKey: queryKey || [],
