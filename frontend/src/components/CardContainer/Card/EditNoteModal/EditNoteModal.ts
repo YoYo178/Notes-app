@@ -1,9 +1,9 @@
 import { Note } from "../../../../types/note.types";
-import { TMutation } from "../../../../types/react.types";
+import { TOptimisticMutation } from "../../../../types/react.types";
 
 function saveNoteOnClick(
+    editNoteMutation: TOptimisticMutation<Partial<Note>>,
     fields: Partial<Note>
-    createNoteMutation: TMutation<Partial<Note>>,
 ) {
     const { id, title, description, isText, isFavorite, images, duration } = fields;
 
@@ -12,7 +12,7 @@ function saveNoteOnClick(
         return;
     }
 
-    createNoteMutation.mutate({
+    editNoteMutation.mutate({
         payload: {
             id,
             title,

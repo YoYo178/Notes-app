@@ -62,6 +62,10 @@
     gap: 1rem;
 }
 
+.enm-audio-player {
+    width: 100%
+}
+
 .enm-text-field-container {
     border: 1px solid #d0d4d9;
     border-radius: 10px;
@@ -119,6 +123,62 @@
 
 .enm-field-description::placeholder {
     font-size: 1.1rem;
+}
+
+.enm-images-container {
+    display: grid;
+    grid-template-rows: 8rem;
+    grid-auto-flow: column;
+    grid-auto-columns: calc(100px + 1rem);
+    border: 1px solid #d0d4d9;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.enm-upload-image-button,
+.enm-image-container {
+    margin: 0.7rem;
+    height: calc(90% - 0.7rem);
+    width: 100px;
+    border: 1px solid #d0d4d9;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #adadad;
+
+    transition: scale 300ms ease-out;
+
+    position: relative;
+}
+
+.enm-upload-image-button:hover,
+.enm-image-container:hover {
+    cursor: pointer;
+    scale: 105%;
+}
+
+.enm-image {
+    width: 100%;
+    height: 100%;
+}
+
+.enm-image-delete-button {
+    position: absolute;
+    top: 0.2rem;
+    right: 0.2rem;
+    padding: 0.2rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+
+    transition: background-color 100ms ease-in-out;
+}
+
+.enm-image-delete-button:hover {
+    cursor: pointer;
+    background-color: red;
+    color: white;
 }
 
 .enm-footer {
