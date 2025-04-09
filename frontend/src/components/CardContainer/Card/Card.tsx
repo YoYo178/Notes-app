@@ -15,6 +15,7 @@ import { EditNoteModal } from './EditNoteModal/EditNoteModal.tsx'
 import { ButtonHandler } from './Card';
 
 import "./Card.css"
+import { useDeleteFileMutation } from '../../../hooks/network/upload/useDeleteFileMutation.ts';
 
 type CardProps = Note;
 
@@ -24,6 +25,8 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
 
     const updateNoteMutation = useUpdateNoteMutation({ queryKey: ['notes'] });
     const deleteNoteMutation = useDeleteNoteMutation({ queryKey: ['notes'] });
+
+    const deleteFileMutation = useDeleteFileMutation({});
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -67,7 +70,7 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
                     <FaRegCopy />
                 </button>
 
-                <button className='card-delete-button' onClick={() => ButtonHandler.deleteOnClick(deleteNoteMutation, { date, duration, isText, title, description, isFavorite, id, images, audio, rawDate })}>
+                <button className='card-delete-button' onClick={async () => await ButtonHandler.deleteOnClick(deleteNoteMutation, deleteFileMutation, { date, duration, isText, title, description, isFavorite, id, images, audio, rawDate })}>
                     <RiDeleteBin6Line />
                 </button>
 

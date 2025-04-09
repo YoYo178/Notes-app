@@ -1,5 +1,5 @@
 import { Note } from "../../../types/note.types"
-import { ReactSetState, TOptimisticMutation } from "../../../types/react.types";
+import { ReactSetState, TMutation, TOptimisticMutation } from "../../../types/react.types";
 
 function favoriteOnClick(useUpdateNoteMutation: TOptimisticMutation<Partial<Note>>, id: string, isFavorite: boolean | undefined) {
     useUpdateNoteMutation.mutate({
@@ -10,23 +10,23 @@ function favoriteOnClick(useUpdateNoteMutation: TOptimisticMutation<Partial<Note
     });
 }
 
-function deleteOnClick(deleteNoteMutation: TOptimisticMutation<{ id: string }>, note: Note) {
+async function deleteOnClick(deleteNoteMutation: TOptimisticMutation<{ id: string }>, deleteFileMutation: TMutation<unknown>, note: Note) {
 
-    if (note.audio) {
-        // TODO
-    }
-
-    if (note.images?.length) {
-        note.images.forEach(async imageFile => {
-            // TODO
-        })
-    }
-
-    deleteNoteMutation.mutate({
+    await deleteNoteMutation.mutateAsync({
         payload: {
             id: note.id
         }
     });
+
+    if (note.audio) {
+        await deleteFileMutation.mutateAsync({ pathParams: { fileKey: note.audio.key } });
+    }
+
+    if (note.images?.length) {
+        note.images.forEach(async imageFile => {
+            await deleteFileMutation.mutateAsync({ pathParams: { fileKey: imageFile.key } });
+        })
+    }
 }
 
 function copyOnClick(title: string, description: string, setIsCopied: ReactSetState<boolean>, timeoutRef: React.MutableRefObject<number>) {
