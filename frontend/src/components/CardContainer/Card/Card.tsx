@@ -18,7 +18,7 @@ import "./Card.css"
 
 type CardProps = Note;
 
-export const Card: FC<CardProps> = ({ date, duration, isText, title, description, isFavorite, id, images }) => {
+export const Card: FC<CardProps> = ({ date, duration, isText, title, description, isFavorite, id, images, audio, rawDate }) => {
     const [isCopied, setIsCopied] = useState(false);
     const timeoutRef = useRef<number>(0);
 
@@ -29,7 +29,7 @@ export const Card: FC<CardProps> = ({ date, duration, isText, title, description
 
     return (
         <div className="card">
-            <EditNoteModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} originalTitle={title} originalDescription={description} noteID={id} />
+            <EditNoteModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} note={{ date, duration, isText, title, description, isFavorite, id, images, audio, rawDate }} />
             <div className="card-top-container">
                 <div className="card-date">{date}</div>
                 {!isText ? (
