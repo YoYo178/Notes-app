@@ -35,7 +35,7 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
     const [isUploading, setIsUploading] = useState(false);
 
     const createNoteMutation = useCreateNoteMutation({ queryKey: ['notes'] });
-    const getUploadUrlMutation = useGetFileUploadURLMutation({ queryKey: ['notes', 'file-upload-urls'] });
+    const getUploadUrlMutation = useGetFileUploadURLMutation({});
     const uploadToS3Mutation = useUploadToS3Mutation();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
