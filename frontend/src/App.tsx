@@ -10,6 +10,7 @@ import { Dashboard } from "./pages/Dashboard"
 import { Home } from "./pages/Home"
 import { Login } from "./pages/Login"
 import { Register } from "./pages/Register"
+import { NotFound } from "./pages/NotFound"
 
 export const App = () => {
   return (
@@ -33,7 +34,7 @@ export const App = () => {
           </Route>
         </Route>
 
-        <Route path="*" element={<h1>TODO: Not found page</h1>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )
