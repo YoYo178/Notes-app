@@ -107,8 +107,6 @@ const getMultipleURL = asyncHandler(async (req: Request, res: Response) => {
   const { fileKeys } = req.body;
   const userId = req.user?.id;
 
-  console.log(fileKeys)
-
   if (!fileKeys || !Array.isArray(fileKeys) || !fileKeys?.length) {
     res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Invalid payload, fileKeys must be a non-empty array!' });
     return;
