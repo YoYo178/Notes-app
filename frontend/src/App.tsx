@@ -11,6 +11,7 @@ import { Home } from "./pages/Home"
 import { Login } from "./pages/Login"
 import { Register } from "./pages/Register"
 import { NotFound } from "./pages/NotFound"
+import { ResetPassword } from "./pages/ResetPassword"
 
 export const App = () => {
   return (
@@ -30,7 +31,7 @@ export const App = () => {
             <Route index element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path='/register' element={<Register />} />
-            <Route path='/reset' element={<h1>TODO: Reset password page</h1>} />
+            <Route path='/reset' element={<ResetPassword />} />
           </Route>
         </Route>
 
