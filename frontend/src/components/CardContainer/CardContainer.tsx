@@ -9,7 +9,11 @@ import "./CardContainer.css"
 
 export const CardContainer: FC = () => {
     const [isCreateNoteBarVisible, setIsCreateNoteBarVisible] = useState(true);
-    const { notes } = useNotesContext();
+    const { notes, hasFinished } = useNotesContext();
+
+    if (!hasFinished) {
+        return (<h1>Loading Notes...</h1>)
+    }
 
     return (
         <>
@@ -34,6 +38,8 @@ export const CardContainer: FC = () => {
                         isText={note.isText}
                         isFavorite={note.isFavorite}
                         rawDate={note.rawDate}
+                        images={note.images}
+                        audio={note.audio}
                     />
                 ))}
             </div>
