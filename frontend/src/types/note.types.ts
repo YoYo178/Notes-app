@@ -6,8 +6,9 @@ export interface ServerNote {
     title: string;
     description: string;
     isText: boolean;
-    images: string[];
-    isFavorite: boolean;
+    images?: string[];
+    audioKey?: string;
+    isFavorite?: boolean;
     duration: string | null;
     createdAt: DateString;
     updatedAt: DateString;
@@ -17,8 +18,8 @@ export interface Note {
     id: string;
     title: string;
     description: string;
-    images?: string[];
-    audioKey?: string;
+    images?: NoteFile[];
+    audio?: NoteFile;
     date: string;
     isFavorite?: boolean;
     isText: boolean;
@@ -26,7 +27,12 @@ export interface Note {
     rawDate: Date;
 }
 
-export type NotePayload = Omit<Note, 'id' | 'date' | 'rawDate'>;
+export type NoteFile = {
+    key: string;
+    localURL: string;
+}
+
+export type NotePayload = Omit<ServerNote, '_id' | 'user' | 'date' | 'createdAt' | 'updatedAt'>;
 
 export type NoteType = 'text' | 'audio';
 
