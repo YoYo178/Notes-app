@@ -12,6 +12,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.71.1",
     "axios": "^1.8.4",
+    "lodash": "^4.17.21",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
@@ -20,6 +21,7 @@
   "devDependencies": {
     "@eslint/js": "^9.23.0",
     "@types/dom-speech-recognition": "^0.0.6",
+    "@types/lodash": "^4",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
