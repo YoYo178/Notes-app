@@ -75,21 +75,6 @@
     letter-spacing: initial;
 }
 
-.rm-reset-password-button {
-    align-self: flex-end;
-    font-family: 'Inter';
-    font-weight: bold;
-
-    color: #6d6d6d;
-    text-decoration: none;
-    margin-top: 0.2rem;
-    margin-bottom: 1rem;
-}
-
-.rm-reset-password-button:hover {
-    text-decoration: underline;
-}
-
 .rm-toggle-password-container {
     height: 2.5rem;
     display: flex;
