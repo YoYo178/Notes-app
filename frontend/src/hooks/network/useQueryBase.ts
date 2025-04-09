@@ -26,6 +26,9 @@ export function useQueryBase(endpoint: Endpoint, sendCookies: boolean = false, s
                 return shouldRetry;
             },
             staleTime,
+            refetchOnMount: false,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
         });
     };
 }
