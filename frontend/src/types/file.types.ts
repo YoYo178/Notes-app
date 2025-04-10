@@ -7,5 +7,5 @@ export interface GetFileUploadURLParameters {
 }
 
 export interface ImageFile extends File {
-    localUrl: string;
+    localURL: string;
 }

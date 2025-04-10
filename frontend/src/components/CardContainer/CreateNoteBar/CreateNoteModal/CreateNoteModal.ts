@@ -126,7 +126,7 @@ function uploadImageOnClick(fileInputRef: RefObject<HTMLInputElement | null>, im
                 return null;
             }
 
-            const retObj: ImageFile = Object.assign(file, { localUrl: URL.createObjectURL(file) });
+            const retObj: ImageFile = Object.assign(file, { localURL: URL.createObjectURL(file) });
             Object.setPrototypeOf(retObj, File.prototype);
 
             return retObj;
@@ -144,8 +144,8 @@ function deleteImageOnClick(e: React.MouseEvent<HTMLButtonElement>, images: Imag
     const ID = parseInt(event.target.closest(".cnm-image-delete-button").id.split("-button-")[1]);
 
     const image = images[ID - 1];
-    if (image.localUrl)
-        URL.revokeObjectURL(image.localUrl);
+    if (image.localURL)
+        URL.revokeObjectURL(image.localURL);
 
     const newArr = images.filter((_, i) => i != (ID - 1));
     setImages(newArr);

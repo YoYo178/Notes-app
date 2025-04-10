@@ -41,8 +41,8 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
 
     function cleanupImages() {
         images.forEach(image => {
-            if (image.localUrl) {
-                URL.revokeObjectURL(image.localUrl);
+            if (image.localURL) {
+                URL.revokeObjectURL(image.localURL);
             }
         });
     }
@@ -101,7 +101,7 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
                     <div className="cnm-images-container">
                         {images.map((image, i) => (
                             <div key={`cnm-image-container-${i + 1}`} className="cnm-image-container">
-                                <img id={`cnm-image-${i + 1}`} className="cnm-image" src={image.localUrl} />
+                                <img id={`cnm-image-${i + 1}`} className="cnm-image" src={image.localURL} />
                                 <button
                                     id={`cnm-image-delete-button-${i + 1}`}
                                     className="cnm-image-delete-button"
