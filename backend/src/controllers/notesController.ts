@@ -20,11 +20,6 @@ const getAllNotes = expressAsyncHandler(async (req: Request, res: Response) => {
 
     const notes = await Note.find({ user: (user._id as ObjectId).toString() }).lean().exec() || [];
 
-    if (!notes.length) {
-        res.status(HttpStatusCodes.NOT_FOUND).send({ message: "No notes found for this user" });
-        return;
-    }
-
     res.status(HttpStatusCodes.OK).send({ notes });
 })
 
