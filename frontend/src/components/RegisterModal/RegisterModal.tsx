@@ -1,5 +1,6 @@
-import { FC, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import axios, { AxiosError } from 'axios';
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 
 import { HiOutlineUserCircle } from 'react-icons/hi2';
 import { IoAt, IoKeyOutline, IoPersonOutline } from 'react-icons/io5';
@@ -7,12 +8,13 @@ import { FaRegEye } from 'react-icons/fa6';
 
 import { useRegisterMutation } from '../../hooks/network/auth/useRegisterMutation.ts';
 
-import { ButtonHandler } from './RegisterModal.ts';
-import { RegisterButton } from './RegisterButton/RegisterButton.tsx';
+import { ButtonHandler, EventHandler } from './RegisterModal.ts';
 
 import './RegisterModal.css';
 
 export const RegisterModal: FC = () => {
+    const [redirect, setRedirect] = useState<ReactNode>(null);
+
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
 
@@ -29,11 +31,48 @@ export const RegisterModal: FC = () => {
     const registerMutation = useRegisterMutation({ queryKey: [] });
     const location = useLocation();
 
-    return (
-        <form className="rm" onSubmit={(e) => e.preventDefault()} onKeyDown={(e) => {
-            ButtonHandler.onKeyDown(e, { username, password, confirmPassword, email, displayName: `${firstName} ${lastName}` }, registerMutation)
+    const buttonRef = useRef<HTMLButtonElement>(null);
+
+    useEffect(() => {
+        if (registerMutation.isSuccess) {
+            if (registerMutation.data) {
+                setErrorMessage('');
+                setSuccessMessage('You have been registered successfully! Redirecting to sign-in page...');
+
+                const timeout = setTimeout(() => {
+                    setRedirect(
+                        <Navigate to="/login" state={{ from: location }} replace />
+                    )
+                }, 3000);
+
+                return () => clearTimeout(timeout);
+            }
+        } else if (registerMutation.isError) {
+            if (registerMutation.error?.message) {
+                setSuccessMessage('');
+                const { error: err } = registerMutation;
+
+                if (err && axios.isAxiosError(err)) {
+                    const error = err as AxiosError<{ message: unknown }>;
+
+                    setErrorMessage(error.response?.data?.message as string);
+                    return;
+                }
+
+                const errorMessage = registerMutation.error?.message;
+                setErrorMessage(errorMessage);
+
+                console.error("An error occured while trying to register.", errorMessage);
+            }
         }
-        }>
+
+    }, [registerMutation.isSuccess, registerMutation.isError])
+
+    if (redirect)
+        return redirect;
+
+    return (
+        <form className="rm" onSubmit={(e) => e.preventDefault()} onKeyDown={(e) => EventHandler.onKeyDown(e, buttonRef)}>
             <h2 className="rm-title">Register</h2>
 
             { /* Display name field */}
@@ -138,12 +177,13 @@ export const RegisterModal: FC = () => {
             <div className="rm-error" style={{ display: errorMessage.length ? "block" : "none" }}>{errorMessage}</div>
             <div className="rm-info" style={{ display: successMessage.length ? "block" : "none" }}>{successMessage}</div>
 
-            <RegisterButton
-                registerData={{ username, password, confirmPassword, email, displayName: `${firstName} ${lastName}` }}
-                setErrorMessage={setErrorMessage}
-                setSuccessMessage={setSuccessMessage}
-                registerMutation={registerMutation}
-            />
+            <button
+                ref={buttonRef}
+                className="register-button"
+                onClick={async () => { await ButtonHandler.registerButtonOnClick({ username, password, confirmPassword, email, displayName: `${firstName} ${lastName}` }, registerMutation) }
+                }>
+                Register
+            </button>
 
             <div className="rm-existing-acc-container">
                 <span className="rm-existing-acc-text">Already have an account?</span>
