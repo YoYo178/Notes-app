@@ -1,7 +1,7 @@
-import { Note } from "../../../types/note.types"
+import { Note, NotePayload } from "../../../types/note.types"
 import { ReactSetState, TMutation, TOptimisticMutation } from "../../../types/react.types";
 
-function favoriteOnClick(useUpdateNoteMutation: TOptimisticMutation<Partial<Note>>, id: string, isFavorite: boolean | undefined) {
+function favoriteOnClick(useUpdateNoteMutation: TOptimisticMutation<Partial<NotePayload> & { id: string }>, id: string, isFavorite: boolean | undefined) {
     useUpdateNoteMutation.mutate({
         payload: {
             id,

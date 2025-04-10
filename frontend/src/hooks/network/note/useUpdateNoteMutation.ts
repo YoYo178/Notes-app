@@ -1,11 +1,9 @@
 import { useMutationBase } from "../useMutationBase";
 import APIEndpoints from "../../../config/APIEndpoints";
 
-import { Note, ServerNote } from "../../../types/note.types";
+import { NotePayload, ServerNote } from "../../../types/note.types";
 
-type NotePartial = Partial<Note>;
-
-export const useUpdateNoteMutation = useMutationBase<NotePartial>(
+export const useUpdateNoteMutation = useMutationBase<Partial<NotePayload> & { id: string }>(
     APIEndpoints.UPDATE_NOTE,
     "Updating Notes",
     true,
