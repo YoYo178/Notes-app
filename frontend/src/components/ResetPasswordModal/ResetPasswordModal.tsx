@@ -147,11 +147,6 @@ export const ResetPasswordModal: FC = () => {
                 </>
             )}
 
-            {currentStage === ResetAccountStages.REDIRECT && (
-                <>
-                </>
-            )}
-
             <div className="fpm-error" style={{ display: errorMessage.length ? "block" : "none" }}>{errorMessage}</div>
             <div className="fpm-info" style={{ display: successMessage.length ? "block" : "none" }}>{successMessage}</div>
 
