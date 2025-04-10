@@ -121,7 +121,6 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
                                     accept='image/*'
                                     hidden
                                     multiple
-                                    disabled={isUploading}
                                 />
                                 <FaPlus />
                             </div>
@@ -129,7 +128,7 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
                     </div>
                 </div>
                 <div className="cnm-footer">
-                    <button className="cnm-check-button" onClick={async () => {
+                    <button className="cnm-check-button" disabled={isUploading} onClick={async () => {
                         await ButtonHandler.addNoteOnClick(
                             createNoteMutation,
                             {
