@@ -56,6 +56,9 @@ export const NotesProvider: FC<NotesProviderProps> = ({ children }) => {
             if (!fetchedNotes)
                 return;
 
+            if (!serverNotes.length && !fetchedNotes.length)
+                setHasFinished(true);
+
             if (isEqualWith(serverNotes, fetchedNotes))
                 return;
 
@@ -120,7 +123,8 @@ export const NotesProvider: FC<NotesProviderProps> = ({ children }) => {
                         rawDate: date,
                         audio: fetchedAudio ?? undefined
                     };
-                }))
+                })
+            )
 
             setProcessedNotes(alteredNotes)
             setHasFinished(true);
