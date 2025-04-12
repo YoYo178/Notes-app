@@ -6,7 +6,7 @@ import { User } from '@src/models/User';
 import expressAsyncHandler from 'express-async-handler';
 import { ObjectId } from 'mongoose';
 import cookieConfig from '@src/config/cookieConfig';
-import { refreshAccessToken } from '@src/util/authUtils';
+import { refreshAccessToken } from '@src/util/auth.utils';
 
 declare global {
     namespace Express {

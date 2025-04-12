@@ -1,4 +1,4 @@
-import { MongooseModel } from "@src/util/dbUtils";
+import { MongooseModel } from "@src/util/db.utils";
 import { Schema, ObjectId } from "mongoose";
 
 interface INote {
