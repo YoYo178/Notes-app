@@ -8,11 +8,17 @@ import { FaRegEye } from 'react-icons/fa6';
 
 import { useRegisterMutation } from '../../hooks/network/auth/useRegisterMutation.ts';
 
+import { RegisterStages } from '../../types/modal.types.ts';
+
 import { ButtonHandler, EventHandler } from './RegisterModal.ts';
 
 import './RegisterModal.css';
+import { MdOutlinePassword } from 'react-icons/md';
 
 export const RegisterModal: FC = () => {
+    const [currentStage, setCurrentStage] = useState<RegisterStages>(RegisterStages.INPUT_DETAILS);
+    const [buttonTitle, setButtonTitle] = useState('Register');
+
     const [redirect, setRedirect] = useState<ReactNode>(null);
 
     const [firstName, setFirstName] = useState('');
@@ -23,30 +29,21 @@ export const RegisterModal: FC = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [email, setEmail] = useState('');
 
+    const [OTP, setOTP] = useState('')
+
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-    const registerMutation = useRegisterMutation({ queryKey: [] });
+    const registerMutation = useRegisterMutation({});
     const location = useLocation();
 
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         if (registerMutation.isSuccess) {
-            if (registerMutation.data) {
-                setErrorMessage('');
-                setSuccessMessage('You have been registered successfully! Redirecting to sign-in page...');
-
-                const timeout = setTimeout(() => {
-                    setRedirect(
-                        <Navigate to="/login" state={{ from: location }} replace />
-                    )
-                }, 3000);
-
-                return () => clearTimeout(timeout);
-            }
+            setCurrentStage(RegisterStages.VERIFY_ACCOUNT);
         } else if (registerMutation.isError) {
             if (registerMutation.error?.message) {
                 setSuccessMessage('');
@@ -68,6 +65,26 @@ export const RegisterModal: FC = () => {
 
     }, [registerMutation.isSuccess, registerMutation.isError])
 
+    useEffect(() => {
+        switch (currentStage) {
+            case RegisterStages.INPUT_DETAILS:
+                break;
+            case RegisterStages.VERIFY_ACCOUNT:
+                setButtonTitle("Verify Code");
+                break;
+            case RegisterStages.REDIRECT:
+                setSuccessMessage(`Your account has been verified successfully\nRedirecting to sign in page...`)
+                setTimeout(() => {
+                    setRedirect(
+                        <Navigate to='/login' />
+                    )
+                }, 1500)
+                break;
+            default:
+                break;
+        }
+    }, [currentStage])
+
     if (redirect)
         return redirect;
 
@@ -75,120 +92,173 @@ export const RegisterModal: FC = () => {
         <form className="rm" onSubmit={(e) => e.preventDefault()} onKeyDown={(e) => EventHandler.onKeyDown(e, buttonRef)}>
             <h2 className="rm-title">Register</h2>
 
-            { /* Display name field */}
-            <div className="rm-display-name-container">
-                <div className="rm-field-container">
-                    <div className="rm-field-icon-container">
-                        <IoPersonOutline />
+            {currentStage === RegisterStages.INPUT_DETAILS && (
+                <>
+                    { /* Display name field */}
+                    < div className="rm-display-name-container">
+                        <div className="rm-field-container">
+                            <div className="rm-field-icon-container">
+                                <IoPersonOutline />
+                            </div>
+
+                            <input
+                                type="text"
+                                placeholder='First name'
+                                id="first-name-field"
+                                className="rm-field-first-name"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                            />
+                        </div>
+                        <div className="rm-field-container">
+                            <div className="rm-field-icon-container">
+                                <IoPersonOutline />
+                            </div>
+
+                            <input
+                                type="text"
+                                placeholder='Last name'
+                                id="last-name-field"
+                                className="rm-field-last-name"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                            />
+                        </div>
                     </div>
 
-                    <input
-                        type="text"
-                        placeholder='First name'
-                        id="first-name-field"
-                        className="rm-field-first-name"
-                        onChange={(e) => setFirstName(e.target.value)}
-                    />
-                </div>
-                <div className="rm-field-container">
-                    <div className="rm-field-icon-container">
-                        <IoPersonOutline />
+                    { /* Username field */}
+                    <div className="rm-field-container">
+                        <div className="rm-field-icon-container">
+                            <HiOutlineUserCircle />
+                        </div>
+
+                        <input
+                            type="text"
+                            placeholder='Username'
+                            id="username-field"
+                            className="rm-field-username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
                     </div>
 
-                    <input
-                        type="text"
-                        placeholder='Last name'
-                        id="last-name-field"
-                        className="rm-field-last-name"
-                        onChange={(e) => setLastName(e.target.value)}
-                    />
-                </div>
-            </div>
+                    { /* Email field */}
+                    <div className="rm-field-container">
+                        <div className="rm-field-icon-container">
+                            <IoAt />
+                        </div>
 
-            { /* Username field */}
-            <div className="rm-field-container">
-                <div className="rm-field-icon-container">
-                    <HiOutlineUserCircle />
-                </div>
+                        <input
+                            type="email"
+                            placeholder='Email'
+                            id="email-field"
+                            className="rm-field-email"
+                            autoComplete='email'
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
 
-                <input
-                    type="text"
-                    placeholder='Username'
-                    id="username-field"
-                    className="rm-field-username"
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-            </div>
+                    { /* Password field */}
+                    <div className="rm-field-container">
+                        <div className="rm-field-icon-container">
+                            <IoKeyOutline />
+                        </div>
 
-            { /* Email field */}
-            <div className="rm-field-container">
-                <div className="rm-field-icon-container">
-                    <IoAt />
-                </div>
+                        <input
+                            type={isPasswordVisible ? "text" : "password"}
+                            placeholder='Password'
+                            id="password-field"
+                            className="rm-field-password"
+                            autoComplete='new-password'
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
 
-                <input
-                    type="email"
-                    placeholder='Email'
-                    id="email-field"
-                    className="rm-field-email"
-                    autoComplete='email'
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-            </div>
+                        <div className="rm-toggle-password-container">
+                            <button className='rm-toggle-password-button' onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
+                                <FaRegEye />
+                            </button>
+                        </div>
+                    </div>
 
-            { /* Password field */}
-            <div className="rm-field-container">
-                <div className="rm-field-icon-container">
-                    <IoKeyOutline />
-                </div>
+                    { /* Confirm password field */}
+                    <div className="rm-field-container">
+                        <div className="rm-field-icon-container">
+                            <IoKeyOutline />
+                        </div>
 
-                <input
-                    type={isPasswordVisible ? "text" : "password"}
-                    placeholder='Password'
-                    id="password-field"
-                    className="rm-field-password"
-                    autoComplete='new-password'
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                        <input
+                            type={isPasswordVisible ? "text" : "password"}
+                            placeholder='Confirm Password'
+                            id="confirm-password-field"
+                            className="rm-field-confirm-password"
+                            autoComplete='new-password-confirm'
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                    </div>
+                </>
+            )}
 
-                <div className="rm-toggle-password-container">
-                    <button className='rm-toggle-password-button' onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
-                        <FaRegEye />
-                    </button>
-                </div>
-            </div>
+            {currentStage === RegisterStages.VERIFY_ACCOUNT && (
+                <>
+                    <div className="fpm-verification-text">
+                        <span>We have sent a verification code to</span>
+                        <span className='fpm-email'><u>{email}</u></span>
+                        <span>Enter the code below before it expires.</span>
+                        <span>Please also make sure to check your spam inbox.</span>
+                    </div>
 
-            { /* Confirm password field */}
-            <div className="rm-field-container">
-                <div className="rm-field-icon-container">
-                    <IoKeyOutline />
-                </div>
+                    {/* OTP Field */}
+                    <div className="fpm-field-container">
+                        <div className="fpm-field-icon-container">
+                            <MdOutlinePassword />
+                        </div>
 
-                <input
-                    type={isPasswordVisible ? "text" : "password"}
-                    placeholder='Confirm Password'
-                    id="confirm-password-field"
-                    className="rm-field-confirm-password"
-                    autoComplete='new-password-confirm'
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-            </div>
+                        <input
+                            type="text"
+                            placeholder='Enter verification code'
+                            id="otp-field"
+                            className="fpm-field-otp"
+                            value={OTP}
+                            onChange={(e) => setOTP(e.target.value)}
+                            maxLength={6}
+                        />
+                    </div>
+                </>
+            )
+            }
 
             <div className="rm-error" style={{ display: errorMessage.length ? "block" : "none" }}>{errorMessage}</div>
             <div className="rm-info" style={{ display: successMessage.length ? "block" : "none" }}>{successMessage}</div>
 
-            <button
-                ref={buttonRef}
-                className="register-button"
-                onClick={async () => { await ButtonHandler.registerButtonOnClick({ username, password, confirmPassword, email, displayName: `${firstName} ${lastName}` }, registerMutation) }
-                }>
-                Register
-            </button>
+            {currentStage !== RegisterStages.REDIRECT && (
+                <>
+                    <button
+                        ref={buttonRef}
+                        className="register-button"
+                        disabled={registerMutation.isPending}
+                        onClick={async () => {
+                            await ButtonHandler.continueButtonOnClick(
+                                registerMutation,
+                                successMessage, setSuccessMessage,
+                                errorMessage, setErrorMessage,
+                                currentStage, setCurrentStage,
+                                { username, password, confirmPassword, email, displayName: `${firstName} ${lastName}` },
+                                OTP
+                            )
+                        }}
+                    >
+                        {registerMutation.isPending ? 'Please wait...' : buttonTitle}
+                    </button>
 
-            <div className="rm-existing-acc-container">
-                <span className="rm-existing-acc-text">Already have an account?</span>
-                <Link to="/login" className='rm-existing-acc-button' state={{ from: location }} replace>Sign-In</Link>
-            </div>
+                    <div className="rm-existing-acc-container">
+                        <span className="rm-existing-acc-text">Already have an account?</span>
+                        <Link to="/login" className='rm-existing-acc-button' state={{ from: location }} replace>Sign-In</Link>
+                    </div>
+                </>
+            )}
         </form>
     );
 };

@@ -14,7 +14,6 @@
     font-weight: bold;
     color: #1b1b1b;
     text-align: center;
-    margin-bottom: 1rem;
 }
 
 .rm-field-container {
@@ -40,6 +39,7 @@
 .rm-display-name-container {
     display: flex;
     gap: 1rem;
+    margin-top: 1rem;
 }
 
 .rm-display-name-container .rm-field-container {
@@ -141,7 +141,7 @@
     color: #6d33aa;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .register-button:hover {
@@ -150,6 +150,7 @@
 
 .rm-error {
     background-color: rgba(255, 42, 42, 0.555);
+    margin-top: 1rem;
     padding: 1rem;
     text-align: center;
     border-radius: 1rem;
@@ -157,10 +158,13 @@
     font-family: 'Inter';
     font-weight: bold;
     font-size: 0.9rem;
+
+    white-space: pre-wrap;
 }
 
 .rm-info {
     background-color: rgba(42, 255, 42, 0.555);
+    margin-top: 1rem;
     padding: 1rem;
     text-align: center;
     border-radius: 1rem;
