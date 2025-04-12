@@ -11,7 +11,7 @@ import { refreshAccessToken } from '@src/util/authUtils';
 declare global {
     namespace Express {
         interface Request {
-            user?: {
+            user: {
                 id: string;
                 username: string;
                 displayName: string;

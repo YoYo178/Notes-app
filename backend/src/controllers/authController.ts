@@ -137,82 +137,11 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 /**
- * @route GET /auth/refresh
- * @description Provides the client with a new access token.
- * @returns HTTP 200, 400, 401, 404, 500
- */
-const refresh = expressAsyncHandler(async (req: Request, res: Response) => {
-    const cookies = req.cookies;
-
-    if (!cookies?.jwt_rt) {
-        res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: "Unauthorized" });
-        return;
-    }
-
-    const refreshToken = cookies.jwt_rt;
-
-    if (!process.env.REFRESH_TOKEN_SECRET) {
-        logger.err("REFRESH_TOKEN_SECRET is undefined!");
-        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured in the server." });
-        return;
-    }
-
-    try {
-        const decoded: any = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-
-        const user = await User.findOne({ username: decoded.User.username });
-
-        if (!user) {
-            res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
-            return;
-        }
-
-        if (!process.env.ACCESS_TOKEN_SECRET) {
-            logger.err("ACCESS_TOKEN_SECRET is undefined!");
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured in the server." });
-            return;
-        }
-
-        const accessToken = jwt.sign(
-            {
-                User: {
-                    id: (user._id as ObjectId).toString(),
-                    username: user.username,
-                    displayName: user.displayName
-                }
-            },
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: tokenConfig.accessToken.expiry }
-        )
-
-        res.cookie("jwt_at", accessToken, cookieConfig);
-
-        res.status(HttpStatusCodes.OK).send({ message: `Welcome ${decoded.User.username}` })
-    } catch (err: any) {
-        if (err instanceof JsonWebTokenError) {
-            const error = err as JsonWebTokenError;
-            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: error?.message === "invalid signature" ? "Invalid token" : error?.message });
-            return;
-        }
-
-        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: err?.message });
-    }
-
-})
-
-/**
  * @route POST /auth/logout
  * @description Logs out the user and clears the HTTP only cookie on the client.
  * @returns HTTP 200, 401
  */
 const logout = expressAsyncHandler(async (req: Request, res: Response) => {
-    const cookies = req.cookies;
-
-    if (!cookies?.jwt_rt && !cookies?.jwt_at) {
-        res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: "User is not logged in" });
-        return;
-    }
-
     res.clearCookie('jwt_rt', {
         ...cookieConfig,
         maxAge: undefined
@@ -230,5 +159,4 @@ export default {
     register,
     login,
     logout,
-    refresh
 }
