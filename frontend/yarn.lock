@@ -877,6 +877,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/validator@npm:^13":
+  version: 13.12.3
+  resolution: "@types/validator@npm:13.12.3"
+  checksum: 10c0/bc40191cd2e3c9b4b8d1f10611038ae3793462685366201940f2ef953b3229c02edcdb7c73cc5e6f762d5ecf1762a821afadaf97f71bd7fb06fae3aeb2729caf
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/eslint-plugin@npm:8.29.1":
   version: 8.29.1
   resolution: "@typescript-eslint/eslint-plugin@npm:8.29.1"
@@ -1772,6 +1779,7 @@ __metadata:
     "@types/lodash": "npm:^4.17.16"
     "@types/react": "npm:^19.1.0"
     "@types/react-dom": "npm:^19.1.2"
+    "@types/validator": "npm:^13"
     "@vitejs/plugin-react": "npm:^4.3.4"
     axios: "npm:^1.8.4"
     eslint: "npm:^9.24.0"
@@ -1785,6 +1793,7 @@ __metadata:
     react-router-dom: "npm:^7.5.0"
     typescript: "npm:~5.8.3"
     typescript-eslint: "npm:^8.29.1"
+    validator: "npm:^13.15.0"
     vite: "npm:^6.2.6"
   languageName: unknown
   linkType: soft
@@ -3062,6 +3071,13 @@ __metadata:
   dependencies:
     punycode: "npm:^2.1.0"
   checksum: 10c0/4ef57b45aa820d7ac6496e9208559986c665e49447cb072744c13b66925a362d96dd5a46c4530a6b8e203e5db5fe849369444440cb22ecfc26c679359e5dfa3c
+  languageName: node
+  linkType: hard
+
+"validator@npm:^13.15.0":
+  version: 13.15.0
+  resolution: "validator@npm:13.15.0"
+  checksum: 10c0/0f13fd7031ac575e8d7828431da8ef5859bac6a38ee65e1d7fdd367dbf1c3d94d95182aecc3183f7fa7a30ff4474bf864d1aff54707620227a2cdbfd36d894c2
   languageName: node
   linkType: hard
 

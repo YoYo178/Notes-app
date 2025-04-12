@@ -1994,6 +1994,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/validator@npm:^13":
+  version: 13.12.3
+  resolution: "@types/validator@npm:13.12.3"
+  checksum: 10c0/bc40191cd2e3c9b4b8d1f10611038ae3793462685366201940f2ef953b3229c02edcdb7c73cc5e6f762d5ecf1762a821afadaf97f71bd7fb06fae3aeb2729caf
+  languageName: node
+  linkType: hard
+
 "@types/webidl-conversions@npm:*":
   version: 7.0.3
   resolution: "@types/webidl-conversions@npm:7.0.3"
@@ -2370,6 +2377,7 @@ __metadata:
     "@types/morgan": "npm:^1.9.9"
     "@types/node": "npm:^22.14.0"
     "@types/supertest": "npm:^6.0.3"
+    "@types/validator": "npm:^13"
     bcrypt: "npm:^5.1.1"
     cookie-parser: "npm:^1.4.7"
     cors: "npm:^2.8.5"
@@ -2402,6 +2410,7 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:^5.8.3"
     typescript-eslint: "npm:^8.29.1"
+    validator: "npm:^13.15.0"
   languageName: unknown
   linkType: soft
 
@@ -5532,6 +5541,13 @@ __metadata:
   version: 3.0.1
   resolution: "v8-compile-cache-lib@npm:3.0.1"
   checksum: 10c0/bdc36fb8095d3b41df197f5fb6f11e3a26adf4059df3213e3baa93810d8f0cc76f9a74aaefc18b73e91fe7e19154ed6f134eda6fded2e0f1c8d2272ed2d2d391
+  languageName: node
+  linkType: hard
+
+"validator@npm:^13.15.0":
+  version: 13.15.0
+  resolution: "validator@npm:13.15.0"
+  checksum: 10c0/0f13fd7031ac575e8d7828431da8ef5859bac6a38ee65e1d7fdd367dbf1c3d94d95182aecc3183f7fa7a30ff4474bf864d1aff54707620227a2cdbfd36d894c2
   languageName: node
   linkType: hard
 
