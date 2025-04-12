@@ -4,3 +4,9 @@ export enum ResetAccountStages {
     SET_PASSWORD,
     REDIRECT
 }
+
+export enum RegisterStages {
+    INPUT_DETAILS,
+    VERIFY_ACCOUNT,
+    REDIRECT
+}
