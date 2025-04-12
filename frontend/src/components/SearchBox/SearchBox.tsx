@@ -17,7 +17,7 @@ interface SearchBoxProps {
 }
 
 export const SearchBox: FC<SearchBoxProps> = ({ isSearchBoxOpen, setIsSearchBoxOpen, isMediaQueryActive }) => {
-  const { setFilter } = useNotesContext();
+  const { filter, setFilter } = useNotesContext();
   const searchBoxRef = useRef<HTMLDivElement>(null);
 
   useLostFocus(searchBoxRef, isSearchBoxOpen, () => setIsSearchBoxOpen(false));
@@ -36,6 +36,7 @@ export const SearchBox: FC<SearchBoxProps> = ({ isSearchBoxOpen, setIsSearchBoxO
           type="text"
           placeholder="Search"
           className="search-input"
+          value={filter}
           onChange={(e) => { setFilter(e.target.value) }}
         />
       </div>

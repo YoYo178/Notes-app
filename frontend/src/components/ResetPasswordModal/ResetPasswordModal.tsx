@@ -74,8 +74,8 @@ export const ResetPasswordModal: FC = () => {
                         placeholder='Username / Email'
                         id="username-email-field"
                         className="fpm-field-username-email"
-                        onChange={(e) => setInput(e.target.value)}
                         value={input}
+                        onChange={(e) => setInput(e.target.value)}
                     />
                 </div>
             )}
@@ -100,8 +100,8 @@ export const ResetPasswordModal: FC = () => {
                             placeholder='Enter verification code'
                             id="otp-field"
                             className="fpm-field-otp"
-                            onChange={(e) => setOTP(e.target.value)}
                             value={OTP}
+                            onChange={(e) => setOTP(e.target.value)}
                             maxLength={6}
                         />
                     </div>
@@ -120,8 +120,8 @@ export const ResetPasswordModal: FC = () => {
                             placeholder='New password'
                             id="new-password-field"
                             className="fpm-field-new-password"
-                            onChange={(e) => setNewPassword(e.target.value)}
                             value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
                         />
 
                         <div className="rm-toggle-password-container">
@@ -140,8 +140,8 @@ export const ResetPasswordModal: FC = () => {
                             placeholder='Confirm new password'
                             id="confirm-new-password-field"
                             className="fpm-field-confirm-new-password"
-                            onChange={(e) => setConfirmNewPassword(e.target.value)}
                             value={confirmNewPassword}
+                            onChange={(e) => setConfirmNewPassword(e.target.value)}
                         />
                     </div>
                 </>

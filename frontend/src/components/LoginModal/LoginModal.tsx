@@ -38,6 +38,7 @@ export const LoginModal: FC = () => {
                     id="username-field"
                     className="username-field"
                     autoComplete='username'
+                    value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
             </div>
@@ -54,6 +55,7 @@ export const LoginModal: FC = () => {
                     id="password-field"
                     className="password-field"
                     autoComplete='current-password'
+                    value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
