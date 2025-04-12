@@ -10,6 +10,62 @@ import { ObjectId } from "mongoose";
 import { tokenConfig } from "@src/config/tokenConfig";
 
 /**
+ * @route POST /auth/register
+ * @description Creates a new user.
+ * @returns HTTP 201, 400, 409, 500
+ */
+const register = expressAsyncHandler(async (req: Request, res: Response) => {
+    const { username, password, confirmPassword, displayName, email } = req.body;
+
+    if (!username || !password || !confirmPassword || !displayName || !email) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "All fields are required" })
+        return;
+    }
+
+    // only supporting gmail for now, lol
+    if (!email.endsWith("@gmail.com")) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Email not supported" });
+        return;
+    }
+
+    // Check username, if it's already taken
+    const usernameExists = !!await User.findOne({ username }).select('-password').lean().exec()
+
+    if (usernameExists) {
+        res.status(HttpStatusCodes.CONFLICT).send({ message: "A user already exists with the provided username" })
+        return;
+    }
+
+    // Check email, if the user already has an account with this email
+    const userEmailExists = !!await User.findOne({ email }).select('-password').lean().exec()
+
+    if (userEmailExists) {
+        res.status(HttpStatusCodes.CONFLICT).send({ message: "A user already exists with the provided email" })
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Passwords do not match" })
+        return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+        username,
+        password: hashedPassword,
+        displayName,
+        email
+    });
+
+    if (user) {
+        res.status(HttpStatusCodes.CREATED).send({ message: `User created successfully`, id: (user._id as ObjectId).toString() })
+        return;
+    } else {
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured while creating a new user." })
+    }
+})
+/**
  * @route POST /auth/login
  * @description Logs in the user and returns an HTTP only cookie to the client.
  * @returns HTTP 200, 400, 401, 404, 500
@@ -171,7 +227,8 @@ const logout = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 export default {
+    register,
     login,
-    refresh,
-    logout
+    logout,
+    refresh
 }
