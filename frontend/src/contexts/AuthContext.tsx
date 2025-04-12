@@ -1,7 +1,7 @@
 import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
 import { AxiosError } from "axios";
 
-import { useAuthQuery } from "../hooks/network/auth/useAuthQuery";
+import { useGetLoggedInUser } from "../hooks/network/auth/useGetLoggedInUserQuery";
 
 import { User } from "../types/user.types";
 import { ReactSetState } from "../types/react.types";
@@ -19,7 +19,7 @@ export const AuthContext = createContext<AuthValues | null>(null)
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     const [auth, setAuth] = useState<Partial<User> | null>(null)
-    const { data, error } = useAuthQuery({ queryKey: ['auth'] });
+    const { data, error } = useGetLoggedInUser({ queryKey: ['auth'] });
 
     useEffect(() => {
         if (!data)

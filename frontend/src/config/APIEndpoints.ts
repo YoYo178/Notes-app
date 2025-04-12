@@ -16,12 +16,8 @@ const APIEndpoints: Endpoints = {
         METHOD: "GET"
     },
     REGISTER: {
-        URL: "/api/users",
+        URL: "/api/auth/register",
         METHOD: "POST"
-    },
-    AUTH_QUERY: {
-        URL: "/api/auth/",
-        METHOD: "GET"
     },
 
     /***** NOTE *****/
@@ -43,6 +39,10 @@ const APIEndpoints: Endpoints = {
     },
 
     /***** USER *****/
+    GET_LOGGED_IN_USER: {
+        URL: "/api/users/me",
+        METHOD: "GET"
+    },
     UPDATE_USER: {
         URL: "/api/users",
         METHOD: "PATCH"
