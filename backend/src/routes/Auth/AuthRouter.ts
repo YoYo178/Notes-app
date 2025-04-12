@@ -3,7 +3,7 @@ import limiter from '@src/middleware/LoginLimiter';
 import authController from '@src/controllers/authController';
 import AuthValidator from '@src/middleware/AuthValidator';
 
-const { queryAuth, refresh, login, logout } = authController;
+const { refresh, login, logout } = authController;
 
 const AuthRouter = Router();
 
@@ -12,6 +12,5 @@ AuthRouter.get('/refresh', limiter, refresh);
 AuthRouter.post('/logout', logout);
 
 AuthRouter.use('/', AuthValidator)
-AuthRouter.get('/', limiter, queryAuth);
 
 export default AuthRouter;
