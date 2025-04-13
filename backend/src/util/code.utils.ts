@@ -1,4 +1,4 @@
-export const VERIFICATION_CODE_TTL = 60 * 1000 // 15 minutes
+export const VERIFICATION_CODE_TTL = 15 * 60 * 1000 // 15 minutes
 
 export function generateVerificationCode(length: number = 6) {
     let chars = "0123456789"
