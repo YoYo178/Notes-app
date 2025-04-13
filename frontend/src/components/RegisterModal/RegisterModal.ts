@@ -4,6 +4,7 @@ import { isEmail, isStrongPassword, StrongPasswordOptions } from 'validator';
 import { RegisterFields } from "../../types/auth.types";
 import { RegisterStages } from "../../types/modal.types";
 import { ReactSetState, TMutation } from "../../types/react.types";
+import { VerifyCodeRequest } from "../../hooks/network/auth/useVerifyCodeMutation";
 
 const passwordCriteria: StrongPasswordOptions & { returnScore?: false | undefined; } = {
     minLength: 8,
@@ -25,6 +26,7 @@ export const EventHandler = {
 
 async function continueButtonOnClick(
     registerMutation: TMutation<RegisterFields>,
+    verifyCodeMutation: TMutation<VerifyCodeRequest>,
     successMessage: string, setSuccessMessage: ReactSetState<string>,
     errorMessage: string, setErrorMessage: ReactSetState<string>,
     currentStage: RegisterStages, setCurrentStage: ReactSetState<RegisterStages>,
@@ -60,7 +62,7 @@ async function continueButtonOnClick(
                 return;
             }
 
-            if(!email) {
+            if (!email) {
                 setErrorMessage("Email is required!");
                 return;
             }
@@ -101,12 +103,16 @@ async function continueButtonOnClick(
                 return;
             }
 
-            setCurrentStage((prev) => {
-                if (prev === RegisterStages.REDIRECT)
-                    return prev;
+            const userID = registerMutation.data.id;
 
-                return prev + 1;
-            })
+            await verifyCodeMutation.mutateAsync({
+                payload: {
+                    id: userID,
+                    purpose: 'user-verification',
+                    code: OTP
+                }
+            });
+            
             break;
         case RegisterStages.REDIRECT:
             break;

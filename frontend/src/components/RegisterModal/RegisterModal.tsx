@@ -1,19 +1,54 @@
-import axios, { AxiosError } from 'axios';
 import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
+import axios, { AxiosError } from 'axios';
 
-import { HiOutlineUserCircle } from 'react-icons/hi2';
 import { IoAt, IoKeyOutline, IoPersonOutline } from 'react-icons/io5';
+import { HiOutlineUserCircle } from 'react-icons/hi2';
+import { MdOutlinePassword } from 'react-icons/md';
 import { FaRegEye } from 'react-icons/fa6';
 
+import { useVerifyCodeMutation } from '../../hooks/network/auth/useVerifyCodeMutation.ts';
 import { useRegisterMutation } from '../../hooks/network/auth/useRegisterMutation.ts';
 
+import { ReactSetState, TMutation } from '../../types/react.types.ts';
 import { RegisterStages } from '../../types/modal.types.ts';
 
 import { ButtonHandler, EventHandler } from './RegisterModal.ts';
 
 import './RegisterModal.css';
-import { MdOutlinePassword } from 'react-icons/md';
+
+function mutationCallbackHandler(
+    mutation: TMutation<any>,
+    setCurrentStage: ReactSetState<RegisterStages>,
+    setErrorMessage: ReactSetState<string>,
+    setSuccessMessage: ReactSetState<string>
+) {
+    if (mutation.isSuccess && mutation.data) {
+        setCurrentStage((prev) => {
+            if (prev === RegisterStages.REDIRECT)
+                return prev;
+
+            return prev + 1;
+        })
+    } else if (mutation.isError) {
+        if (mutation.error?.message) {
+            setSuccessMessage('');
+            const { error: err } = mutation;
+
+            if (err && axios.isAxiosError(err)) {
+                const error = err as AxiosError<{ message: unknown }>;
+
+                setErrorMessage(error.response?.data?.message as string || error.message || '');
+                return;
+            }
+
+            const errorMessage = mutation.error?.message;
+            setErrorMessage(errorMessage || '');
+
+            console.error("An error occured while trying to register.", errorMessage);
+        }
+    }
+}
 
 export const RegisterModal: FC = () => {
     const [currentStage, setCurrentStage] = useState<RegisterStages>(RegisterStages.INPUT_DETAILS);
@@ -37,33 +72,18 @@ export const RegisterModal: FC = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const registerMutation = useRegisterMutation({});
+    const verifyCodeMutation = useVerifyCodeMutation({});
     const location = useLocation();
 
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
-        if (registerMutation.isSuccess) {
-            setCurrentStage(RegisterStages.VERIFY_ACCOUNT);
-        } else if (registerMutation.isError) {
-            if (registerMutation.error?.message) {
-                setSuccessMessage('');
-                const { error: err } = registerMutation;
-
-                if (err && axios.isAxiosError(err)) {
-                    const error = err as AxiosError<{ message: unknown }>;
-
-                    setErrorMessage(error.response?.data?.message as string);
-                    return;
-                }
-
-                const errorMessage = registerMutation.error?.message;
-                setErrorMessage(errorMessage);
-
-                console.error("An error occured while trying to register.", errorMessage);
-            }
-        }
-
+        mutationCallbackHandler(registerMutation, setCurrentStage, setErrorMessage, setSuccessMessage);
     }, [registerMutation.isSuccess, registerMutation.isError])
+
+    useEffect(() => {
+        mutationCallbackHandler(verifyCodeMutation, setCurrentStage, setErrorMessage, setSuccessMessage);
+    }, [verifyCodeMutation.isSuccess, verifyCodeMutation.isError])
 
     useEffect(() => {
         switch (currentStage) {
@@ -73,7 +93,7 @@ export const RegisterModal: FC = () => {
                 setButtonTitle("Verify Code");
                 break;
             case RegisterStages.REDIRECT:
-                setSuccessMessage(`Your account has been verified successfully\nRedirecting to sign in page...`)
+                setSuccessMessage(`Your account has been verified successfully.\nRedirecting to sign-in page...`)
                 setTimeout(() => {
                     setRedirect(
                         <Navigate to='/login' />
@@ -242,6 +262,7 @@ export const RegisterModal: FC = () => {
                         onClick={async () => {
                             await ButtonHandler.continueButtonOnClick(
                                 registerMutation,
+                                verifyCodeMutation,
                                 successMessage, setSuccessMessage,
                                 errorMessage, setErrorMessage,
                                 currentStage, setCurrentStage,
