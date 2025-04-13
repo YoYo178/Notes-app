@@ -29,7 +29,7 @@ async function continueButtonOnClick(
     verifyCodeMutation: TMutation<VerifyCodeRequest>,
     successMessage: string, setSuccessMessage: ReactSetState<string>,
     errorMessage: string, setErrorMessage: ReactSetState<string>,
-    currentStage: RegisterStages, setCurrentStage: ReactSetState<RegisterStages>,
+    currentStage: RegisterStages,
     registerData: RegisterFields,
     OTP: string
 ) {
@@ -112,11 +112,7 @@ async function continueButtonOnClick(
                     code: OTP
                 }
             });
-            
-            break;
-        case RegisterStages.REDIRECT:
-            break;
-        default:
+
             break;
     }
 

@@ -87,8 +87,6 @@ export const RegisterModal: FC = () => {
 
     useEffect(() => {
         switch (currentStage) {
-            case RegisterStages.INPUT_DETAILS:
-                break;
             case RegisterStages.VERIFY_ACCOUNT:
                 setButtonTitle("Verify Code");
                 break;
@@ -99,8 +97,6 @@ export const RegisterModal: FC = () => {
                         <Navigate to='/login' />
                     )
                 }, 1500)
-                break;
-            default:
                 break;
         }
     }, [currentStage])
@@ -265,7 +261,7 @@ export const RegisterModal: FC = () => {
                                 verifyCodeMutation,
                                 successMessage, setSuccessMessage,
                                 errorMessage, setErrorMessage,
-                                currentStage, setCurrentStage,
+                                currentStage,
                                 { username, password, confirmPassword, email, displayName: `${firstName} ${lastName}` },
                                 OTP
                             )
