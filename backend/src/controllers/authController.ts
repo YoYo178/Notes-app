@@ -195,7 +195,9 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
             }
             break;
         default:
-            return console.error('[POST /api/auth/resend-verification-code]: Unknown method!');
+            console.error('[POST /api/auth/resend-verification-code]: Unknown method!');
+            res.status(HttpStatusCodes.BAD_REQUEST).json({ message: "Unknown method" });
+            return;
     }
 
     const verificationCode = await VerificationCode.findOne({ user: user._id, purpose });

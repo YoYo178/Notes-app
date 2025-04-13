@@ -16,7 +16,7 @@ class MailService {
     private async init() {
         if (isDevEnv()) {
             const testAccount = await nodemailer.createTestAccount();
-            console.log("[MailService] Test account created: ", testAccount)
+            console.log("[MailService] Test account created:", testAccount)
 
             this.transporter = nodemailer.createTransport({
                 host: testAccount.smtp.host,
@@ -76,8 +76,8 @@ class MailService {
         });
 
         if (isDevEnv()) {
-            console.log('Message sent: %s', info.messageId);
-            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+            console.log('Message sent:', info.messageId);
+            console.log('Preview URL:', nodemailer.getTestMessageUrl(info));
         }
 
         return info;
