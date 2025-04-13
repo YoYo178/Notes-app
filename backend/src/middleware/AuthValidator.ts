@@ -16,6 +16,9 @@ declare global {
                 username: string;
                 displayName: string;
                 email: string;
+            },
+            recoveringUser: {
+                id: string;
             }
         }
     }
@@ -44,7 +47,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
             const decoded: any = jwt.verify(cookies?.jwt_reset_at, process.env.RESET_PASSWORD_ACCESS_TOKEN_SECRET);
 
             if (wantsToChangePassword && decoded.purpose === 'reset-password') {
-                req.user.id = decoded.userID;
+                req.recoveringUser = { id: decoded.userID };
                 next();
                 return;
             }
