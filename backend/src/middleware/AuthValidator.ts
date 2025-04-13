@@ -34,7 +34,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
     const cookies = req.cookies;
 
     if (cookies?.jwt_reset_at) {
-        const wantsToChangePassword = req.originalUrl.split('/').at(-1) === 'change-password';
+        const wantsToChangePassword = req.originalUrl.split('/').at(-1) === 'reset-password';
 
         if (!process.env.RESET_PASSWORD_ACCESS_TOKEN_SECRET) {
             logger.err("RESET_PASSWORD_ACCESS_TOKEN_SECRET is undefined!");
