@@ -102,12 +102,12 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    if (user.isVerified || !user.recoveryState.isRecovering || user.recoveryState.hasVerifiedMail) {
+    if (user.isVerified && (!user.recoveryState.isRecovering || user.recoveryState.hasVerifiedMail)) {
         res.status(HttpStatusCodes.FORBIDDEN);
         return;
     }
 
-    const verificationCode = await VerificationCode.findOne({ user: id }).lean().exec();
+    const verificationCode = await VerificationCode.findOne({ user: id }).exec();
 
     if (!verificationCode) {
         res.status(HttpStatusCodes.NOT_FOUND);
@@ -153,7 +153,9 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
             res.status(HttpStatusCodes.OK);
             break;
         default:
-            return console.error('[POST /api/auth/verify]: Unknown method!');
+            console.error('[POST /api/auth/verify]: Unknown method!');
+            res.status(HttpStatusCodes.BAD_REQUEST).json({ message: "Unknown purpose" });
+            return;
     }
 })
 
