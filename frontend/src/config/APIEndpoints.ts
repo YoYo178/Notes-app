@@ -15,6 +15,22 @@ const APIEndpoints: Endpoints = {
         URL: "/api/auth/register",
         METHOD: "POST"
     },
+    RECOVER_ACCOUNT: {
+        URL: "/api/auth/recover-account",
+        METHOD: "POST"
+    },
+    VERIFY: {
+        URL: "/api/auth/verify",
+        METHOD: "POST"
+    },
+    RESEND_CODE: {
+        URL: "/api/auth/resend-code",
+        METHOD: "POST"
+    },
+    RESET_PASSWORD: {
+        URL: "/api/auth/reset-password",
+        METHOD: "POST"
+    },
 
     /***** NOTE *****/
     GET_ALL_NOTES: {
