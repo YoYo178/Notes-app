@@ -30,7 +30,7 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const user = await User.findById(req.user?.id).exec();
+    const user = await User.findById(req.user.id).exec();
 
     if (!user) {
         res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
@@ -38,7 +38,7 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
     }
 
     const duplicateEmail = await User.findOne({ email }).exec();
-    if (duplicateEmail && (duplicateEmail._id as ObjectId).toString() !== req.user?.id) {
+    if (duplicateEmail && (duplicateEmail._id as ObjectId).toString() !== req.user.id) {
         res.status(HttpStatusCodes.CONFLICT).send({ message: "Email is already registered" });
         return;
     }
@@ -78,7 +78,7 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
  * @returns HTTP 200, 404
  */
 const deleteUser = expressAsyncHandler(async (req: Request, res: Response) => {
-    const user = await User.findById(req.user?.id);
+    const user = await User.findById(req.user.id);
 
     if (!user) {
         res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });

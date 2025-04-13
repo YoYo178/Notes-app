@@ -14,7 +14,7 @@ interface UploadRequestBody {
 
 const getUploadURL = asyncHandler(async (req: Request, res: Response) => {
   const { fileName, fileType, contentType, fileSize, audioDuration } = req.body as UploadRequestBody;
-  const userId = req.user?.id;
+  const userId = req.user.id;
 
   if (!fileName || !fileType || !contentType || !fileSize) {
     res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'All fields are required' });
@@ -73,7 +73,7 @@ const getUploadURL = asyncHandler(async (req: Request, res: Response) => {
 
 const getURL = asyncHandler(async (req: Request, res: Response) => {
   const { fileKey } = req.query;
-  const userId = req.user?.id;
+  const userId = req.user.id;
 
   if (!userId) {
     res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized' });
@@ -105,7 +105,7 @@ const getURL = asyncHandler(async (req: Request, res: Response) => {
 
 const getMultipleURL = asyncHandler(async (req: Request, res: Response) => {
   const { fileKeys } = req.body;
-  const userId = req.user?.id;
+  const userId = req.user.id;
 
   if (!fileKeys || !Array.isArray(fileKeys) || !fileKeys?.length) {
     res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Invalid payload, fileKeys must be a non-empty array!' });
@@ -137,7 +137,7 @@ const getMultipleURL = asyncHandler(async (req: Request, res: Response) => {
 
 const deleteFile = asyncHandler(async (req: Request, res: Response) => {
   const { fileKey } = req.params;
-  const userId = req.user?.id;
+  const userId = req.user.id;
 
   if (!userId) {
     res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized' });
