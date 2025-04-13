@@ -765,21 +765,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:5.72.2":
-  version: 5.72.2
-  resolution: "@tanstack/query-core@npm:5.72.2"
-  checksum: 10c0/b1e4670c327a9f7e4892b5eb0c423ae230e440b30b749796595ecd7e19a683f613dd94e81fa97e420d765d2325493f5a0dfe3f6fe2ed860c2522c52a281c3e03
+"@tanstack/query-core@npm:5.73.3":
+  version: 5.73.3
+  resolution: "@tanstack/query-core@npm:5.73.3"
+  checksum: 10c0/a515bc04abdb662fe171fc03ee6818b36dca4e78393fb91bd2170adec512492c588a7a47221a602aef572098e7e5e3c159a670f12f9baabec2a19b1e6649353b
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^5.72.2":
-  version: 5.72.2
-  resolution: "@tanstack/react-query@npm:5.72.2"
+"@tanstack/react-query@npm:^5.73.3":
+  version: 5.73.3
+  resolution: "@tanstack/react-query@npm:5.73.3"
   dependencies:
-    "@tanstack/query-core": "npm:5.72.2"
+    "@tanstack/query-core": "npm:5.73.3"
   peerDependencies:
     react: ^18 || ^19
-  checksum: 10c0/4d0e3252aca29c9e59f5d023250b8f1524a5388f400f1c4fd2aa8bdbd971a5a424e53dd8c48b11b252ff1892fab982d144fec3436d529f47373a2cfbdd5e9548
+  checksum: 10c0/c1c1808977498f741f12a28cb3322af9bbfbfc00c5ea72d5638d454e378d577971f840a057f4d013115d0336e0e035ba23ee288cbb7500ab46ef1d34edb52f22
   languageName: node
   linkType: hard
 
@@ -868,16 +868,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^19.1.0":
-  version: 19.1.0
-  resolution: "@types/react@npm:19.1.0"
+"@types/react@npm:^19.1.1":
+  version: 19.1.1
+  resolution: "@types/react@npm:19.1.1"
   dependencies:
     csstype: "npm:^3.0.2"
-  checksum: 10c0/632fd20ee176e55801a61c5f854141b043571a3e363ef106b047b766a813a12735cbb37abb3d61d126346979f530f2ed269a60c8ef3cdee54e5e9fe4174e5dad
+  checksum: 10c0/d22417857460ade4250806135a3d1e2558737a7ae76f120f88afbc6419ab04312977a5208a70d4f85059b9493c0f1f16c9ba1483aa8ea1dad581da666c95773e
   languageName: node
   linkType: hard
 
-"@types/validator@npm:^13":
+"@types/validator@npm:^13.12.3":
   version: 13.12.3
   resolution: "@types/validator@npm:13.12.3"
   checksum: 10c0/bc40191cd2e3c9b4b8d1f10611038ae3793462685366201940f2ef953b3229c02edcdb7c73cc5e6f762d5ecf1762a821afadaf97f71bd7fb06fae3aeb2729caf
@@ -1774,12 +1774,12 @@ __metadata:
   resolution: "frontend@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.24.0"
-    "@tanstack/react-query": "npm:^5.72.2"
+    "@tanstack/react-query": "npm:^5.73.3"
     "@types/dom-speech-recognition": "npm:^0.0.6"
     "@types/lodash": "npm:^4.17.16"
-    "@types/react": "npm:^19.1.0"
+    "@types/react": "npm:^19.1.1"
     "@types/react-dom": "npm:^19.1.2"
-    "@types/validator": "npm:^13"
+    "@types/validator": "npm:^13.12.3"
     "@vitejs/plugin-react": "npm:^4.3.4"
     axios: "npm:^1.8.4"
     eslint: "npm:^9.24.0"
