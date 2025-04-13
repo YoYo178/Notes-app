@@ -62,6 +62,10 @@ class MailService {
         if (!this.transporter)
             return;
 
+        if (isDevEnv()) {
+            console.log('New mail draft:', { from: `"${process.env.APP_NAME}" <${process.env.SMTP_EMAIL}>`, to, subject, text, html, attachments })
+        }
+
         const info = await this.transporter.sendMail({
             from: `"${process.env.APP_NAME}" <${process.env.SMTP_EMAIL}>`,
             to,
