@@ -1,7 +1,7 @@
 import { createContext, FC, ReactNode, useContext, useEffect, useState } from "react";
 import { AxiosError } from "axios";
 
-import { useGetLoggedInUser } from "../hooks/network/auth/useGetLoggedInUserQuery";
+import { useGetLoggedInUser } from "../hooks/network/user/useGetLoggedInUserQuery";
 
 import { User } from "../types/user.types";
 import { ReactSetState } from "../types/react.types";
