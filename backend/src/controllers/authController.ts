@@ -103,20 +103,20 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
     }
 
     if (user.isVerified && (!user.recoveryState.isRecovering || user.recoveryState.hasVerifiedMail)) {
-        res.status(HttpStatusCodes.FORBIDDEN);
+        res.status(HttpStatusCodes.FORBIDDEN).json({ message: "You are already in the process of recovering your account. Finish your current attempt or restart the account recovery process." })
         return;
     }
 
     const verificationCode = await VerificationCode.findOne({ user: id }).exec();
 
     if (!verificationCode) {
-        res.status(HttpStatusCodes.NOT_FOUND);
+        res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Verification code expired, kindly request a new code." });
         return;
     }
 
     const codeMatches = await bcrypt.compare(code, verificationCode?.code)
 
-    if (!codeMatches) {
+    if (!codeMatches || verificationCode.purpose !== purpose) {
         res.status(HttpStatusCodes.BAD_REQUEST).json({ message: "Invalid verification code" });
         return;
     }
@@ -130,7 +130,9 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
             res.status(HttpStatusCodes.OK).json({ message: `Verification successful` });
             break;
         case 'reset-password':
+            user.recoveryState.isRecovering = true;
             user.recoveryState.hasVerifiedMail = true;
+            user.recoveryState.hasSetPassword = false;
             await user.save();
 
             if (!process.env.RESET_PASSWORD_ACCESS_TOKEN_SECRET) {
@@ -150,7 +152,7 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
 
             res.cookie("jwt_reset_at", resetPasswordAccessToken, cookieConfig);
 
-            res.status(HttpStatusCodes.OK);
+            res.status(HttpStatusCodes.OK).json({ message: "Success" });
             break;
         default:
             console.error('[POST /api/auth/verify]: Unknown method!');
@@ -196,7 +198,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
             return console.error('[POST /api/auth/resend-verification-code]: Unknown method!');
     }
 
-    const verificationCode = await VerificationCode.findOne({ user: user._id });
+    const verificationCode = await VerificationCode.findOne({ user: user._id, purpose });
 
     if (verificationCode)
         await verificationCode.deleteOne();
@@ -215,7 +217,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
         expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL)
     })
 
-    res.send(HttpStatusCodes.OK);
+    res.status(HttpStatusCodes.OK).json({ message: "Success" });
 })
 
 /**
@@ -314,17 +316,17 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
         return;
     }
 
-    if (user.recoveryState.isRecovering || user.recoveryState.hasVerifiedMail) {
-        res.status(HttpStatusCodes.OK)
+    if (user.recoveryState.isRecovering && user.recoveryState.hasVerifiedMail && req.cookies?.jwt_reset_at) {
+        res.status(HttpStatusCodes.FORBIDDEN).json({ message: "You are already in the process of recovering your account. Finish your current attempt or restart account recovery process." })
         return;
     }
 
-    const verificationCode = await VerificationCode.findOne({ user: user.id });
-
-    if (verificationCode)
-        await verificationCode.deleteOne();
+    // Delete all previous codes
+    await VerificationCode.deleteMany({ user: user.id, purpose: 'reset-password' });
 
     user.recoveryState.isRecovering = true;
+    user.recoveryState.hasVerifiedMail = false;
+    user.recoveryState.hasSetPassword = false;
     await user.save();
 
     const code = generateVerificationCode();
@@ -337,7 +339,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
         expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL)
     })
 
-    res.send(HttpStatusCodes.OK);
+    res.status(HttpStatusCodes.OK).json({ id: user.id });
 })
 
 /**
@@ -346,19 +348,14 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
  * @returns HTTP 200, 400, 403, 404
  */
 const resetPassword = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { id, password, confirmPassword } = req.body;
-
-    if (!id) {
-        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "User ID is required" });
-        return;
-    }
+    const { password, confirmPassword } = req.body;
 
     if (!password || !confirmPassword) {
         res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Both password fields are required" });
         return;
     }
 
-    const user = await User.findById(id).exec();
+    const user = await User.findById(req.recoveringUser.id).exec();
 
     if (!user) {
         res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
@@ -366,7 +363,7 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
     }
 
     if (!user.recoveryState.isRecovering || !user.recoveryState.hasVerifiedMail) {
-        res.status(HttpStatusCodes.FORBIDDEN)
+        res.status(HttpStatusCodes.FORBIDDEN).json({ message: "You haven't completed the earlier stages of account recovery, kindly complete them or restart the account recovery process."})
         return;
     }
 
@@ -376,6 +373,8 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
     }
 
     user.password = await bcrypt.hash(password, 10);
+    user.recoveryState.isRecovering = true;
+    user.recoveryState.hasVerifiedMail = true;
     user.recoveryState.hasSetPassword = true; // TODO: might remove later
 
     if (user.recoveryState.isRecovering && user.recoveryState.hasVerifiedMail && user.recoveryState.hasSetPassword) {
@@ -391,7 +390,7 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
         maxAge: undefined
     });
 
-    res.send(HttpStatusCodes.OK).json({ message: "Password changed successfully" });
+    res.status(HttpStatusCodes.OK).json({ message: "Password changed successfully" });
 })
 
 /**
