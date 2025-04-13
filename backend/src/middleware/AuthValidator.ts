@@ -28,8 +28,45 @@ const tokenBlacklist: string[] = [];
  * @returns HTTP 400, 401, 403, 409, 500
  */
 const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    // Make sure the user is logged in
     const cookies = req.cookies;
+
+    if (cookies?.jwt_reset_at) {
+        const wantsToChangePassword = req.originalUrl.split('/').at(-1) === 'change-password';
+
+        if (!process.env.RESET_PASSWORD_ACCESS_TOKEN_SECRET) {
+            logger.err("RESET_PASSWORD_ACCESS_TOKEN_SECRET is undefined!");
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured in the server." });
+            return;
+        }
+
+        try {
+            // Decode user's password reset access token
+            const decoded: any = jwt.verify(cookies?.jwt_reset_at, process.env.RESET_PASSWORD_ACCESS_TOKEN_SECRET);
+
+            if (wantsToChangePassword && decoded.purpose === 'reset-password') {
+                req.user.id = decoded.userID;
+                next();
+                return;
+            }
+        } catch (err) {
+            // Need to check for TokenExpiredError first
+            // because it inherits from JsonWebTokenError
+            if (err instanceof TokenExpiredError) {
+                const error = err as TokenExpiredError;
+                res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: error?.message === "jwt expired" ? "Expired token" : error?.message });
+                return;
+            } else if (err instanceof JsonWebTokenError) {
+                const error = err as JsonWebTokenError;
+                res.status(HttpStatusCodes.BAD_REQUEST).send({ message: error?.message === "invalid signature" ? "Invalid token" : error?.message });
+                return;
+            }
+
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: err?.message });
+            return;
+        }
+    }
+
+    // Make sure the user is logged in
     if (!cookies?.jwt_rt) {
         res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: "User is not logged in" })
         return;
