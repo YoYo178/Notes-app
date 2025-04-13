@@ -5,7 +5,7 @@ import './SidebarBranding.css'
 export const SidebarBranding: FC = () => {
   return (
     <div className="sidebar-branding">
-      <span className="sidebar-branding-text">AI Notes</span>
+      <span className="sidebar-branding-text">AutoNotes</span>
     </div>
   )
 } 

@@ -6,7 +6,7 @@ import './SplashModal.css';
 export const SplashModal: FC = () => {
     return (
         <form className="sm" onSubmit={(e) => e.preventDefault()}>
-            <h2 className="sm-title">AI Notes</h2>
+            <h2 className="sm-title">AutoNotes</h2>
 
             <div className="sm-links-container">
                 <Link to="/login" className="sm-login-button">Login</Link>
