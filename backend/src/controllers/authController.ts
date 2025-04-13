@@ -1,13 +1,21 @@
-import { User } from "@src/models/User";
-import expressAsyncHandler from "express-async-handler";
-import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
-import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 import logger from 'jet-logger'
-import HttpStatusCodes from "@src/common/HttpStatusCodes";
-import cookieConfig from "@src/config/cookieConfig";
+import jwt from 'jsonwebtoken';
+import { isEmail } from "validator";
 import { ObjectId } from "mongoose";
+import { Request, Response } from "express";
+import expressAsyncHandler from "express-async-handler";
+
+import HttpStatusCodes from "@src/common/HttpStatusCodes";
+
+import { User } from "@src/models/User";
+import { VerificationCode } from "@src/models/VerificationCode";
+
+import cookieConfig from "@src/config/cookieConfig";
 import { tokenConfig } from "@src/config/tokenConfig";
+
+import { generateVerificationCode, VERIFICATION_CODE_TTL } from "@src/util/code.utils";
+import { sendPasswordResetEmail, sendVerificationMail } from "@src/util/mail.utils";
 
 /**
  * @route POST /auth/register
@@ -22,9 +30,8 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    // only supporting gmail for now, lol
-    if (!email.endsWith("@gmail.com")) {
-        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Email not supported" });
+    if (!isEmail(email)) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Invalid email" });
         return;
     }
 
@@ -58,6 +65,16 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
         email
     });
 
+    const code = generateVerificationCode();
+    await sendVerificationMail(email, code);
+
+    await VerificationCode.create({
+        user: user._id,
+        code: await bcrypt.hash(code, 10),
+        purpose: 'user-verification',
+        expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL)
+    })
+
     if (user) {
         res.status(HttpStatusCodes.CREATED).send({ message: `User created successfully`, id: (user._id as ObjectId).toString() })
         return;
@@ -65,9 +82,143 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured while creating a new user." })
     }
 })
+
+/**
+ * @route POST /auth/verify
+ * @description Used for email verification in case of a new account or account recovery
+ * @returns HTTP 200, 400, 403, 404, 500
+ */
+const verify = expressAsyncHandler(async (req: Request, res: Response) => {
+    const { id, purpose, code } = req.body;
+
+    if (!id) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "User ID is required" })
+        return;
+    }
+
+    const user = await User.findById(id).select('-password').exec();
+    if (!user) {
+        res.status(HttpStatusCodes.NOT_FOUND).json({ message: "User not found" });
+        return;
+    }
+
+    if (user.isVerified || !user.recoveryState.isRecovering || user.recoveryState.hasVerifiedMail) {
+        res.status(HttpStatusCodes.FORBIDDEN);
+        return;
+    }
+
+    const verificationCode = await VerificationCode.findOne({ user: id }).lean().exec();
+
+    if (!verificationCode) {
+        res.status(HttpStatusCodes.NOT_FOUND);
+        return;
+    }
+
+    const codeMatches = await bcrypt.compare(code, verificationCode?.code)
+
+    if (!codeMatches) {
+        res.status(HttpStatusCodes.BAD_REQUEST).json({ message: "Invalid verification code" });
+        return;
+    }
+
+    await verificationCode.deleteOne();
+
+    switch (purpose) {
+        case 'user-verification':
+            user.isVerified = true;
+            await user.save();
+            res.status(HttpStatusCodes.OK).json({ message: `Verification successful` });
+            break;
+        case 'reset-password':
+            user.recoveryState.hasVerifiedMail = true;
+            await user.save();
+
+            if (!process.env.RESET_PASSWORD_ACCESS_TOKEN_SECRET) {
+                logger.err("RESET_PASSWORD_ACCESS_TOKEN_SECRET is undefined!");
+                res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occurred in the server." });
+                return;
+            }
+
+            const resetPasswordAccessToken = jwt.sign(
+                {
+                    userID: user.id,
+                    purpose: 'reset-password'
+                },
+                process.env.RESET_PASSWORD_ACCESS_TOKEN_SECRET,
+                { expiresIn: tokenConfig.resetPasswordAccessToken.expiry }
+            )
+
+            res.cookie("jwt_reset_at", resetPasswordAccessToken, cookieConfig);
+
+            res.status(HttpStatusCodes.OK);
+            break;
+        default:
+            return console.error('[POST /api/auth/verify]: Unknown method!');
+    }
+})
+
+/**
+ * @route POST /auth/resend-code
+ * @description Used for resending a verification code to user's email
+ * @returns HTTP 200, 400, 403, 404
+ */
+const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
+
+    const { id, purpose } = req.body;
+
+    if (!id) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "User ID is required" })
+        return;
+    }
+
+    const user = await User.findById(id).select("-password").lean().exec()
+    if (!user) {
+        res.status(HttpStatusCodes.NOT_FOUND).json({ message: "User not found" });
+        return;
+    }
+
+    switch (purpose) {
+        case 'user-verification':
+            if (user.isVerified) {
+                res.status(HttpStatusCodes.FORBIDDEN).json({ message: 'User is already verified!' });
+                return;
+            }
+            break;
+        case 'reset-password':
+            if (user.recoveryState.isRecovering && !user.recoveryState.hasVerifiedMail) {
+                res.status(HttpStatusCodes.FORBIDDEN).json({ message: 'User has not verified email for recovering password yet!' });
+                return;
+            }
+            break;
+        default:
+            return console.error('[POST /api/auth/resend-verification-code]: Unknown method!');
+    }
+
+    const verificationCode = await VerificationCode.findOne({ user: user._id });
+
+    if (verificationCode)
+        await verificationCode.deleteOne();
+
+    const code = generateVerificationCode();
+
+    if (purpose === 'user-verification')
+        await sendVerificationMail(user.email, code)
+    else if (purpose === 'reset-password')
+        await sendPasswordResetEmail(user.email, code)
+
+    await VerificationCode.create({
+        user: user._id,
+        code: await bcrypt.hash(code, 10),
+        purpose,
+        expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL)
+    })
+
+    res.send(HttpStatusCodes.OK);
+})
+
 /**
  * @route POST /auth/login
- * @description Logs in the user and returns an HTTP only cookie to the client.
+ * @description Logs in the user and returns HTTP only cookies to the client.
  * @returns HTTP 200, 400, 401, 404, 500
  */
 const login = expressAsyncHandler(async (req: Request, res: Response) => {
@@ -88,6 +239,11 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
     const passwordMatches = await bcrypt.compare(password, user.password);
     if (!passwordMatches) {
         res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: "Invalid password" })
+        return;
+    }
+
+    if (user.isVerified === false) {
+        res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: "User is not verified!" });
         return;
     }
 
@@ -137,9 +293,109 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
 })
 
 /**
+ * @route POST /auth/recover-account
+ * @description Used to initiate account recovery process.
+ * @returns HTTP 200, 400, 404
+ */
+const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) => {
+    const { input } = req.body;
+
+    if (!input) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "All fields are required" });
+        return;
+    }
+
+    const user = await User.findOne({ $or: [{ username: input }, { email: input }] }).select("-password").exec();
+
+    if (!user) {
+        res.status(HttpStatusCodes.NOT_FOUND).send({ message: "No account found" });
+        return;
+    }
+
+    if (user.recoveryState.isRecovering || user.recoveryState.hasVerifiedMail) {
+        res.status(HttpStatusCodes.OK)
+        return;
+    }
+
+    const verificationCode = await VerificationCode.findOne({ user: user.id });
+
+    if (verificationCode)
+        await verificationCode.deleteOne();
+
+    user.recoveryState.isRecovering = true;
+    await user.save();
+
+    const code = generateVerificationCode();
+    await sendPasswordResetEmail(user.email, code);
+
+    await VerificationCode.create({
+        user: user._id,
+        code: await bcrypt.hash(code, 10),
+        purpose: 'reset-password',
+        expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL)
+    })
+
+    res.send(HttpStatusCodes.OK);
+})
+
+/**
+ * @route POST /auth/reset-password
+ * @description Used for finishing account recovery process.
+ * @returns HTTP 200, 400, 403, 404
+ */
+const resetPassword = expressAsyncHandler(async (req: Request, res: Response) => {
+    const { id, password, confirmPassword } = req.body;
+
+    if (!id) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "User ID is required" });
+        return;
+    }
+
+    if (!password || !confirmPassword) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Both password fields are required" });
+        return;
+    }
+
+    const user = await User.findById(id).exec();
+
+    if (!user) {
+        res.status(HttpStatusCodes.NOT_FOUND).send({ message: "User not found" });
+        return;
+    }
+
+    if (!user.recoveryState.isRecovering || !user.recoveryState.hasVerifiedMail) {
+        res.status(HttpStatusCodes.FORBIDDEN)
+        return;
+    }
+
+    if (password != confirmPassword) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Passwords do not match" })
+        return;
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+    user.recoveryState.hasSetPassword = true; // TODO: might remove later
+
+    if (user.recoveryState.isRecovering && user.recoveryState.hasVerifiedMail && user.recoveryState.hasSetPassword) {
+        user.recoveryState.isRecovering = false;
+        user.recoveryState.hasVerifiedMail = false;
+        user.recoveryState.hasSetPassword = false;
+    }
+
+    await user.save();
+
+    res.clearCookie('jwt_reset_at', {
+        ...cookieConfig,
+        maxAge: undefined
+    });
+
+    res.send(HttpStatusCodes.OK).json({ message: "Password changed successfully" });
+})
+
+/**
  * @route POST /auth/logout
- * @description Logs out the user and clears the HTTP only cookie on the client.
- * @returns HTTP 200, 401
+ * @description Logs out the user and clears HTTP only cookies on the client.
+ * @returns HTTP 200
  */
 const logout = expressAsyncHandler(async (req: Request, res: Response) => {
     res.clearCookie('jwt_rt', {
@@ -157,6 +413,10 @@ const logout = expressAsyncHandler(async (req: Request, res: Response) => {
 
 export default {
     register,
+    verify,
+    resendCode,
     login,
+    recoverAccount,
+    resetPassword,
     logout,
 }
