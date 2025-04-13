@@ -2,8 +2,6 @@ import { useMutationBase } from "../useMutationBase";
 import APIEndpoints from "../../../config/APIEndpoints";
 
 export interface ResetPasswordRequest {
-    /** User ID */
-    id: string,
     /** New password */
     password: string,
     /** New password confirmation */
