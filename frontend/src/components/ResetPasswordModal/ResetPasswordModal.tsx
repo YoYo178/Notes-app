@@ -1,15 +1,54 @@
 import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import axios, { AxiosError } from 'axios';
 
 import { IoKeyOutline, IoPersonOutline } from 'react-icons/io5';
 import { MdOutlinePassword } from 'react-icons/md';
 import { FaRegEye } from 'react-icons/fa6';
 
+import { useRecoverAccountMutation } from '../../hooks/network/auth/useRecoverAccountMutation.ts';
+import { useVerifyCodeMutation } from '../../hooks/network/auth/useVerifyCodeMutation.ts';
+import { useResetPasswordMutation } from '../../hooks/network/auth/useResetPasswordMutation.ts';
+
 import { ResetAccountStages } from '../../types/modal.types.ts';
+import { TMutation, ReactSetState } from '../../types/react.types.ts';
 
 import { ButtonHandler, EventHandler } from './ResetPasswordModal.ts';
 
 import './ResetPasswordModal.css';
+
+function mutationCallbackHandler(
+    mutation: TMutation<any>,
+    setCurrentStage: ReactSetState<ResetAccountStages>,
+    setErrorMessage: ReactSetState<string>,
+    setSuccessMessage: ReactSetState<string>
+) {
+    if (mutation.isSuccess && mutation.data) {
+        setCurrentStage((prev) => {
+            if (prev === ResetAccountStages.REDIRECT)
+                return prev;
+
+            return prev + 1;
+        })
+    } else if (mutation.isError) {
+        if (mutation.error?.message) {
+            setSuccessMessage('');
+            const { error: err } = mutation;
+
+            if (err && axios.isAxiosError(err)) {
+                const error = err as AxiosError<{ message: unknown }>;
+
+                setErrorMessage(error.response?.data?.message as string || error.message || '');
+                return;
+            }
+
+            const errorMessage = mutation.error?.message;
+            setErrorMessage(errorMessage || '');
+
+            console.error("An error occured while trying to register.", errorMessage);
+        }
+    }
+}
 
 export const ResetPasswordModal: FC = () => {
     const [currentStage, setCurrentStage] = useState<ResetAccountStages>(ResetAccountStages.FIND_ACCOUNT);
@@ -29,10 +68,24 @@ export const ResetPasswordModal: FC = () => {
 
     const buttonRef = useRef<HTMLButtonElement>(null);
 
+    const recoverAccountMutation = useRecoverAccountMutation({});
+    const verifyCodeMutation = useVerifyCodeMutation({});
+    const resetPasswordMutation = useResetPasswordMutation({});
+
+    useEffect(() => {
+        mutationCallbackHandler(recoverAccountMutation, setCurrentStage, setErrorMessage, setSuccessMessage);
+    }, [recoverAccountMutation.isSuccess, recoverAccountMutation.isError])
+
+    useEffect(() => {
+        mutationCallbackHandler(verifyCodeMutation, setCurrentStage, setErrorMessage, setSuccessMessage);
+    }, [verifyCodeMutation.isSuccess, verifyCodeMutation.isError])
+
+    useEffect(() => {
+        mutationCallbackHandler(resetPasswordMutation, setCurrentStage, setErrorMessage, setSuccessMessage);
+    }, [resetPasswordMutation.isSuccess, resetPasswordMutation.isError])
+
     useEffect(() => {
         switch (currentStage) {
-            case ResetAccountStages.FIND_ACCOUNT:
-                break;
             case ResetAccountStages.VERIFY_ACCOUNT:
                 setButtonTitle("Verify OTP");
                 break;
@@ -40,14 +93,12 @@ export const ResetPasswordModal: FC = () => {
                 setButtonTitle("Set password");
                 break;
             case ResetAccountStages.REDIRECT:
-                setSuccessMessage(`Your password has been reset successfully\nRedirecting to sign in page...`)
+                setSuccessMessage(`Your password has been reset successfully.\nRedirecting to sign in page...`)
                 setTimeout(() => {
                     setRedirect(
                         <Navigate to='/login' />
                     )
                 }, 1500)
-                break;
-            default:
                 break;
         }
     }, [currentStage])
@@ -63,14 +114,14 @@ export const ResetPasswordModal: FC = () => {
             <h2 className="fpm-title">Reset Password</h2>
 
             {currentStage === ResetAccountStages.FIND_ACCOUNT && (
-                // Display name field
+                // Username/Email field
                 <div className="fpm-field-container">
                     <div className="fpm-field-icon-container">
                         <IoPersonOutline />
                     </div>
 
                     <input
-                        type="email"
+                        type="text"
                         placeholder='Username / Email'
                         id="username-email-field"
                         className="fpm-field-username-email"
@@ -154,11 +205,14 @@ export const ResetPasswordModal: FC = () => {
                 <button
                     ref={buttonRef}
                     className="fpm-continue-button"
-                    onClick={() => {
-                        ButtonHandler.continueButtonOnClick(
+                    onClick={async () => {
+                        await ButtonHandler.continueButtonOnClick(
+                            recoverAccountMutation,
+                            verifyCodeMutation,
+                            resetPasswordMutation,
                             successMessage, setSuccessMessage,
                             errorMessage, setErrorMessage,
-                            currentStage, setCurrentStage,
+                            currentStage,
                             input,
                             OTP,
                             newPassword,
