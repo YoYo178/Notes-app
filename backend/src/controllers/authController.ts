@@ -108,7 +108,7 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
     }
 
     if (user.isVerified && (!user.recoveryState.isRecovering || user.recoveryState.hasVerifiedMail)) {
-        res.status(HttpStatusCodes.FORBIDDEN).json({ message: "You are already in the process of recovering your account. Finish your current attempt or restart the account recovery process." })
+        res.status(HttpStatusCodes.FORBIDDEN).json({ message: "You have verified your email already" })
         return;
     }
 
@@ -202,8 +202,8 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
             }
             break;
         case 'reset-password':
-            if (user.recoveryState.isRecovering && !user.recoveryState.hasVerifiedMail) {
-                res.status(HttpStatusCodes.FORBIDDEN).json({ message: 'User has not verified email for recovering password yet!' });
+            if (user.recoveryState.isRecovering && user.recoveryState.hasVerifiedMail) {
+                res.status(HttpStatusCodes.FORBIDDEN).json({ message: 'You have verified your email already' });
                 return;
             }
             break;
@@ -390,7 +390,7 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
     }
 
     if (!user.recoveryState.isRecovering || !user.recoveryState.hasVerifiedMail) {
-        res.status(HttpStatusCodes.FORBIDDEN).json({ message: "You haven't completed the earlier stages of account recovery, kindly complete them or restart the account recovery process."})
+        res.status(HttpStatusCodes.FORBIDDEN).json({ message: "You haven't completed the earlier stages of account recovery, kindly complete them or restart the account recovery process." })
         return;
     }
 
