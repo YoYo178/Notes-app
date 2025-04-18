@@ -8,4 +8,4 @@ export interface ResetPasswordRequest {
     confirmPassword: string,
 }
 
-export const useResetPasswordMutation = useMutationBase<ResetPasswordRequest>(APIEndpoints.RESET_PASSWORD, "Password reset");
+export const useResetPasswordMutation = useMutationBase<ResetPasswordRequest>(APIEndpoints.RESET_PASSWORD, "Password reset", true);
