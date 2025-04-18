@@ -9,7 +9,7 @@ import { NodeEnvs } from './constants';
 ******************************************************************************/
 
 export default jetEnv({
-  NodeEnv: isEnumVal(NodeEnvs),
+  NodeEnv: isEnumVal(NodeEnvs),  
   
   /* App */
   AppName: str,
