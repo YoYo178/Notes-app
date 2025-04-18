@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 import logger from 'jet-logger'
+import Env from "./Env";
 
 export async function connectDB() {
     try {
-        const mongoURI = process.env.MONGODB_URI
+        const mongoURI = Env.MongodbUri
         if (!mongoURI) {
             logger.err("MONGODB_URI is not defined in the .env file!")
             return;

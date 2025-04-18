@@ -7,6 +7,8 @@ import expressAsyncHandler from 'express-async-handler';
 import { ObjectId } from 'mongoose';
 import cookieConfig from '@src/config/cookieConfig';
 import { refreshAccessToken } from '@src/util/auth.utils';
+import Env from '@src/common/Env';
+import { NodeEnvs } from '@src/common/constants';
 
 declare global {
     namespace Express {
@@ -36,7 +38,9 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
     if (cookies?.jwt_reset_at) {
         const wantsToChangePassword = req.originalUrl.split('/').at(-1) === 'reset-password';
 
-        if (!process.env.RESET_PASSWORD_ACCESS_TOKEN_SECRET) {
+        const ResetPasswordAccessTokenSecret = Env.ResetPasswordAccessTokenSecret;
+
+        if (!ResetPasswordAccessTokenSecret) {
             logger.err("RESET_PASSWORD_ACCESS_TOKEN_SECRET is undefined!");
             res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured in the server." });
             return;
@@ -44,7 +48,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
 
         try {
             // Decode user's password reset access token
-            const decoded: any = jwt.verify(cookies?.jwt_reset_at, process.env.RESET_PASSWORD_ACCESS_TOKEN_SECRET);
+            const decoded: any = jwt.verify(cookies?.jwt_reset_at, ResetPasswordAccessTokenSecret);
 
             if (wantsToChangePassword && decoded.purpose === 'reset-password') {
                 req.recoveringUser = { id: decoded.userID };
@@ -91,13 +95,17 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
         return;
     }
 
-    if (!process.env.ACCESS_TOKEN_SECRET) {
+    const AccessTokenSecret = Env.AccessTokenSecret;
+
+    if (!AccessTokenSecret) {
         logger.err("ACCESS_TOKEN_SECRET is undefined!");
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured in the server." });
         return;
     }
 
-    if (!process.env.REFRESH_TOKEN_SECRET) {
+    const RefreshTokenSecret = Env.RefreshTokenSecret;
+
+    if (!RefreshTokenSecret) {
         logger.err("REFRESH_TOKEN_SECRET is undefined!");
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured in the server." });
         return;
@@ -108,7 +116,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
     // Check for user's refresh token first, make sure it's valid
     try {
         // Decode user's refresh token
-        const decoded: any = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const decoded: any = jwt.verify(refreshToken, RefreshTokenSecret);
         userID = decoded.User.id;
     } catch (err) {
         // Need to check for TokenExpiredError first
@@ -151,7 +159,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
     // If expired, then refresh it silently
     try {
         // Decode user's access token
-        const decoded: any = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+        const decoded: any = jwt.verify(accessToken, AccessTokenSecret);
 
         // Make sure the access token and refresh token belong to the same account
         // It's a malicious attempt otherwise
@@ -160,13 +168,13 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
             res.clearCookie('jwt-at', {
                 httpOnly: true,
                 sameSite: 'none',
-                secure: process.env.NODE_ENV === "production"
+                secure: Env.NodeEnv === NodeEnvs.Production
             });
 
             res.clearCookie('jwt-rt', {
                 httpOnly: true,
                 sameSite: 'none',
-                secure: process.env.NODE_ENV === "production"
+                secure: Env.NodeEnv === NodeEnvs.Production
             });
 
             // Add the access token to token blacklist

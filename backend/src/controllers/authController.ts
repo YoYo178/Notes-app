@@ -16,6 +16,7 @@ import { tokenConfig } from "@src/config/tokenConfig";
 
 import { generateVerificationCode, VERIFICATION_CODE_TTL } from "@src/util/code.utils";
 import { obfuscateEmail, sendPasswordResetEmail, sendVerificationMail } from "@src/util/mail.utils";
+import Env from '@src/common/Env';
 
 const codeCooldownManager = new Map<string, number>();
 const CODE_REQUEST_COOLDOWN = 60 * 1000; // 60 seconds
@@ -140,7 +141,9 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
             user.recoveryState.hasSetPassword = false;
             await user.save();
 
-            if (!process.env.RESET_PASSWORD_ACCESS_TOKEN_SECRET) {
+            const ResetPasswordAccessTokenSecret = Env.ResetPasswordAccessTokenSecret
+
+            if (!ResetPasswordAccessTokenSecret) {
                 logger.err("RESET_PASSWORD_ACCESS_TOKEN_SECRET is undefined!");
                 res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occurred in the server." });
                 return;
@@ -151,7 +154,7 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
                     userID: user.id,
                     purpose: 'reset-password'
                 },
-                process.env.RESET_PASSWORD_ACCESS_TOKEN_SECRET,
+                ResetPasswordAccessTokenSecret,
                 { expiresIn: tokenConfig.resetPasswordAccessToken.expiry }
             )
 
@@ -271,7 +274,9 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    if (!process.env.ACCESS_TOKEN_SECRET) {
+    const AccessTokenSecret = Env.AccessTokenSecret;
+
+    if (!AccessTokenSecret) {
         logger.err("ACCESS_TOKEN_SECRET is undefined!");
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured in the server." });
         return;
@@ -285,11 +290,13 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
                 displayName: user.displayName
             }
         },
-        process.env.ACCESS_TOKEN_SECRET,
+        AccessTokenSecret,
         { expiresIn: tokenConfig.accessToken.expiry }
     )
 
-    if (!process.env.REFRESH_TOKEN_SECRET) {
+    const RefreshTokenSecret = Env.RefreshTokenSecret
+
+    if (!RefreshTokenSecret) {
         logger.err("REFRESH_TOKEN_SECRET is undefined!");
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured in the server." });
         return;
@@ -302,7 +309,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
                 username: user.username
             }
         },
-        process.env.REFRESH_TOKEN_SECRET,
+        RefreshTokenSecret,
         { expiresIn: tokenConfig.refreshToken.expiry }
     )
 

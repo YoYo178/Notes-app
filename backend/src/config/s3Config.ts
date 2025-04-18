@@ -1,9 +1,11 @@
+import Env from "@src/common/Env";
+
 export const S3_CONFIG = {
   // Credentials
-  region: process.env.AWS_REGION || 'us-east-2',
-  bucket: process.env.AWS_BUCKET_NAME || '',
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+  region: Env.AwsRegion || 'us-east-2',
+  bucket: Env.AwsBucketName || '',
+  accessKeyId: Env.AwsAccessKeyId || '',
+  secretAccessKey: Env.AwsSecretAccessKey || '',
 
   // Maximum file sizes in bytes
   maxImageSize: 2 * 1024 * 1024, // 2MB for image files

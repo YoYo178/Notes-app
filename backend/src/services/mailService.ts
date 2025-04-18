@@ -1,9 +1,11 @@
+import { NodeEnvs } from "@src/common/constants";
+import Env from "@src/common/Env";
 import nodemailer, { Transporter } from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
 import Stream from "stream";
 
 function isDevEnv() {
-    return process.env.NODE_ENV === 'development';
+    return Env.NodeEnv === NodeEnvs.Production
 }
 
 class MailService {
@@ -31,17 +33,17 @@ class MailService {
             return;
         }
 
-        if (!process.env.SMTP_PROVIDER || !process.env.SMTP_EMAIL || !process.env.SMTP_PASS) {
+        if (!Env.SmtpProvider || !Env.SmtpEmail || !Env.SmtpPass) {
             console.error("SMTP Credentials not set!");
             console.warn("Mail service not initalized!");
             return;
         }
 
         this.transporter = nodemailer.createTransport({
-            service: process.env.SMTP_PROVIDER,
+            service: Env.SmtpProvider,
             auth: {
-                user: process.env.SMTP_EMAIL,
-                pass: process.env.SMTP_PASS
+                user: Env.SmtpEmail,
+                pass: Env.SmtpPass
             }
         })
     }
@@ -63,11 +65,11 @@ class MailService {
             return;
 
         if (isDevEnv()) {
-            console.log('New mail draft:', { from: `"${process.env.APP_NAME}" <${process.env.SMTP_EMAIL}>`, to, subject, text, html, attachments })
+            console.log('New mail draft:', { from: `"${Env.AppName}" <${Env.SmtpEmail}>`, to, subject, text, html, attachments })
         }
 
         const info = await this.transporter.sendMail({
-            from: `"${process.env.APP_NAME}" <${process.env.SMTP_EMAIL}>`,
+            from: `"${Env.AppName}" <${Env.SmtpEmail}>`,
             to,
             subject,
             text,

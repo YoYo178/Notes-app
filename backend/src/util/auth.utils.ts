@@ -1,3 +1,4 @@
+import Env from '@src/common/Env';
 import { tokenConfig } from '@src/config/tokenConfig';
 import { IUser } from '@src/models/User';
 import jwt from 'jsonwebtoken';
@@ -19,7 +20,7 @@ export function refreshAccessToken(user: IUser & Document) {
                 displayName: user.displayName,
             }
         },
-        process.env.ACCESS_TOKEN_SECRET as string,
+        Env.AccessTokenSecret,
         { expiresIn: tokenConfig.accessToken.expiry }
     );
 

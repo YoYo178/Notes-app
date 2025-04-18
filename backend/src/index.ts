@@ -16,7 +16,7 @@ const SERVER_START_MSG = ('Express server started on port: ' +
   Env.Port.toString());
 
 mongoose.connection.once('open', () => {
-  logger.info(`Connected to MongoDB (${process.env.NODE_ENV || "NODE_ENV NOT DEFINED!"})`);
+  logger.info(`Connected to MongoDB (${Env.NodeEnv || "NODE_ENV NOT DEFINED!"})`);
   server.listen(Env.Port, () => logger.info(SERVER_START_MSG));
 })
 

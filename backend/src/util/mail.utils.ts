@@ -1,3 +1,4 @@
+import Env from "@src/common/Env";
 import { mailService } from "@src/services/mailService";
 import Mail from "nodemailer/lib/mailer";
 
@@ -17,7 +18,7 @@ export function obfuscateEmail(email: string) {
 export async function sendVerificationMail(to: string | Mail.Address | (string | Mail.Address)[], code: string) {
     return await mailService.sendMail({
         to,
-        subject: `${process.env.APP_NAME} | Verify your email`,
+        subject: `${Env.AppName} | Verify your email`,
         html: `<p>Your code: <strong>${code}</strong></p>`
     })
 }
@@ -25,7 +26,7 @@ export async function sendVerificationMail(to: string | Mail.Address | (string |
 export async function sendPasswordResetEmail(to: string | Mail.Address | (string | Mail.Address)[], code: string) {
     return await mailService.sendMail({
         to,
-        subject: `${process.env.APP_NAME} | Reset your Password`,
+        subject: `${Env.AppName} | Reset your Password`,
         html: `<p>Use this code to reset your password: <strong>${code}</strong></p>`
     })
 }

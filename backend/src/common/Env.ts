@@ -10,6 +10,26 @@ import { NodeEnvs } from './constants';
 
 export default jetEnv({
   NodeEnv: isEnumVal(NodeEnvs),
+  
+  /* App */
+  AppName: str,
   Port: num,
-  MongodbUri: str
+  MongodbUri: str,
+  
+  /* AWS */
+  AwsRegion: str,
+  AwsBucketName: str,
+  AwsAccessKeyId: str,
+  AwsSecretAccessKey: str,
+
+  /* Token secrets */
+  AccessTokenSecret: str,
+  RefreshTokenSecret: str,
+  ResetPasswordAccessTokenSecret: str,
+
+  /* SMTP */
+  SmtpProvider: str,
+  SmtpEmail: str,
+  SmtpPass: str
+
 });
