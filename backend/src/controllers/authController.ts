@@ -112,14 +112,6 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const lastCodeRequestTime = codeCooldownManager.get(user.id)
-    const hasRecentlyRequestedCode = lastCodeRequestTime ? lastCodeRequestTime > Date.now() : false;
-
-    if(hasRecentlyRequestedCode) {
-        res.status(HttpStatusCodes.TOO_MANY_REQUESTS).json({ message: "You have recently requested a verification code, Please wait before requesting a new one!" });
-        return;
-    }
-
     const verificationCode = await VerificationCode.findOne({ user: id }).exec();
 
     if (!verificationCode) {
@@ -163,7 +155,10 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
                 { expiresIn: tokenConfig.resetPasswordAccessToken.expiry }
             )
 
-            res.cookie("jwt_reset_at", resetPasswordAccessToken, cookieConfig);
+            res.cookie("jwt_reset_at", resetPasswordAccessToken, {
+                ...cookieConfig,
+                maxAge: tokenConfig.resetPasswordAccessToken.expiry, // 15 minutes
+            });
 
             res.status(HttpStatusCodes.OK).json({ message: "Success" });
             break;
@@ -216,7 +211,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
     const lastCodeRequestTime = codeCooldownManager.get(user.id)
     const hasRecentlyRequestedCode = lastCodeRequestTime ? lastCodeRequestTime > Date.now() : false;
 
-    if(hasRecentlyRequestedCode) {
+    if (hasRecentlyRequestedCode) {
         res.status(HttpStatusCodes.TOO_MANY_REQUESTS).json({ message: "You have recently requested a verification code, Please wait before requesting a new one!" });
         return;
     }
