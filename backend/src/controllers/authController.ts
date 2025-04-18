@@ -15,7 +15,7 @@ import cookieConfig from "@src/config/cookieConfig";
 import { tokenConfig } from "@src/config/tokenConfig";
 
 import { generateVerificationCode, VERIFICATION_CODE_TTL } from "@src/util/code.utils";
-import { sendPasswordResetEmail, sendVerificationMail } from "@src/util/mail.utils";
+import { obfuscateEmail, sendPasswordResetEmail, sendVerificationMail } from "@src/util/mail.utils";
 
 const codeCooldownManager = new Map<string, number>();
 const CODE_REQUEST_COOLDOWN = 60 * 1000; // 60 seconds
@@ -366,7 +366,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
         expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL)
     })
 
-    res.status(HttpStatusCodes.OK).json({ id: user.id });
+    res.status(HttpStatusCodes.OK).json({ id: user.id, email: isEmail(input) ? input : obfuscateEmail(user.email) });
 })
 
 /**
