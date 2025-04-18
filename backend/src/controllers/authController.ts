@@ -17,6 +17,9 @@ import { tokenConfig } from "@src/config/tokenConfig";
 import { generateVerificationCode, VERIFICATION_CODE_TTL } from "@src/util/code.utils";
 import { sendPasswordResetEmail, sendVerificationMail } from "@src/util/mail.utils";
 
+const codeCooldownManager = new Map<string, number>();
+const CODE_REQUEST_COOLDOWN = 60 * 1000; // 60 seconds
+
 /**
  * @route POST /auth/register
  * @description Creates a new user.
@@ -68,6 +71,8 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
     const code = generateVerificationCode();
     await sendVerificationMail(email, code);
 
+    codeCooldownManager.set(user.id, Date.now() + CODE_REQUEST_COOLDOWN);
+
     await VerificationCode.create({
         user: user._id,
         code: await bcrypt.hash(code, 10),
@@ -104,6 +109,14 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
 
     if (user.isVerified && (!user.recoveryState.isRecovering || user.recoveryState.hasVerifiedMail)) {
         res.status(HttpStatusCodes.FORBIDDEN).json({ message: "You are already in the process of recovering your account. Finish your current attempt or restart the account recovery process." })
+        return;
+    }
+
+    const lastCodeRequestTime = codeCooldownManager.get(user.id)
+    const hasRecentlyRequestedCode = lastCodeRequestTime ? lastCodeRequestTime > Date.now() : false;
+
+    if(hasRecentlyRequestedCode) {
+        res.status(HttpStatusCodes.TOO_MANY_REQUESTS).json({ message: "You have recently requested a verification code, Please wait before requesting a new one!" });
         return;
     }
 
@@ -200,6 +213,14 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
             return;
     }
 
+    const lastCodeRequestTime = codeCooldownManager.get(user.id)
+    const hasRecentlyRequestedCode = lastCodeRequestTime ? lastCodeRequestTime > Date.now() : false;
+
+    if(hasRecentlyRequestedCode) {
+        res.status(HttpStatusCodes.TOO_MANY_REQUESTS).json({ message: "You have recently requested a verification code, Please wait before requesting a new one!" });
+        return;
+    }
+
     const verificationCode = await VerificationCode.findOne({ user: user._id, purpose });
 
     if (verificationCode)
@@ -211,6 +232,8 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
         await sendVerificationMail(user.email, code)
     else if (purpose === 'reset-password')
         await sendPasswordResetEmail(user.email, code)
+
+    codeCooldownManager.set(user.id, Date.now() + CODE_REQUEST_COOLDOWN);
 
     await VerificationCode.create({
         user: user._id,
@@ -333,6 +356,8 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
 
     const code = generateVerificationCode();
     await sendPasswordResetEmail(user.email, code);
+
+    codeCooldownManager.set(user.id, Date.now() + CODE_REQUEST_COOLDOWN);
 
     await VerificationCode.create({
         user: user._id,
