@@ -5,6 +5,8 @@ import { RegisterFields } from "../../types/auth.types";
 import { RegisterStages } from "../../types/modal.types";
 import { ReactSetState, TMutation } from "../../types/react.types";
 import { VerifyCodeRequest } from "../../hooks/network/auth/useVerifyCodeMutation";
+import { startCodeTimer } from "../../util/code.utils";
+import { ResendVerificationCodeRequest } from "../../hooks/network/auth/useResendCodeMutation";
 
 const passwordCriteria: StrongPasswordOptions & { returnScore?: false | undefined; } = {
     minLength: 8,
@@ -31,7 +33,8 @@ async function continueButtonOnClick(
     errorMessage: string, setErrorMessage: ReactSetState<string>,
     currentStage: RegisterStages,
     registerData: RegisterFields,
-    OTP: string
+    OTP: string,
+    userID: string
 ) {
 
     switch (currentStage) {
@@ -103,8 +106,6 @@ async function continueButtonOnClick(
                 return;
             }
 
-            const userID = registerMutation.data.id;
-
             await verifyCodeMutation.mutateAsync({
                 payload: {
                     id: userID,
@@ -123,6 +124,17 @@ async function continueButtonOnClick(
         setSuccessMessage('');
 }
 
+async function resendCodeOnClick(timerRef: RefObject<number | null>, setResendTime: ReactSetState<number>, resendCodeMutation: TMutation<ResendVerificationCodeRequest>, userID: string) {
+    await resendCodeMutation.mutateAsync({
+        payload: {
+            id: userID,
+            purpose: 'user-verification'
+        }
+    })
+    startCodeTimer(timerRef, setResendTime);
+}
+
 export const ButtonHandler = {
-    continueButtonOnClick
+    continueButtonOnClick,
+    resendCodeOnClick
 }

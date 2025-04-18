@@ -55,7 +55,8 @@
 .rm-field-username,
 .rm-field-password,
 .rm-field-email,
-.rm-field-confirm-password {
+.rm-field-confirm-password,
+.rm-field-otp {
     border: none;
     outline: none;
 
@@ -146,6 +147,44 @@
 
 .register-button:hover {
     background-color: #e8d3ff;
+}
+
+.rm-resend-code-container {
+    display: flex;
+}
+
+.rm-resend-code-button {
+    margin-left: auto;
+    font-family: 'Inter';
+    font-weight: bold;
+
+    color: #6d6d6d;
+    text-decoration: underline;
+    margin-top: 0.2rem;
+
+    background-color: transparent;
+    border: none;
+    font-size: 0.9rem;
+}
+
+.rm-verification-text {
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 0.9rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 1rem;
+}
+
+.rm-email {
+    font-weight: 900;
+    font-size: 1.1rem;
+    margin: 1rem 0;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .rm-error {

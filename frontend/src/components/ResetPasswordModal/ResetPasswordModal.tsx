@@ -16,6 +16,8 @@ import { TMutation, ReactSetState } from '../../types/react.types.ts';
 import { ButtonHandler, EventHandler } from './ResetPasswordModal.ts';
 
 import './ResetPasswordModal.css';
+import { useResendCodeMutation } from '../../hooks/network/auth/useResendCodeMutation.ts';
+import { startCodeTimer } from '../../util/code.utils.ts';
 
 function mutationCallbackHandler(
     mutation: TMutation<any>,
@@ -53,10 +55,14 @@ function mutationCallbackHandler(
 export const ResetPasswordModal: FC = () => {
     const [currentStage, setCurrentStage] = useState<ResetAccountStages>(ResetAccountStages.FIND_ACCOUNT);
 
+    const [userID, setUserID] = useState('');
+
     const [input, setInput] = useState('');
+    const [email, setEmail] = useState('');
     const [OTP, setOTP] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [resendTime, setResendTime] = useState(60);
 
     const [redirect, setRedirect] = useState<ReactNode | null>(null)
     const [buttonTitle, setButtonTitle] = useState('Find account');
@@ -66,14 +72,23 @@ export const ResetPasswordModal: FC = () => {
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+    const [isHovering, setIsHovering] = useState(false);
+
     const buttonRef = useRef<HTMLButtonElement>(null);
+    const timerRef = useRef<number>(null);
 
     const recoverAccountMutation = useRecoverAccountMutation({});
     const verifyCodeMutation = useVerifyCodeMutation({});
     const resetPasswordMutation = useResetPasswordMutation({});
+    const resendCodeMutation = useResendCodeMutation({});
 
     useEffect(() => {
         mutationCallbackHandler(recoverAccountMutation, setCurrentStage, setErrorMessage, setSuccessMessage);
+
+        if (recoverAccountMutation.isSuccess && !recoverAccountMutation.isError) {
+            setUserID(recoverAccountMutation.data.id);
+            setEmail(recoverAccountMutation.data.email);
+        }
     }, [recoverAccountMutation.isSuccess, recoverAccountMutation.isError])
 
     useEffect(() => {
@@ -88,6 +103,7 @@ export const ResetPasswordModal: FC = () => {
         switch (currentStage) {
             case ResetAccountStages.VERIFY_ACCOUNT:
                 setButtonTitle("Verify OTP");
+                startCodeTimer(timerRef, setResendTime);
                 break;
             case ResetAccountStages.SET_PASSWORD:
                 setButtonTitle("Set password");
@@ -135,7 +151,7 @@ export const ResetPasswordModal: FC = () => {
                 <>
                     <div className="fpm-verification-text">
                         <span>We have sent a verification code to</span>
-                        <span className='fpm-email'><u>{input}</u></span>
+                        <span className='fpm-email'>{email}</span>
                         <span>Enter the code below before it expires.</span>
                         <span>Please also make sure to check your spam inbox.</span>
                     </div>
@@ -155,6 +171,22 @@ export const ResetPasswordModal: FC = () => {
                             onChange={(e) => setOTP(e.target.value)}
                             maxLength={6}
                         />
+                    </div>
+                    <div className="fpm-resend-code-container">
+                        <button
+                            className="fpm-resend-code-button"
+                            onMouseOver={() => setIsHovering(true)}
+                            onMouseOut={() => setIsHovering(false)}
+                            style={
+                                isHovering ? {
+                                    cursor: resendTime > 0 ? 'not-allowed' : 'pointer',
+                                } : {}
+                            }
+                            onClick={() => resendTime < 1 && ButtonHandler.resendCodeOnClick(timerRef, setResendTime, resendCodeMutation, userID)}
+                            disabled={resendTime > 0}
+                        >
+                            Resend Code{resendTime > 0 ? ` (${resendTime})` : ''}
+                        </button>
                     </div>
                 </>
             )}
@@ -217,6 +249,7 @@ export const ResetPasswordModal: FC = () => {
                             OTP,
                             newPassword,
                             confirmNewPassword,
+                            userID
                         )
                     }}
                 >

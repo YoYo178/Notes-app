@@ -1,10 +1,11 @@
-import { RefObject } from "react";
+import React, { RefObject } from "react";
 import { ResetAccountStages } from "../../types/modal.types";
 import { ReactSetState, TMutation } from "../../types/react.types";
 import { AccountRecoveryRequest } from "../../hooks/network/auth/useRecoverAccountMutation";
 import { VerifyCodeRequest } from "../../hooks/network/auth/useVerifyCodeMutation";
 import { ResetPasswordRequest } from "../../hooks/network/auth/useResetPasswordMutation";
-
+import { ResendVerificationCodeRequest } from "../../hooks/network/auth/useResendCodeMutation";
+import { startCodeTimer } from "../../util/code.utils";
 
 function onKeyDown(e: React.KeyboardEvent<HTMLFormElement>, buttonRef: RefObject<HTMLButtonElement | null>) {
     if (e.key === "Enter" && buttonRef.current) {
@@ -28,6 +29,7 @@ async function continueButtonOnClick(
     OTP: string,
     newPassword: string,
     confirmNewPassword: string,
+    userID: string
 ) {
     switch (currentStage) {
         case ResetAccountStages.FIND_ACCOUNT:
@@ -48,8 +50,6 @@ async function continueButtonOnClick(
                 setErrorMessage("Verification code is required!")
                 return;
             }
-
-            const userID = recoverAccountMutation.data.id;
 
             await verifyCodeMutation.mutateAsync({
                 payload: {
@@ -86,6 +86,18 @@ async function continueButtonOnClick(
         setSuccessMessage('');
 }
 
+async function resendCodeOnClick(timerRef: RefObject<number | null>, setResendTime: ReactSetState<number>, resendCodeMutation: TMutation<ResendVerificationCodeRequest>, userID: string) {
+    
+    await resendCodeMutation.mutateAsync({
+        payload: {
+            id: userID,
+            purpose: 'reset-password'
+        }
+    })
+    startCodeTimer(timerRef, setResendTime);
+}
+
 export const ButtonHandler = {
-    continueButtonOnClick
+    continueButtonOnClick,
+    resendCodeOnClick
 }

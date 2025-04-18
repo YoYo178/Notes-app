@@ -8,6 +8,7 @@ import { MdOutlinePassword } from 'react-icons/md';
 import { FaRegEye } from 'react-icons/fa6';
 
 import { useVerifyCodeMutation } from '../../hooks/network/auth/useVerifyCodeMutation.ts';
+import { useResendCodeMutation } from '../../hooks/network/auth/useResendCodeMutation.ts';
 import { useRegisterMutation } from '../../hooks/network/auth/useRegisterMutation.ts';
 
 import { ReactSetState, TMutation } from '../../types/react.types.ts';
@@ -16,6 +17,7 @@ import { RegisterStages } from '../../types/modal.types.ts';
 import { ButtonHandler, EventHandler } from './RegisterModal.ts';
 
 import './RegisterModal.css';
+import { startCodeTimer } from '../../util/code.utils.ts';
 
 function mutationCallbackHandler(
     mutation: TMutation<any>,
@@ -54,6 +56,8 @@ export const RegisterModal: FC = () => {
     const [currentStage, setCurrentStage] = useState<RegisterStages>(RegisterStages.INPUT_DETAILS);
     const [buttonTitle, setButtonTitle] = useState('Register');
 
+    const [userID, setUserID] = useState('');
+
     const [redirect, setRedirect] = useState<ReactNode>(null);
 
     const [firstName, setFirstName] = useState('');
@@ -65,6 +69,9 @@ export const RegisterModal: FC = () => {
     const [email, setEmail] = useState('');
 
     const [OTP, setOTP] = useState('')
+    const [resendTime, setResendTime] = useState(60);
+
+    const [isHovering, setIsHovering] = useState(false);
 
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -73,12 +80,17 @@ export const RegisterModal: FC = () => {
 
     const registerMutation = useRegisterMutation({});
     const verifyCodeMutation = useVerifyCodeMutation({});
+    const resendCodeMutation = useResendCodeMutation({});
     const location = useLocation();
 
     const buttonRef = useRef<HTMLButtonElement>(null);
+    const timerRef = useRef<number>(null);
 
     useEffect(() => {
         mutationCallbackHandler(registerMutation, setCurrentStage, setErrorMessage, setSuccessMessage);
+        if (registerMutation.isSuccess && !registerMutation.isError) {
+            setUserID(registerMutation.data.id);
+        }
     }, [registerMutation.isSuccess, registerMutation.isError])
 
     useEffect(() => {
@@ -89,6 +101,7 @@ export const RegisterModal: FC = () => {
         switch (currentStage) {
             case RegisterStages.VERIFY_ACCOUNT:
                 setButtonTitle("Verify Code");
+                startCodeTimer(timerRef, setResendTime);
                 break;
             case RegisterStages.REDIRECT:
                 setSuccessMessage(`Your account has been verified successfully.\nRedirecting to sign-in page...`)
@@ -219,16 +232,16 @@ export const RegisterModal: FC = () => {
 
             {currentStage === RegisterStages.VERIFY_ACCOUNT && (
                 <>
-                    <div className="fpm-verification-text">
+                    <div className="rm-verification-text">
                         <span>We have sent a verification code to</span>
-                        <span className='fpm-email'><u>{email}</u></span>
+                        <span className='rm-email'><u>{email}</u></span>
                         <span>Enter the code below before it expires.</span>
                         <span>Please also make sure to check your spam inbox.</span>
                     </div>
 
                     {/* OTP Field */}
-                    <div className="fpm-field-container">
-                        <div className="fpm-field-icon-container">
+                    <div className="rm-field-container">
+                        <div className="rm-field-icon-container">
                             <MdOutlinePassword />
                         </div>
 
@@ -236,11 +249,28 @@ export const RegisterModal: FC = () => {
                             type="text"
                             placeholder='Enter verification code'
                             id="otp-field"
-                            className="fpm-field-otp"
+                            className="rm-field-otp"
                             value={OTP}
                             onChange={(e) => setOTP(e.target.value)}
                             maxLength={6}
                         />
+                    </div>
+                    
+                    <div className="rm-resend-code-container">
+                        <button
+                            className="rm-resend-code-button"
+                            onMouseOver={() => setIsHovering(true)}
+                            onMouseOut={() => setIsHovering(false)}
+                            style={
+                                isHovering ? {
+                                    cursor: resendTime > 0 ? 'not-allowed' : 'pointer',
+                                } : {}
+                            }
+                            onClick={() => resendTime < 1 && ButtonHandler.resendCodeOnClick(timerRef, setResendTime, resendCodeMutation, userID)}
+                            disabled={resendTime > 0}
+                        >
+                            Resend Code{resendTime > 0 ? ` (${resendTime})` : ''}
+                        </button>
                     </div>
                 </>
             )
@@ -263,7 +293,8 @@ export const RegisterModal: FC = () => {
                                 errorMessage, setErrorMessage,
                                 currentStage,
                                 { username, password, confirmPassword, email, displayName: `${firstName} ${lastName}` },
-                                OTP
+                                OTP,
+                                userID
                             )
                         }}
                     >
