@@ -55,7 +55,7 @@ export default tseslint.config(
       'max-len': [
         'warn',
         {
-          'code': 80,
+          'code': 140,
         },
       ],
       '@stylistic/ts/semi': ['warn', 'always'],
