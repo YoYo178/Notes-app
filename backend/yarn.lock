@@ -752,13 +752,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:*":
-  version: 9.22.0
-  resolution: "@eslint/js@npm:9.22.0"
-  checksum: 10c0/5bcd009bb579dc6c6ed760703bdd741e08a48cd9decd677aa2cf67fe66236658cb09a00185a0369f3904e5cffba9e6e0f2ff4d9ba4fdf598fcd81d34c49213a5
-  languageName: node
-  linkType: hard
-
 "@eslint/js@npm:9.24.0, @eslint/js@npm:^9.24.0":
   version: 9.24.0
   resolution: "@eslint/js@npm:9.24.0"
@@ -1786,15 +1779,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint__js@npm:^9.14.0":
-  version: 9.14.0
-  resolution: "@types/eslint__js@npm:9.14.0"
-  dependencies:
-    "@eslint/js": "npm:*"
-  checksum: 10c0/da5e315aaf17a3e038eff3a4e1b90e360d9d22319653f43f746ad4b7f90dca2d1f8e0ea08f4d02b1b426e7baeb15610be4a30b64d28d16ef06d2feb75c549dc1
-  languageName: node
-  linkType: hard
-
 "@types/estree@npm:^1.0.6":
   version: 1.0.6
   resolution: "@types/estree@npm:1.0.6"
@@ -2375,7 +2359,6 @@ __metadata:
     "@types/bcrypt": "npm:^5.0.2"
     "@types/cookie-parser": "npm:^1.4.8"
     "@types/cors": "npm:^2.8.17"
-    "@types/eslint__js": "npm:^9.14.0"
     "@types/express": "npm:^5.0.1"
     "@types/find": "npm:^0.2.4"
     "@types/fs-extra": "npm:^11.0.4"
