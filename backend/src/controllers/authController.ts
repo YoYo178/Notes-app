@@ -158,7 +158,7 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
         purpose: 'reset-password',
       },
       ResetPasswordAccessTokenSecret,
-      { expiresIn: tokenConfig.resetPasswordAccessToken.expiry },
+      { expiresIn: tokenConfig.resetPasswordAccessToken.expiry / 1000 },
     );
 
     res.cookie('jwt_reset_at', resetPasswordAccessToken, {
@@ -300,7 +300,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
       },
     },
     AccessTokenSecret,
-    { expiresIn: tokenConfig.accessToken.expiry },
+    { expiresIn: tokenConfig.accessToken.expiry / 1000 },
   );
 
   const RefreshTokenSecret = Env.RefreshTokenSecret;
@@ -319,7 +319,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
       },
     },
     RefreshTokenSecret,
-    { expiresIn: tokenConfig.refreshToken.expiry },
+    { expiresIn: tokenConfig.refreshToken.expiry / 1000 },
   );
 
   res.cookie('jwt_rt', refreshToken, {

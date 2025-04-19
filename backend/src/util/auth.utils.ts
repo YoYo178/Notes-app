@@ -21,7 +21,7 @@ export function refreshAccessToken(user: IUser & Document) {
       },
     },
     Env.AccessTokenSecret,
-    { expiresIn: tokenConfig.accessToken.expiry },
+    { expiresIn: tokenConfig.accessToken.expiry / 1000 },
   );
 
   return accessToken;
