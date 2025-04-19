@@ -3,14 +3,14 @@ import expressAsyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt'
 import HttpStatusCodes from "@src/common/HttpStatusCodes";
-import { isObjectIdOrHexString, ObjectId } from "mongoose";
+import { isEmail } from "validator";
 
 /**
  * @route GET /users/me
  * @description A query route for the client to know if they're logged in or not
  * @returns HTTP 200
  */
-const getLoggedInUser = expressAsyncHandler(async (req: Request, res: Response) => {
+const getLoggedInUser = expressAsyncHandler((req: Request, res: Response) => {
     // No need to perform any checks
     // Auth validator middleware handles everything already
     res.status(HttpStatusCodes.OK).send({ message: "User is logged in", user: req.user });
@@ -22,11 +22,10 @@ const getLoggedInUser = expressAsyncHandler(async (req: Request, res: Response) 
  * @returns HTTP 200, 400, 404, 409
  */
 const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { currentPassword, newPassword, confirmNewPassword, displayName, email } = req.body;
+    const { currentPassword, newPassword, confirmNewPassword, displayName, email }: Record<string, string> = req.body;
 
-    // only supporting gmail for now, lol
-    if (email && !email.endsWith("@gmail.com")) {
-        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Email not supported" });
+    if (!isEmail(email)) {
+        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Invalid Email" });
         return;
     }
 
@@ -43,7 +42,7 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const isChangingPassword = currentPassword || newPassword || confirmNewPassword
+    const isChangingPassword = !!currentPassword || !!newPassword || !!confirmNewPassword
     if (isChangingPassword) {
         const passwordMatches = await bcrypt.compare(currentPassword, user.password);
         if (!passwordMatches) {
@@ -64,8 +63,8 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
         user.password = await bcrypt.hash(newPassword, 10);
     }
 
-    user.displayName = displayName || user.displayName;
-    user.email = email || user.email;
+    user.displayName = displayName ?? user.displayName;
+    user.email = email ?? user.email;
 
     await user.save();
 

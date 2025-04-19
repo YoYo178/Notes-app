@@ -1,30 +1,17 @@
-import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import logger from 'jet-logger'
 import { Request, Response, NextFunction } from "express";
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
-import { User } from '@src/models/User';
 import expressAsyncHandler from 'express-async-handler';
-import { ObjectId } from 'mongoose';
-import cookieConfig from '@src/config/cookieConfig';
-import { refreshAccessToken } from '@src/util/auth.utils';
-import Env from '@src/common/Env';
-import { NodeEnvs } from '@src/common/constants';
 
-declare global {
-    namespace Express {
-        interface Request {
-            user: {
-                id: string;
-                username: string;
-                displayName: string;
-                email: string;
-            },
-            recoveringUser: {
-                id: string;
-            }
-        }
-    }
-}
+import { NodeEnvs } from '@src/common/constants';
+import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import Env from '@src/common/Env';
+
+import cookieConfig from '@src/config/cookieConfig';
+
+import { User } from '@src/models/User';
+
+import { refreshAccessToken } from '@src/util/auth.utils';
 
 const tokenBlacklist: string[] = [];
 
@@ -35,7 +22,11 @@ const tokenBlacklist: string[] = [];
 const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const cookies = req.cookies;
 
-    if (cookies?.jwt_reset_at) {
+    const resetPasswordAccessToken: string | undefined = cookies?.jwt_reset_at;
+    const refreshToken: string | undefined = cookies?.jwt_rt;
+    const accessToken: string | undefined = cookies?.jwt_at;
+
+    if (resetPasswordAccessToken) {
         const wantsToChangePassword = req.originalUrl.split('/').at(-1) === 'reset-password';
 
         const ResetPasswordAccessTokenSecret = Env.ResetPasswordAccessTokenSecret;
@@ -48,7 +39,10 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
 
         try {
             // Decode user's password reset access token
-            const decoded: any = jwt.verify(cookies?.jwt_reset_at, ResetPasswordAccessTokenSecret);
+            const decoded = jwt.verify(resetPasswordAccessToken, ResetPasswordAccessTokenSecret) as {
+                userID: string,
+                purpose: 'reset-password' | 'user-verification'
+            };
 
             if (wantsToChangePassword && decoded.purpose === 'reset-password') {
                 req.recoveringUser = { id: decoded.userID };
@@ -56,31 +50,30 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
                 return;
             }
         } catch (err) {
-            // Need to check for TokenExpiredError first
-            // because it inherits from JsonWebTokenError
-            if (err instanceof TokenExpiredError) {
-                const error = err as TokenExpiredError;
-                res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: error?.message === "jwt expired" ? "Expired token" : error?.message });
+            // Need to check for jwt.TokenExpiredError first
+            // because it inherits from jwt.JsonWebTokenError
+            if (err instanceof jwt.TokenExpiredError) {
+                res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: err?.message === "jwt expired" ? "Expired token" : err?.message });
                 return;
-            } else if (err instanceof JsonWebTokenError) {
-                const error = err as JsonWebTokenError;
-                res.status(HttpStatusCodes.BAD_REQUEST).send({ message: error?.message === "invalid signature" ? "Invalid token" : error?.message });
+            } else if (err instanceof jwt.JsonWebTokenError) {
+                res.status(HttpStatusCodes.BAD_REQUEST).send({ message: err?.message === "invalid signature" ? "Invalid token" : err?.message });
                 return;
             }
 
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: err?.message });
+            if (err instanceof Error)
+                res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: err.message });
+            else
+                res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+
             return;
         }
     }
 
     // Make sure the user is logged in
-    if (!cookies?.jwt_rt) {
+    if (!refreshToken) {
         res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: "User is not logged in" })
         return;
     }
-
-    const refreshToken = cookies.jwt_rt;
-    const accessToken = cookies?.jwt_at || null;
 
     // Check if the access token is in token blacklist
     /** TODOs:
@@ -116,22 +109,31 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
     // Check for user's refresh token first, make sure it's valid
     try {
         // Decode user's refresh token
-        const decoded: any = jwt.verify(refreshToken, RefreshTokenSecret);
+        const decoded = jwt.verify(refreshToken, RefreshTokenSecret) as {
+            User: {
+                id: string;
+                username: string;
+            },
+            exp: number,
+            iat: number
+        };
         userID = decoded.User.id;
     } catch (err) {
-        // Need to check for TokenExpiredError first
-        // because it inherits from JsonWebTokenError
-        if (err instanceof TokenExpiredError) {
-            const error = err as TokenExpiredError;
-            res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: error?.message === "jwt expired" ? "Expired token" : error?.message });
+        // Need to check for jwt.TokenExpiredError first
+        // because it inherits from jwt.JsonWebTokenError
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: err?.message === "jwt expired" ? "Expired token" : err?.message });
             return;
-        } else if (err instanceof JsonWebTokenError) {
-            const error = err as JsonWebTokenError;
-            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: error?.message === "invalid signature" ? "Invalid token" : error?.message });
+        } else if (err instanceof jwt.JsonWebTokenError) {
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: err?.message === "invalid signature" ? "Invalid token" : err?.message });
             return;
         }
 
-        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: err?.message });
+        if (err instanceof Error)
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: err.message });
+        else
+            res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+
         return;
     }
 
@@ -159,7 +161,15 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
     // If expired, then refresh it silently
     try {
         // Decode user's access token
-        const decoded: any = jwt.verify(accessToken, AccessTokenSecret);
+        const decoded = jwt.verify(accessToken, AccessTokenSecret) as {
+            User: {
+                id: string;
+                username: string;
+                displayName: string;
+            },
+            exp: number,
+            iat: number
+        };
 
         // Make sure the access token and refresh token belong to the same account
         // It's a malicious attempt otherwise
@@ -195,10 +205,10 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
         // Move to other routes
         next();
         return;
-    } catch (err: any) {
-        // Need to check for TokenExpiredError first
-        // because it inherits from JsonWebTokenError
-        if (err instanceof TokenExpiredError) {
+    } catch (err) {
+        // Need to check for jwt.TokenExpiredError first
+        // because it inherits from jwt.JsonWebTokenError
+        if (err instanceof jwt.TokenExpiredError) {
             // Generate new access token
             const accessToken = refreshAccessToken(user);
 
@@ -211,13 +221,16 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
             // Move to other routes
             next();
             return;
-        } else if (err instanceof JsonWebTokenError) {
-            const error = err as JsonWebTokenError;
-            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: error?.message === "invalid signature" ? "Invalid token" : error?.message });
+        } else if (err instanceof jwt.JsonWebTokenError) {
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ message: err?.message === "invalid signature" ? "Invalid token" : err?.message });
             return;
         }
 
-        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: err?.message });
+        if (err instanceof Error)
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: err.message });
+        else
+            res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+
         return;
     }
 })

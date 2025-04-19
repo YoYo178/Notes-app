@@ -2,7 +2,7 @@ import { User } from "@src/models/User";
 import expressAsyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import HttpStatusCodes from "@src/common/HttpStatusCodes";
-import { isObjectIdOrHexString, ObjectId } from "mongoose";
+import { isObjectIdOrHexString } from "mongoose";
 import { INote, Note } from "@src/models/Note";
 
 /**
@@ -92,8 +92,8 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    note.title = title || note.title;
-    note.description = description || note.description;
+    note.title = title ?? note.title;
+    note.description = description ?? note.description;
     note.images = images ?? note.images;
     note.isFavorite = isFavorite ?? note.isFavorite;
 

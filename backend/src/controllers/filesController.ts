@@ -67,7 +67,12 @@ const getUploadURL = asyncHandler(async (req: Request, res: Response) => {
       expiresIn: S3_CONFIG.urlExpirationTime
     });
   } catch (error) {
-    res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+    if (error instanceof Error)
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+    else
+      res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+
+    return;
   }
 });
 
@@ -99,12 +104,17 @@ const getURL = asyncHandler(async (req: Request, res: Response) => {
       expiresIn: S3_CONFIG.urlExpirationTime
     })
   } catch (error) {
-    res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+    if (error instanceof Error)
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+    else
+      res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+
+    return;
   }
 });
 
 const getMultipleURL = asyncHandler(async (req: Request, res: Response) => {
-  const { fileKeys } = req.body;
+  const { fileKeys }: Record<string, string[]> = req.body;
   const userId = req.user.id;
 
   if (!fileKeys || !Array.isArray(fileKeys) || !fileKeys?.length) {
@@ -123,7 +133,11 @@ const getMultipleURL = asyncHandler(async (req: Request, res: Response) => {
       try {
         return await s3Service.generateFileUrl(key);
       } catch (error) {
-        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+        if (error instanceof Error)
+          res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+        else
+          res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+
         return;
       }
     })
@@ -154,7 +168,12 @@ const deleteFile = asyncHandler(async (req: Request, res: Response) => {
     await s3Service.deleteFile(fileKey);
     res.json({ message: 'File deleted successfully' });
   } catch (error) {
-    res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+    if (error instanceof Error)
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+    else
+      res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+
+    return;
   }
 });
 

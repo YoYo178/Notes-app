@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import logger from 'jet-logger'
 import jwt from 'jsonwebtoken';
 import { isEmail } from "validator";
-import { ObjectId } from "mongoose";
 import { Request, Response } from "express";
 import expressAsyncHandler from "express-async-handler";
 
@@ -27,7 +26,7 @@ const CODE_REQUEST_COOLDOWN = 60 * 1000; // 60 seconds
  * @returns HTTP 201, 400, 409, 500
  */
 const register = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { username, password, confirmPassword, displayName, email } = req.body;
+    const { username, password, confirmPassword, displayName, email }: Record<string, string> = req.body;
 
     if (!username || !password || !confirmPassword || !displayName || !email) {
         res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "All fields are required" })
@@ -72,7 +71,7 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
     const code = generateVerificationCode();
     await sendVerificationMail(email, code);
 
-    codeCooldownManager.set(user.id, Date.now() + CODE_REQUEST_COOLDOWN);
+    codeCooldownManager.set(user.id as string, Date.now() + CODE_REQUEST_COOLDOWN);
 
     await VerificationCode.create({
         user: user._id,
@@ -95,7 +94,7 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
  * @returns HTTP 200, 400, 403, 404, 500
  */
 const verify = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { id, purpose, code } = req.body;
+    const { id, purpose, code }: Record<string, string> = req.body;
 
     if (!id) {
         res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "User ID is required" })
@@ -131,44 +130,50 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
 
     switch (purpose) {
         case 'user-verification':
-            user.isVerified = true;
-            await user.save();
-            res.status(HttpStatusCodes.OK).json({ message: `Verification successful` });
-            break;
+            {
+                user.isVerified = true;
+                await user.save();
+                res.status(HttpStatusCodes.OK).json({ message: `Verification successful` });
+                break;
+            }
         case 'reset-password':
-            user.recoveryState.isRecovering = true;
-            user.recoveryState.hasVerifiedMail = true;
-            user.recoveryState.hasSetPassword = false;
-            await user.save();
+            {
+                user.recoveryState.isRecovering = true;
+                user.recoveryState.hasVerifiedMail = true;
+                user.recoveryState.hasSetPassword = false;
+                await user.save();
 
-            const ResetPasswordAccessTokenSecret = Env.ResetPasswordAccessTokenSecret
+                const ResetPasswordAccessTokenSecret = Env.ResetPasswordAccessTokenSecret;
 
-            if (!ResetPasswordAccessTokenSecret) {
-                logger.err("RESET_PASSWORD_ACCESS_TOKEN_SECRET is undefined!");
-                res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occurred in the server." });
+                if (!ResetPasswordAccessTokenSecret) {
+                    logger.err("RESET_PASSWORD_ACCESS_TOKEN_SECRET is undefined!");
+                    res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occurred in the server." });
+                    return;
+                }
+
+                const resetPasswordAccessToken = jwt.sign(
+                    {
+                        userID: user.id,
+                        purpose: 'reset-password'
+                    },
+                    ResetPasswordAccessTokenSecret,
+                    { expiresIn: tokenConfig.resetPasswordAccessToken.expiry }
+                )
+
+                res.cookie("jwt_reset_at", resetPasswordAccessToken, {
+                    ...cookieConfig,
+                    maxAge: tokenConfig.resetPasswordAccessToken.expiry, // 15 minutes
+                });
+
+                res.status(HttpStatusCodes.OK).json({ message: "Success" });
+                break;
+            }
+        default:
+            {
+                console.error('[POST /api/auth/verify]: Unknown method!');
+                res.status(HttpStatusCodes.BAD_REQUEST).json({ message: "Unknown purpose" });
                 return;
             }
-
-            const resetPasswordAccessToken = jwt.sign(
-                {
-                    userID: user.id,
-                    purpose: 'reset-password'
-                },
-                ResetPasswordAccessTokenSecret,
-                { expiresIn: tokenConfig.resetPasswordAccessToken.expiry }
-            )
-
-            res.cookie("jwt_reset_at", resetPasswordAccessToken, {
-                ...cookieConfig,
-                maxAge: tokenConfig.resetPasswordAccessToken.expiry, // 15 minutes
-            });
-
-            res.status(HttpStatusCodes.OK).json({ message: "Success" });
-            break;
-        default:
-            console.error('[POST /api/auth/verify]: Unknown method!');
-            res.status(HttpStatusCodes.BAD_REQUEST).json({ message: "Unknown purpose" });
-            return;
     }
 })
 
@@ -211,7 +216,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
             return;
     }
 
-    const lastCodeRequestTime = codeCooldownManager.get(user.id)
+    const lastCodeRequestTime = codeCooldownManager.get(user.id as string)
     const hasRecentlyRequestedCode = lastCodeRequestTime ? lastCodeRequestTime > Date.now() : false;
 
     if (hasRecentlyRequestedCode) {
@@ -231,7 +236,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
     else if (purpose === 'reset-password')
         await sendPasswordResetEmail(user.email, code)
 
-    codeCooldownManager.set(user.id, Date.now() + CODE_REQUEST_COOLDOWN);
+    codeCooldownManager.set(user.id as string, Date.now() + CODE_REQUEST_COOLDOWN);
 
     await VerificationCode.create({
         user: user._id,
@@ -249,7 +254,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
  * @returns HTTP 200, 400, 401, 404, 500
  */
 const login = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { username, password } = req.body;
+    const { username, password }: Record<string, string> = req.body;
 
     if (!username || !password) {
         res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "All fields are required" });
@@ -269,7 +274,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    if (user.isVerified === false) {
+    if (user?.isVerified) {
         res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: "User is not verified!" });
         return;
     }
@@ -329,7 +334,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
  * @returns HTTP 200, 400, 404
  */
 const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { input } = req.body;
+    const { input }: Record<string, string> = req.body;
 
     if (!input) {
         res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "All fields are required" });
@@ -359,7 +364,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
     const code = generateVerificationCode();
     await sendPasswordResetEmail(user.email, code);
 
-    codeCooldownManager.set(user.id, Date.now() + CODE_REQUEST_COOLDOWN);
+    codeCooldownManager.set(user.id as string, Date.now() + CODE_REQUEST_COOLDOWN);
 
     await VerificationCode.create({
         user: user._id,
@@ -377,7 +382,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
  * @returns HTTP 200, 400, 403, 404
  */
 const resetPassword = expressAsyncHandler(async (req: Request, res: Response) => {
-    const { password, confirmPassword } = req.body;
+    const { password, confirmPassword }: Record<string, string> = req.body;
 
     if (!password || !confirmPassword) {
         res.status(HttpStatusCodes.BAD_REQUEST).send({ message: "Both password fields are required" });
@@ -427,7 +432,7 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
  * @description Logs out the user and clears HTTP only cookies on the client.
  * @returns HTTP 200
  */
-const logout = expressAsyncHandler(async (req: Request, res: Response) => {
+const logout = expressAsyncHandler((req: Request, res: Response) => {
     res.clearCookie('jwt_rt', {
         ...cookieConfig,
         maxAge: undefined

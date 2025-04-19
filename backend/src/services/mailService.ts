@@ -2,6 +2,8 @@ import { NodeEnvs } from "@src/common/constants";
 import Env from "@src/common/Env";
 import nodemailer, { Transporter } from "nodemailer";
 import Mail from "nodemailer/lib/mailer";
+import SESTransport from "nodemailer/lib/ses-transport";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 import Stream from "stream";
 
 function isDevEnv() {
@@ -57,8 +59,8 @@ class MailService {
     }: {
         to: string | Mail.Address | (string | Mail.Address)[],
         subject: string,
-        text?: string | Buffer<ArrayBufferLike> | Stream.Readable | Mail.AttachmentLike,
-        html?: string | Buffer<ArrayBufferLike> | Stream.Readable | Mail.AttachmentLike,
+        text?: string | Buffer | Stream.Readable | Mail.AttachmentLike,
+        html?: string | Buffer | Stream.Readable | Mail.AttachmentLike,
         attachments?: Mail.Attachment[]
     }) {
         if (!this.transporter)
@@ -68,7 +70,7 @@ class MailService {
             console.log('New mail draft:', { from: `"${Env.AppName}" <${Env.SmtpEmail}>`, to, subject, text, html, attachments })
         }
 
-        const info = await this.transporter.sendMail({
+        const info: SESTransport.SentMessageInfo | SMTPTransport.SentMessageInfo = await this.transporter.sendMail({
             from: `"${Env.AppName}" <${Env.SmtpEmail}>`,
             to,
             subject,

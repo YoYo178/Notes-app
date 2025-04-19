@@ -40,7 +40,10 @@ class S3Service {
       });
       return signedUrl;
     } catch (error) {
-      throw new Error(`Failed to generate pre-signed PUT URL: ${error.message}`);
+      if (error instanceof Error)
+        throw new Error(`Failed to generate pre-signed PUT URL: ${error.message}`);
+      else
+        throw new Error('Failed to generate pre-signed PUT URL: Unknown error');
     }
   }
 
@@ -61,7 +64,10 @@ class S3Service {
 
       return signedUrl;
     } catch (error) {
-      throw new Error(`Failed to generate pre-signed GET URL: ${error.message}`);
+      if (error instanceof Error)
+        throw new Error(`Failed to generate pre-signed GET URL: ${error.message}`);
+      else
+        throw new Error('Failed to generate pre-signed PUT URL: Unknown error');
     }
   }
 
@@ -78,7 +84,10 @@ class S3Service {
     try {
       await this.s3Client.send(command);
     } catch (error) {
-      throw new Error(`Failed to delete file: ${error.message}`);
+      if (error instanceof Error)
+        throw new Error(`Failed to delete file: ${error.message}`);
+      else
+        throw new Error('Failed to generate pre-signed PUT URL: Unknown error');
     }
   }
 
