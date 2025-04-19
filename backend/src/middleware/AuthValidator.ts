@@ -148,7 +148,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
         res.cookie("jwt_at", accessToken, cookieConfig);
 
         // Add the user's id and username in the request for other handlers
-        req.user = { id: (user._id as ObjectId).toString(), username: user.username, displayName: user.displayName, email: user.email };
+        req.user = { id: user.id, username: user.username, displayName: user.displayName, email: user.email };
 
         // Move to other routes
         next();
@@ -206,7 +206,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
             res.cookie("jwt_at", accessToken, cookieConfig);
 
             // Add the user's id and username in the request for other handlers
-            req.user = { id: (user._id as ObjectId).toString(), username: user.username, displayName: user.displayName, email: user.email };
+            req.user = { id: user.id, username: user.username, displayName: user.displayName, email: user.email };
 
             // Move to other routes
             next();

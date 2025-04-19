@@ -15,7 +15,7 @@ export function refreshAccessToken(user: IUser & Document) {
     const accessToken = jwt.sign(
         {
             User: {
-                id: (user._id as ObjectId).toString(),
+                id: user.id,
                 username: user.username,
                 displayName: user.displayName,
             }

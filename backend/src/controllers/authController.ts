@@ -82,7 +82,7 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
     })
 
     if (user) {
-        res.status(HttpStatusCodes.CREATED).send({ message: `User created successfully`, id: (user._id as ObjectId).toString() })
+        res.status(HttpStatusCodes.CREATED).send({ message: `User created successfully`, id: user.id })
         return;
     } else {
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: "An error occured while creating a new user." })
@@ -285,7 +285,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
     const accessToken = jwt.sign(
         {
             User: {
-                id: (user._id as ObjectId).toString(),
+                id: user.id,
                 username: user.username,
                 displayName: user.displayName
             }
@@ -305,7 +305,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
     const refreshToken = jwt.sign(
         {
             User: {
-                id: (user._id as ObjectId).toString(),
+                id: user.id,
                 username: user.username
             }
         },
@@ -320,7 +320,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
 
     res.cookie("jwt_at", accessToken, cookieConfig);
 
-    res.status(HttpStatusCodes.OK).send({ message: "Logged in successfully", user: { displayName: user.displayName, id: (user._id as ObjectId).toString(), email: user.email } });
+    res.status(HttpStatusCodes.OK).send({ message: "Logged in successfully", user: { displayName: user.displayName, id: user.id, email: user.email } });
 })
 
 /**

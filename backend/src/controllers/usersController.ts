@@ -37,8 +37,8 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const duplicateEmail = await User.findOne({ email }).exec();
-    if (duplicateEmail && (duplicateEmail._id as ObjectId).toString() !== req.user.id) {
+    const duplicateEmailUser = await User.findOne({ email }).exec();
+    if (duplicateEmailUser && duplicateEmailUser.id !== req.user.id) {
         res.status(HttpStatusCodes.CONFLICT).send({ message: "Email is already registered" });
         return;
     }
