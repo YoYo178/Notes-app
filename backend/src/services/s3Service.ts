@@ -5,7 +5,7 @@ import { S3_CONFIG } from '../config/s3Config';
 class S3Service {
   private s3Client: S3Client;
 
-  constructor() {
+  public constructor() {
     this.s3Client = new S3Client({
       region: S3_CONFIG.region,
       credentials: {
@@ -21,7 +21,7 @@ class S3Service {
    * @param contentType - The content type of the file
    * @param fileType - Either 'image' or 'audio'
    */
-  async generateUploadUrl(key: string, contentType: string, fileType: 'image' | 'audio'): Promise<string> {
+  public async generateUploadUrl(key: string, contentType: string, fileType: 'image' | 'audio'): Promise<string> {
     // Validate content type
     const allowedTypes = fileType === 'image' ? S3_CONFIG.allowedImageTypes : S3_CONFIG.allowedAudioTypes;
     if (!allowedTypes.includes(contentType)) {
@@ -51,11 +51,11 @@ class S3Service {
    * Get a file URL from S3
    * @param key - The key (path) of the file to get
    */
-  async generateFileUrl(key: string): Promise<string> {
+  public async generateFileUrl(key: string): Promise<string> {
     const command = new GetObjectCommand({
       Bucket: S3_CONFIG.bucket,
-      Key: key
-    })
+      Key: key,
+    });
 
     try {
       const signedUrl = await getSignedUrl(this.s3Client, command, {
@@ -75,7 +75,7 @@ class S3Service {
    * Delete a file from S3
    * @param key - The key (path) of the file to delete
    */
-  async deleteFile(key: string): Promise<void> {
+  public async deleteFile(key: string): Promise<void> {
     const command = new DeleteObjectCommand({
       Bucket: S3_CONFIG.bucket,
       Key: key,
@@ -97,7 +97,7 @@ class S3Service {
    * @param fileType - The type of file (image or audio)
    * @param fileName - Original file name
    */
-  generateKey(userId: string, fileType: 'image' | 'audio', fileName: string): string {
+  public generateKey(userId: string, fileType: 'image' | 'audio', fileName: string): string {
     const timestamp = Date.now();
     const extension = fileName.split('.').pop();
     return `${fileType}s/${userId}/${timestamp}-${Math.random().toString(36).substring(2, 15)}.${extension}`;

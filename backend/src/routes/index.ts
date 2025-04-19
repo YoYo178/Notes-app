@@ -13,7 +13,7 @@ const apiRouter = Router();
 apiRouter.use('/auth', AuthRouter);
 apiRouter.use('/users', UsersRouter);
 apiRouter.use('/notes', NotesRouter);
-apiRouter.use('/files', FilesRouter)
+apiRouter.use('/files', FilesRouter);
 
 /******************************************************************************
                                 Export default

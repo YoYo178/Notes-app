@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
+import logger from 'jet-logger';
 import { s3Service } from '../services/s3Service';
 import { S3_CONFIG } from '../config/s3Config';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
@@ -9,7 +10,7 @@ interface UploadRequestBody {
   fileType: 'image' | 'audio';
   contentType: string;
   fileSize: number;
-  audioDuration?: number
+  audioDuration?: number;
 }
 
 const getUploadURL = asyncHandler(async (req: Request, res: Response) => {
@@ -35,26 +36,26 @@ const getUploadURL = asyncHandler(async (req: Request, res: Response) => {
 
   // File metadata checks
   switch (fileType) {
-    case 'image':
-      // TODO
-      break;
+  case 'image':
+    // TODO
+    break;
 
-    case 'audio':
-      if (!audioDuration) {
-        res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'audioDuration field is required' });
-        return;
-      }
-
-      if (audioDuration > 60) {
-        res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Given audio file exceeds maximum duration of 60s' });
-        return;
-      }
-      break;
-
-    default:
-      console.error('File type not supported:', fileType);
-      res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'File type not supported.' })
+  case 'audio':
+    if (!audioDuration) {
+      res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'audioDuration field is required' });
       return;
+    }
+
+    if (audioDuration > 60) {
+      res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Given audio file exceeds maximum duration of 60s' });
+      return;
+    }
+    break;
+
+  default:
+    logger.err('File type not supported:', fileType);
+    res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'File type not supported.' });
+    return;
   }
 
   try {
@@ -64,7 +65,7 @@ const getUploadURL = asyncHandler(async (req: Request, res: Response) => {
     res.status(HttpStatusCodes.OK).json({
       uploadUrl,
       key,
-      expiresIn: S3_CONFIG.urlExpirationTime
+      expiresIn: S3_CONFIG.urlExpirationTime,
     });
   } catch (error) {
     if (error instanceof Error)
@@ -101,8 +102,8 @@ const getURL = asyncHandler(async (req: Request, res: Response) => {
 
     res.status(HttpStatusCodes.OK).json({
       url,
-      expiresIn: S3_CONFIG.urlExpirationTime
-    })
+      expiresIn: S3_CONFIG.urlExpirationTime,
+    });
   } catch (error) {
     if (error instanceof Error)
       res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
@@ -140,14 +141,14 @@ const getMultipleURL = asyncHandler(async (req: Request, res: Response) => {
 
         return;
       }
-    })
-  )
+    }),
+  );
 
   res.status(HttpStatusCodes.OK).json({
     urlArray,
-    expiresIn: S3_CONFIG.urlExpirationTime
-  })
-})
+    expiresIn: S3_CONFIG.urlExpirationTime,
+  });
+});
 
 const deleteFile = asyncHandler(async (req: Request, res: Response) => {
   const { fileKey } = req.params;
@@ -182,4 +183,4 @@ export default {
   getURL,
   getMultipleURL,
   deleteFile,
-}
+};

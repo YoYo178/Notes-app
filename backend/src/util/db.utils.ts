@@ -1,5 +1,5 @@
-import { DefaultSchemaOptions, Document, model, Model, ObtainDocumentType, Schema } from "mongoose";
+import { Document, model, Model, Schema } from 'mongoose';
 
 export function MongooseModel<T>(docName: string, docSchema: Schema): Model<T & Document> {
-    return model<T & Document>(docName, docSchema);
+  return model<T & Document>(docName, docSchema);
 }

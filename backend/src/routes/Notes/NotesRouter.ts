@@ -9,9 +9,9 @@ const NotesRouter = Router();
 NotesRouter.use(AuthValidator);
 
 NotesRouter.route('/')
-    .get(getAllNotes)
-    .post(createNote)
-    .patch(updateNote)
-    .delete(deleteNote);
+  .get(getAllNotes)
+  .post(createNote)
+  .patch(updateNote)
+  .delete(deleteNote);
 
 export default NotesRouter;

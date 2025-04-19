@@ -1,5 +1,4 @@
 import morgan from 'morgan';
-import path from 'path';
 import helmet from 'helmet';
 import express, { Request, Response, NextFunction } from 'express';
 import logger from 'jet-logger';
@@ -12,7 +11,7 @@ import Env from '@src/common/Env';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import { RouteError } from '@src/common/route-errors';
 import { NodeEnvs } from '@src/common/constants';
-import { CORS_CONFIG } from '@src/config/CORS'
+import { CORS_CONFIG } from '@src/config/CORS';
 
 
 /******************************************************************************
@@ -26,7 +25,7 @@ const app = express();
 
 
 // Basic middleware
-app.use(cors(CORS_CONFIG))
+app.use(cors(CORS_CONFIG));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -61,7 +60,7 @@ app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
 
 // Nav to users pg by default
 app.get('/', (_: Request, res: Response) => {
-  res.send("Hello, you are currently at '/'.");
+  res.send('Hello, you are currently at \'/\'.');
   return;
 });
 

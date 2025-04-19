@@ -12,17 +12,17 @@ import { Document } from 'mongoose';
  * @returns string
  */
 export function refreshAccessToken(user: IUser & Document) {
-    const accessToken = jwt.sign(
-        {
-            User: {
-                id: user.id,
-                username: user.username,
-                displayName: user.displayName,
-            }
-        },
-        Env.AccessTokenSecret,
-        { expiresIn: tokenConfig.accessToken.expiry }
-    );
+  const accessToken = jwt.sign(
+    {
+      User: {
+        id: user.id,
+        username: user.username,
+        displayName: user.displayName,
+      },
+    },
+    Env.AccessTokenSecret,
+    { expiresIn: tokenConfig.accessToken.expiry },
+  );
 
-    return accessToken;
+  return accessToken;
 }

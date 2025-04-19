@@ -9,9 +9,9 @@ const FilesRouter = Router();
 FilesRouter.use(AuthValidator);
 
 FilesRouter.post('/getUploadURL', getUploadURL);
-FilesRouter.post('/getMultipleURL', getMultipleURL)
+FilesRouter.post('/getMultipleURL', getMultipleURL);
 
 FilesRouter.get('/getURL/', getURL);
-FilesRouter.delete('/delete/:fileKey', deleteFile)
+FilesRouter.delete('/delete/:fileKey', deleteFile);
 
 export default FilesRouter;

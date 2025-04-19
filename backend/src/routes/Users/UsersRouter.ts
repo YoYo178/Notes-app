@@ -11,7 +11,7 @@ UsersRouter.use(AuthValidator);
 UsersRouter.get('/me', getLoggedInUser);
 
 UsersRouter.route('/')
-    .patch(updateUser)
-    .delete(deleteUser);
+  .patch(updateUser)
+  .delete(deleteUser);
 
 export default UsersRouter;
