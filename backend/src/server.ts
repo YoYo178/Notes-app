@@ -59,13 +59,6 @@ app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
   return next(err);
 });
 
-
-// **** Front-End Content
-
-// Set static directory (js and css).
-const staticDir = path.join(__dirname, 'public');
-app.use(express.static(staticDir));
-
 // Nav to users pg by default
 app.get('/', (_: Request, res: Response) => {
   res.send("Hello, you are currently at '/'.");

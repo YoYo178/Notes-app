@@ -21,8 +21,6 @@
     "config.ts"
   ],
   "exclude": [
-    "spec",
-    "src/public/",
     "scripts",
     "eslint.config.ts"
   ]
