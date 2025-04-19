@@ -54,11 +54,11 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
     isText,
     isFavorite: isFavorite ?? false,
     duration: duration ?? null,
-    audioKey
-  })
+    audioKey,
+  });
 
-  res.status(HttpStatusCodes.OK).send({ message: "Note created successfully", id: (note._id as ObjectId).toString() });
-})
+  res.status(HttpStatusCodes.OK).send({ message: 'Note created successfully', id: (note._id as ObjectId).toString() });
+});
 
 /**
  * @route PATCH /notes

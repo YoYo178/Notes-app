@@ -191,8 +191,6 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
       // Add the access token to token blacklist
       tokenBlacklist.push(accessToken);
 
-      console.log(decoded.exp, Date.now())
-
       // Remove the token from blacklist after it expires
       setTimeout(() => {
         tokenBlacklist.shift();
