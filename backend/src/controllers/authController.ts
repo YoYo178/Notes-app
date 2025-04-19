@@ -277,7 +277,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  if (user?.isVerified) {
+  if (!user.isVerified) {
     res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: 'User is not verified!' });
     return;
   }
