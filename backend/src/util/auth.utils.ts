@@ -2,7 +2,7 @@ import Env from '@src/common/Env';
 import { tokenConfig } from '@src/config/tokenConfig';
 import { IUser } from '@src/models/User';
 import jwt from 'jsonwebtoken';
-import { Document } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
 
 /**
  * @description Generates and returns a new access token for a user
@@ -15,7 +15,7 @@ export function refreshAccessToken(user: IUser & Document) {
   const accessToken = jwt.sign(
     {
       User: {
-        id: user.id,
+        id: (user._id as ObjectId).toString(),
         username: user.username,
         displayName: user.displayName,
       },

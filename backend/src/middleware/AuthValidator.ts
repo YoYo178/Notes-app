@@ -12,6 +12,7 @@ import cookieConfig from '@src/config/cookieConfig';
 import { User } from '@src/models/User';
 
 import { refreshAccessToken } from '@src/util/auth.utils';
+import { ObjectId } from 'mongoose';
 
 const tokenBlacklist: string[] = [];
 
@@ -150,7 +151,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
     res.cookie('jwt_at', accessToken, cookieConfig);
 
     // Add the user's id and username in the request for other handlers
-    req.user = { id: user.id, username: user.username, displayName: user.displayName, email: user.email };
+    req.user = { id: (user._id as ObjectId).toString(), username: user.username, displayName: user.displayName, email: user.email };
 
     // Move to other routes
     next();
@@ -190,6 +191,8 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
       // Add the access token to token blacklist
       tokenBlacklist.push(accessToken);
 
+      console.log(decoded.exp, Date.now())
+
       // Remove the token from blacklist after it expires
       setTimeout(() => {
         tokenBlacklist.shift();
@@ -216,7 +219,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
       res.cookie('jwt_at', accessToken, cookieConfig);
 
       // Add the user's id and username in the request for other handlers
-      req.user = { id: user.id, username: user.username, displayName: user.displayName, email: user.email };
+      req.user = { id: (user._id as ObjectId).toString(), username: user.username, displayName: user.displayName, email: user.email };
 
       // Move to other routes
       next();

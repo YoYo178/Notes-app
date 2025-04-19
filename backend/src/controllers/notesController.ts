@@ -2,7 +2,7 @@ import { User } from '@src/models/User';
 import expressAsyncHandler from 'express-async-handler';
 import { Request, Response } from 'express';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
-import { isObjectIdOrHexString } from 'mongoose';
+import { isObjectIdOrHexString, ObjectId } from 'mongoose';
 import { INote, Note } from '@src/models/Note';
 
 /**
@@ -18,7 +18,7 @@ const getAllNotes = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const notes = await Note.find({ user: user.id }).lean().exec() || [];
+  const notes = await Note.find({ user: (user._id as ObjectId).toString() }).lean().exec() || [];
 
   res.status(HttpStatusCodes.OK).send({ notes });
 });
@@ -40,25 +40,25 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
 
   if (
     !title || !description || duration === undefined ||
-        (isText === undefined || isText === null)
+    (isText === undefined || isText === null)
   ) {
     res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'All fields except images and isFavorite are required' });
     return;
   }
 
   const note = await Note.create({
-    user: user.id,
+    user: (user._id as ObjectId).toString(),
     title,
     description,
     images: images ?? [],
     isText,
     isFavorite: isFavorite ?? false,
     duration: duration ?? null,
-    audioKey,
-  });
+    audioKey
+  })
 
-  res.status(HttpStatusCodes.OK).send({ message: 'Note created successfully', id: note.id });
-});
+  res.status(HttpStatusCodes.OK).send({ message: "Note created successfully", id: (note._id as ObjectId).toString() });
+})
 
 /**
  * @route PATCH /notes

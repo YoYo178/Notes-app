@@ -16,6 +16,7 @@ import { tokenConfig } from '@src/config/tokenConfig';
 import { generateVerificationCode, VERIFICATION_CODE_TTL } from '@src/util/code.utils';
 import { obfuscateEmail, sendPasswordResetEmail, sendVerificationMail } from '@src/util/mail.utils';
 import Env from '@src/common/Env';
+import { ObjectId } from 'mongoose';
 
 const codeCooldownManager = new Map<string, number>();
 const CODE_REQUEST_COOLDOWN = 60 * 1000; // 60 seconds
@@ -71,7 +72,7 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
   const code = generateVerificationCode();
   await sendVerificationMail(email, code);
 
-  codeCooldownManager.set(user.id as string, Date.now() + CODE_REQUEST_COOLDOWN);
+  codeCooldownManager.set((user._id as ObjectId).toString() as string, Date.now() + CODE_REQUEST_COOLDOWN);
 
   await VerificationCode.create({
     user: user._id,
@@ -81,7 +82,7 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
   });
 
   if (user) {
-    res.status(HttpStatusCodes.CREATED).send({ message: 'User created successfully', id: user.id });
+    res.status(HttpStatusCodes.CREATED).send({ message: 'User created successfully', id: (user._id as ObjectId).toString() });
     return;
   } else {
     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'An error occured while creating a new user.' });
@@ -153,7 +154,7 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
 
     const resetPasswordAccessToken = jwt.sign(
       {
-        userID: user.id,
+        userID: (user._id as ObjectId).toString(),
         purpose: 'reset-password',
       },
       ResetPasswordAccessTokenSecret,
@@ -216,7 +217,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const lastCodeRequestTime = codeCooldownManager.get(user.id as string);
+  const lastCodeRequestTime = codeCooldownManager.get((user._id as ObjectId).toString() as string);
   const hasRecentlyRequestedCode = lastCodeRequestTime ? lastCodeRequestTime > Date.now() : false;
 
   if (hasRecentlyRequestedCode) {
@@ -239,7 +240,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
   else if (purpose === 'reset-password')
     await sendPasswordResetEmail(user.email, code);
 
-  codeCooldownManager.set(user.id as string, Date.now() + CODE_REQUEST_COOLDOWN);
+  codeCooldownManager.set((user._id as ObjectId).toString() as string, Date.now() + CODE_REQUEST_COOLDOWN);
 
   await VerificationCode.create({
     user: user._id,
@@ -293,7 +294,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
   const accessToken = jwt.sign(
     {
       User: {
-        id: user.id,
+        id: (user._id as ObjectId).toString(),
         username: user.username,
         displayName: user.displayName,
       },
@@ -313,7 +314,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
   const refreshToken = jwt.sign(
     {
       User: {
-        id: user.id,
+        id: (user._id as ObjectId).toString(),
         username: user.username,
       },
     },
@@ -329,7 +330,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
   res.cookie('jwt_at', accessToken, cookieConfig);
 
   res.status(HttpStatusCodes.OK)
-    .send({ message: 'Logged in successfully', user: { displayName: user.displayName, id: user.id, email: user.email } });
+    .send({ message: 'Logged in successfully', user: { displayName: user.displayName, id: (user._id as ObjectId).toString(), email: user.email } });
 });
 
 /**
@@ -361,7 +362,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
   }
 
   // Delete all previous codes
-  await VerificationCode.deleteMany({ user: user.id, purpose: 'reset-password' });
+  await VerificationCode.deleteMany({ user: (user._id as ObjectId).toString(), purpose: 'reset-password' });
 
   user.recoveryState.isRecovering = true;
   user.recoveryState.hasVerifiedMail = false;
@@ -371,7 +372,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
   const code = generateVerificationCode();
   await sendPasswordResetEmail(user.email, code);
 
-  codeCooldownManager.set(user.id as string, Date.now() + CODE_REQUEST_COOLDOWN);
+  codeCooldownManager.set((user._id as ObjectId).toString() as string, Date.now() + CODE_REQUEST_COOLDOWN);
 
   await VerificationCode.create({
     user: user._id,
@@ -380,7 +381,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
     expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL),
   });
 
-  res.status(HttpStatusCodes.OK).json({ id: user.id, email: isEmail(input) ? input : obfuscateEmail(user.email) });
+  res.status(HttpStatusCodes.OK).json({ id: (user._id as ObjectId).toString(), email: isEmail(input) ? input : obfuscateEmail(user.email) });
 });
 
 /**
@@ -396,7 +397,7 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
     return;
   }
 
-  const user = await User.findById(req.recoveringUser.id).exec();
+  const user = await User.findById(req.recovering(user._id as ObjectId).toString()).exec();
 
   if (!user) {
     res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'User not found' });
