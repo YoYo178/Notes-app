@@ -1,1 +1,1 @@
-export const BACKEND_URL = "https://sp-az.duckdns.org/notes/api";
+export const BACKEND_URL = "https://sp-az.duckdns.org/notes";
