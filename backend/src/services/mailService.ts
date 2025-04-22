@@ -1,4 +1,3 @@
-import { NodeEnvs } from '@src/common/constants';
 import Env from '@src/common/Env';
 import nodemailer, { Transporter } from 'nodemailer';
 import logger from 'jet-logger';
@@ -6,10 +5,6 @@ import Mail from 'nodemailer/lib/mailer';
 import SESTransport from 'nodemailer/lib/ses-transport';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import Stream from 'stream';
-
-function isDevEnv() {
-  return Env.NodeEnv === NodeEnvs.Production;
-}
 
 class MailService {
   private transporter: Transporter | null = null;
@@ -19,7 +14,7 @@ class MailService {
   }
 
   private async init() {
-    if (isDevEnv()) {
+    if (Env.SmtpMock) {
       const testAccount = await nodemailer.createTestAccount();
       logger.info('[MailService] Test account created:');
       logger.info(testAccount);
@@ -68,7 +63,7 @@ class MailService {
     if (!this.transporter)
       return;
 
-    if (isDevEnv()) {
+    if (Env.SmtpMock) {
       logger.info('New mail draft:');
       logger.info({ from: `"${Env.AppName}" <${Env.SmtpEmail}>`, to, subject, text, html, attachments });
     }
@@ -82,7 +77,7 @@ class MailService {
       attachments,
     });
 
-    if (isDevEnv()) {
+    if (Env.SmtpMock) {
       logger.info('Message sent:');
       logger.info(info.messageId);
       logger.info('Preview URL:');

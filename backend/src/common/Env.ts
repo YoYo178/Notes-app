@@ -1,4 +1,4 @@
-import jetEnv, { num, str } from 'jet-env';
+import jetEnv, { bool, num, str } from 'jet-env';
 import { isEnumVal } from 'jet-validators';
 
 import { NodeEnvs } from './constants';
@@ -28,6 +28,7 @@ export default jetEnv({
   ResetPasswordAccessTokenSecret: str,
 
   /* SMTP */
+  SmtpMock: bool,
   SmtpProvider: str,
   SmtpEmail: str,
   SmtpPass: str,

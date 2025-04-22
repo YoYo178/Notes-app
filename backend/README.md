@@ -72,6 +72,7 @@ A `dist` folder will be created along with the built JavaScript files, which can
 - `AWS_SECRET_ACCESS_KEY` - AWS S3 Secret Access Key.
 
 #### SMTP:
+- `SMTP_MOCK` (Boolean) - Whether to use Fake email service such as Ethereal or use real email service.
 - `SMTP_PROVIDER` - The provider of the SMTP service.
 - `SMTP_EMAIL` - The Email address from the SMTP service to use.
 - `SMTP_PASS` - The password for the SMTP Email address.
