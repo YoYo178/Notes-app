@@ -40,6 +40,10 @@ jobs:
       - name: Build project
         run: yarn build
 
+      # Create 404.html
+      - name: Create 404.html
+        run: cp ./dist/index.html ./dist/404.html
+
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
