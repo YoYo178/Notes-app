@@ -1,10 +1,14 @@
 import bcrypt from 'bcrypt';
 import logger from 'jet-logger';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
+import { ObjectId } from 'mongoose';
 import { isEmail } from 'validator';
 import { Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
+import Env from '@src/common/Env';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
 
 import { User } from '@src/models/User';
@@ -15,8 +19,6 @@ import { tokenConfig } from '@src/config/tokenConfig';
 
 import { generateVerificationCode, VERIFICATION_CODE_TTL } from '@src/util/code.utils';
 import { obfuscateEmail, sendPasswordResetEmail, sendVerificationMail } from '@src/util/mail.utils';
-import Env from '@src/common/Env';
-import { ObjectId } from 'mongoose';
 
 const codeCooldownManager = new Map<string, number>();
 const CODE_REQUEST_COOLDOWN = 60 * 1000; // 60 seconds
@@ -70,7 +72,7 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
   });
 
   const code = generateVerificationCode();
-  await sendVerificationMail(email, code);
+  const mailInfo = await sendVerificationMail(email, code);
 
   codeCooldownManager.set((user._id as ObjectId).toString(), Date.now() + CODE_REQUEST_COOLDOWN);
 
@@ -82,7 +84,11 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
   });
 
   if (user) {
-    res.status(HttpStatusCodes.CREATED).send({ message: 'User created successfully', id: (user._id as ObjectId).toString() });
+    res.status(HttpStatusCodes.CREATED).send({
+      message: 'User created successfully',
+      id: (user._id as ObjectId).toString(),
+      emailLink: !!mailInfo && Env.SmtpMock ? nodemailer.getTestMessageUrl(mailInfo) : null,
+    });
     return;
   } else {
     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'An error occured while creating a new user.' });
@@ -235,10 +241,12 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
 
   const code = generateVerificationCode();
 
+  let mailInfo: null | undefined | SMTPTransport.SentMessageInfo = null;
+
   if (purpose === 'user-verification')
-    await sendVerificationMail(user.email, code);
+    mailInfo = await sendVerificationMail(user.email, code);
   else if (purpose === 'reset-password')
-    await sendPasswordResetEmail(user.email, code);
+    mailInfo = await sendPasswordResetEmail(user.email, code);
 
   codeCooldownManager.set((user._id as ObjectId).toString(), Date.now() + CODE_REQUEST_COOLDOWN);
 
@@ -249,7 +257,10 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
     expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL),
   });
 
-  res.status(HttpStatusCodes.OK).json({ message: 'Success' });
+  res.status(HttpStatusCodes.OK).json({
+    message: 'Success',
+    emailLink: !!mailInfo && Env.SmtpMock ? nodemailer.getTestMessageUrl(mailInfo) : null,
+  });
 });
 
 /**
@@ -377,7 +388,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
   await user.save();
 
   const code = generateVerificationCode();
-  await sendPasswordResetEmail(user.email, code);
+  const mailInfo = await sendPasswordResetEmail(user.email, code);
 
   codeCooldownManager.set((user._id as ObjectId).toString(), Date.now() + CODE_REQUEST_COOLDOWN);
 
@@ -391,6 +402,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
   res.status(HttpStatusCodes.OK).json({
     id: (user._id as ObjectId).toString(),
     email: isEmail(input) ? input : obfuscateEmail(user.email),
+    emailLink: !!mailInfo && Env.SmtpMock ? nodemailer.getTestMessageUrl(mailInfo) : null,
   });
 });
 
