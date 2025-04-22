@@ -14,13 +14,18 @@ jobs:
     steps:
       # Checkout repository
       - name: Checkout repository
-        uses: actions/checkout@v4 
-      
+        uses: actions/checkout@v4
+
+      # Enable Corepack
+      - name: Enable Corepack
+        run: corepack enable
+
       # Setup Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: latest
+          cache: 'yarn'
 
       # Install dependencies
       - name: Install dependencies
