@@ -6,3 +6,5 @@ config.js
 
 # Ignore env files
 config/*.env.*
+
+!config/.env.example
