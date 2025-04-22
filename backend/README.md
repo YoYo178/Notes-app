@@ -50,6 +50,7 @@ A `dist` folder will be created along with the built JavaScript files, which can
 
 ## Setting environment variables
 ### Rename the `.env.example` file to `.env` and add the values accordingly.
+- #### Optionally you can also create environment specific .env files such as `.env.development` and `.env.production`.
 #### General:
 - `NODE_ENV` - The environment to run the application in:
     - `development` or `production`
