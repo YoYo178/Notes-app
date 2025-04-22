@@ -1,0 +1,82 @@
+.sm {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    border: 1px solid #d0d4d9;
+    border-radius: 20px;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+}
+
+.sm-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    color: #1b1b1b;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.sm-links-container {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sm-links-separator {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    gap: 0.5rem
+}
+
+.sm-links-separator-left {
+    flex: 1;
+    height: 1px;
+    background-color: rgb(163, 163, 163);
+}
+
+
+.sm-separator-text {
+    font-family: 'Inter';
+    color: rgb(163, 163, 163)
+}
+
+.sm-links-separator-right {
+    flex: 1;
+    height: 1px;
+    background-color: rgb(163, 163, 163);
+}
+
+.sm-login-button,
+.sm-register-button {
+    color: #f4eaff;
+    background-color: #6d33aa;
+    padding: 1rem;
+    width: 10rem;
+
+    text-align: center;
+    border-radius: 1rem;
+
+    text-decoration: none;
+    font-family: 'Inter';
+    font-weight: bold;
+
+    transition: scale 200ms ease-out;
+}
+
+.sm-login-button:hover,
+.sm-register-button:hover {
+    scale: 105%;
+}
+
+.sm-login-button:visited,
+.sm-register-button:visited {
+    color: #f4eaff;
+}

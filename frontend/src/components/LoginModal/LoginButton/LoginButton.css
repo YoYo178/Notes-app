@@ -1,0 +1,17 @@
+.login-button {
+    padding: 0.8rem 0.6rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #f4eaff;
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 1rem;
+    color: #6d33aa;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-top: 0rem;
+}
+
+.login-button:hover {
+    background-color: #e8d3ff;
+}

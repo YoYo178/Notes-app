@@ -1,0 +1,214 @@
+.rm {
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    border: 1px solid #d0d4d9;
+    border-radius: 20px;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+}
+
+.rm-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    color: #1b1b1b;
+    text-align: center;
+}
+
+.rm-field-container {
+    border: 1px solid #d0d4d9;
+    border-radius: 10px;
+
+    height: 2.5rem;
+
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.rm-field-container:focus-within {
+    border: 2px solid black;
+}
+
+.rm-field-icon-container {
+    display: flex;
+    margin-left: 0.5rem;
+}
+
+.rm-display-name-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.rm-display-name-container .rm-field-container {
+    width: 13rem;
+}
+
+.rm-display-name-container .rm-field-container>input {
+    width: 10rem;
+}
+
+.rm-field-first-name,
+.rm-field-last-name,
+.rm-field-username,
+.rm-field-password,
+.rm-field-email,
+.rm-field-confirm-password,
+.rm-field-otp {
+    border: none;
+    outline: none;
+
+    flex: 1;
+
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.rm-field-password,
+.rm-field-confirm-password {
+    letter-spacing: 1.5px;
+}
+
+.rm-field-password::placeholder,
+.rm-field-confirm-password::placeholder {
+    letter-spacing: initial;
+}
+
+.rm-toggle-password-container {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+}
+
+.rm-toggle-password-button {
+    border: none;
+    padding: 0.2rem;
+    border-radius: 6px;
+    transition: background-color 0.1s ease-out;
+    font-size: 1rem;
+}
+
+.rm-toggle-password-button>svg {
+    transform: translateY(8%);
+}
+
+.rm-toggle-password-button:hover {
+    cursor: pointer;
+    background-color: rgb(216, 216, 216);
+}
+
+.rm-toggle-password-button:active {
+    transform: translate(1px, 1px);
+}
+
+.rm-existing-acc-container {
+    display: flex;
+    margin-top: 1rem;
+    gap: 0.2rem;
+    align-self: center;
+}
+
+.rm-existing-acc-text {
+    font-family: 'Inter';
+    font-weight: bold;
+
+    color: #6d6d6d;
+}
+
+.rm-existing-acc-button {
+    font-family: 'Inter';
+    font-weight: bold;
+
+    color: #6d33aa;
+    text-decoration: none;
+}
+
+.rm-existing-acc-button:hover {
+    text-decoration: underline;
+}
+
+.register-button {
+    padding: 0.8rem 0.6rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #f4eaff;
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 1rem;
+    color: #6d33aa;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-top: 1rem;
+}
+
+.register-button:hover {
+    background-color: #e8d3ff;
+}
+
+.rm-resend-code-container {
+    display: flex;
+}
+
+.rm-resend-code-button {
+    margin-left: auto;
+    font-family: 'Inter';
+    font-weight: bold;
+
+    color: #6d6d6d;
+    text-decoration: underline;
+    margin-top: 0.2rem;
+
+    background-color: transparent;
+    border: none;
+    font-size: 0.9rem;
+}
+
+.rm-verification-text {
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 0.9rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 1rem;
+}
+
+.rm-email {
+    font-weight: 900;
+    font-size: 1.1rem;
+    margin: 1rem 0;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.rm-error {
+    background-color: rgba(255, 42, 42, 0.555);
+    margin-top: 1rem;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 1rem;
+
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 0.9rem;
+
+    white-space: pre-wrap;
+}
+
+.rm-info {
+    background-color: rgba(42, 255, 42, 0.555);
+    margin-top: 1rem;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 1rem;
+
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 0.9rem;
+}

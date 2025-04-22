@@ -1,0 +1,172 @@
+.card {
+    width: auto;
+    height: calc(400px - 1.3rem);
+    border: 1px solid #d0d4d9;
+    border-radius: 20px;
+    padding: 1.5rem 1rem;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    transition: background-color .2s ease-in-out,
+        scale .2s ease-in-out;
+}
+
+.card:hover {
+    background-color: #e9ecef;
+    cursor: pointer;
+}
+
+.card-top-container {
+    display: flex;
+    width: 100%;
+
+    align-items: center;
+}
+
+.card-type {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    font-size: 0.85rem;
+
+    background-color: #f0f0f0;
+
+    margin-left: auto;
+    border-radius: 10px;
+    padding: 0.3rem 0.5rem;
+
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.card-type-text {
+    color: #303030;
+}
+
+.card-type-logo {
+    color: #303030;
+}
+
+.card-date {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #b3b3b3;
+}
+
+.card-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    color: #1b1b1b;
+    margin-top: 1rem;
+    margin-bottom: 0.9rem;
+}
+
+.card-description {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    color: #747474;
+    font-size: 0.85rem;
+    line-height: 1.5rem;
+    margin-bottom: 1rem;
+
+    white-space: pre-wrap;
+
+    word-wrap: break-word;
+    overflow-y: auto;
+}
+
+.card-image-attached {
+    background-color: rgb(224, 224, 224);
+    width: fit-content;
+
+    border-radius: 20px;
+    padding: 0.2rem 0.4rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.4rem;
+}
+
+.card-image-attached-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.card-buttons-container {
+    display: flex;
+    align-self: flex-end;
+    margin-top: auto;
+    width: 100%;
+
+    gap: 0.6rem;
+}
+
+.card-favorite-button {
+    padding: 0.4rem;
+    border-radius: 8px;
+    margin-right: auto;
+    color: rgb(119, 119, 119);
+
+    /* Properties needed after changing from div to button */
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+.card-copy-button,
+.card-delete-button,
+.card-edit-button {
+    padding: 0.4rem;
+    border-radius: 8px;
+    color: rgb(119, 119, 119);
+
+    /* Properties needed after changing from div to button */
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+.card-copy-button:hover,
+.card-delete-button:hover,
+.card-edit-button:hover,
+.card-favorite-button:hover {
+    background-color: rgb(216, 216, 216);
+
+    /* Properties needed after changing from div to button */
+    cursor: pointer;
+}
+
+.card-copied-tooltip {
+    background-color: rgb(216, 216, 216);
+
+    width: fit-content;
+    height: fit-content;
+    padding: 0.4rem;
+
+    border-radius: 5px;
+
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    font-size: 0.8rem;
+
+    position: absolute;
+
+    transform: translateX(-3.7rem) translateY(-2.5rem);
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+}
+
+.card-copy-button:hover .card-copied-tooltip {
+    opacity: 1;
+    visibility: visible;
+}

@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.app-container {
+  display: grid;
+  grid-template-columns: auto 1.8fr 0.2fr;
+  grid-template-rows: 0.2fr 1.8fr 1fr;
+  grid-template-areas:
+    "sidebar search-box sort-button"
+    "sidebar main-content main-content"
+    "sidebar main-content main-content";
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+  grid-area: main-content;
+
+  position: relative;
+}
+
+@media screen and (max-width: 680px) {
+  .app-container {
+    grid-template-areas:
+      "sidebar-hamburger-button search-box sort-button"
+      "main-content main-content main-content"
+      "main-content main-content main-content";
+  }
+}

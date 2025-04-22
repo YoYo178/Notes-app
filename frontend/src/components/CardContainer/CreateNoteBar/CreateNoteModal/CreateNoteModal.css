@@ -1,0 +1,215 @@
+.cnm-backdrop {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(0, 0, 0, 0.6);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cnm {
+    width: 60%;
+    height: 80%;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    border: 1px solid #d0d4d9;
+    /* box-shadow: 0px 0px 5px 1px #292929; */
+
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.cnm-header {
+    display: flex;
+    justify-content: space-between;
+    color: rgb(51, 51, 51);
+}
+
+.cnm-close-button {
+    font-size: 2rem;
+    padding: 0.4rem;
+    border-radius: 8px;
+    border: none;
+    background-color: transparent;
+
+    display: flex;
+
+    transform: translate(1rem, -1rem);
+}
+
+.cnm-close-button:hover {
+    background-color: rgb(216, 216, 216);
+    cursor: pointer;
+}
+
+.cnm-close-button-icon {
+    color: rgb(51, 51, 51);
+}
+
+.cnm-fields {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 6rem);
+    gap: 1rem;
+}
+
+.cnm-audio-player {
+    width: 100%
+}
+
+.cnm-text-field-container {
+    border: 1px solid #d0d4d9;
+    border-radius: 10px;
+
+    height: 2.5rem;
+
+    display: flex;
+    align-items: center;
+}
+
+.cnm-field-title {
+    height: 100%;
+
+    border: none;
+    outline: none;
+
+    flex: 1;
+
+    padding: 0.5rem;
+    margin-left: 0.3rem;
+    margin-right: 0.5rem;
+    font-size: 1.3rem;
+
+    letter-spacing: 1px;
+}
+
+.cnm-field-title::placeholder {
+    font-size: 1.1rem;
+}
+
+.cnm-description-field-container {
+    flex: 1;
+}
+
+.cnm-field-description {
+    height: 100%;
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    padding: 0.5rem;
+    margin-left: 0.3rem;
+    margin-right: 0.5rem;
+    font-size: 1.3rem;
+
+    letter-spacing: 1px;
+
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    color: #1b1b1b;
+
+    resize: none; /* is a textarea element */
+}
+
+.cnm-field-description::placeholder {
+    font-size: 1.1rem;
+}
+
+.cnm-images-container {
+    display: grid;
+    grid-template-rows: 8rem;
+    grid-auto-flow: column;
+    grid-auto-columns: calc(100px + 1rem);
+    border: 1px solid #d0d4d9;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+
+.cnm-upload-image-button,
+.cnm-image-container {
+    margin: 0.7rem;
+    height: calc(90% - 0.7rem);
+    width: 100px;
+    border: 1px solid #d0d4d9;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #adadad;
+
+    transition: scale 300ms ease-out;
+
+    position: relative;
+}
+
+.cnm-upload-image-button:hover,
+.cnm-image-container:hover {
+    cursor: pointer;
+    scale: 105%;
+}
+
+.cnm-image {
+    width: 100%;
+    height: 100%;
+}
+
+.cnm-image-delete-button {
+    position: absolute;
+    top: 0.2rem;
+    right: 0.2rem;
+    padding: 0.2rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+
+    transition: background-color 100ms ease-in-out;
+}
+
+.cnm-image-delete-button:hover {
+    cursor: pointer;
+    background-color: red;
+    color: white;
+}
+
+.cnm-footer {
+    flex: 1;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.cnm-check-button {
+    padding: 0.7rem;
+    border-radius: 8px;
+    color: rgb(51, 51, 51);
+
+    display: flex;
+
+    /* Properties needed after changing from div to button */
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+.cnm-check-button:hover {
+    background-color: rgb(216, 216, 216);
+
+    /* Properties needed after changing from div to button */
+    cursor: pointer;
+}
+
+.cnm-check-button:disabled {
+    color: rgb(143, 143, 143);
+    cursor: not-allowed;
+}

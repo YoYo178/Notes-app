@@ -1,0 +1,104 @@
+.sidebar-user {
+    margin-top: auto;
+    display: flex;
+
+    border-radius: 1rem;
+
+    font-family: 'Inter';
+    font-weight: 500;
+    font-size: 0.9rem;
+
+    gap: 1rem;
+}
+
+.sidebar-user-items {
+    display: flex;
+    align-items: center;
+
+    gap: 1rem;
+    flex: 1;
+}
+
+.sidebar-user-name {
+    flex: 1;
+}
+
+.sidebar-user-name:hover {
+    cursor: pointer;
+}
+
+.sidebar-user-profile-photo {
+    font-size: 3rem;
+}
+
+.sidebar-user-dropdown-button {
+    background-color: transparent;
+    border: none;
+    display: flex;
+    position: relative;
+}
+
+.sidebar-user-dropdown-button svg {
+    font-size: 1.1rem;
+    transition: transform 400ms ease-in-out;
+}
+
+.sidebar-user-dropdown-button:hover {
+    cursor: pointer;
+}
+
+.sidebar-dropdown-menu {
+    position: absolute;
+    width: 8rem;
+    min-width: fit-content;
+    height: fit-content;
+    right: 0;
+    bottom: -1rem;
+    padding: 1rem;
+    border: 1px solid #d0d4d9;
+    border-radius: 1rem;
+
+    display: flex;
+    flex-direction: column;
+
+    list-style-type: none;
+
+    transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+    overflow: hidden;
+}
+
+.sidebar-dropdown-menu.hidden {
+    transform: none;
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+.sidebar-dropdown-menu.visible {
+    transform: translateY(-3.5rem);
+    opacity: 1;
+}
+
+.sidebar-dropdown-menu:hover {
+    cursor: initial;
+}
+
+.sidebar-user-dropdown-option {
+    font-family: 'Inter';
+    font-weight: bold;
+
+    transition: scale 0.1s ease-in-out;
+}
+
+.sidebar-user-dropdown-option:hover {
+    cursor: pointer;
+    scale: 105%;
+}
+
+.sidebar-dropdown-menu-separator {
+    background-color: #d0d4d9;
+    width: 100%;
+    height: 1px;
+    margin-top: 0.8rem;
+    margin-bottom: 0.8rem;
+}

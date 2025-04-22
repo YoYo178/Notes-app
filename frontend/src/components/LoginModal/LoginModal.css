@@ -1,0 +1,151 @@
+.login-modal {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    border: 1px solid #d0d4d9;
+    border-radius: 20px;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    color: #1b1b1b;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.text-field-container {
+    border: 1px solid #d0d4d9;
+    border-radius: 10px;
+
+    height: 2.5rem;
+
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.text-field-container:focus-within {
+    border: 2px solid black;
+}
+
+.text-field-icon-container {
+    height: 100%;
+    border-radius: 10px;
+
+    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.username-icon {
+    padding: 0.5rem;
+}
+
+.username-field,
+.password-field {
+    border: none;
+    outline: none;
+
+    flex: 1;
+
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.password-field {
+    letter-spacing: 1.5px;
+}
+
+.password-field::placeholder {
+    letter-spacing: initial;
+}
+
+.links-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.register-container {
+    display: flex;
+    margin-top: 1rem;
+    gap: 0.2rem;
+    align-self: center;
+}
+
+.register-text {
+    font-family: 'Inter';
+    font-weight: bold;
+
+    color: #6d6d6d;
+}
+
+.forgot-password-button {
+    align-self: flex-end;
+    font-family: 'Inter';
+    font-weight: bold;
+
+    color: #6d6d6d;
+    text-decoration: none;
+    margin-top: 0.2rem;
+    margin-bottom: 1rem;
+}
+
+.lm-error {
+    background-color: rgba(255, 42, 42, 0.555);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 1rem;
+
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.login-modal-register-button {
+    font-family: 'Inter';
+    font-weight: bold;
+
+    color: #6d33aa;
+    text-decoration: none;
+}
+
+.forgot-password-button:hover,
+.login-modal-register-button:hover {
+    text-decoration: underline;
+}
+
+.password-visibility-container {
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+}
+
+.toggle-password-visibility-button {
+    border: none;
+    padding: 0.2rem;
+    border-radius: 6px;
+    transition: background-color 0.1s ease-out;
+    font-size: 1rem;
+}
+
+.toggle-password-visibility-button>svg {
+    transform: translateY(8%);
+}
+
+.toggle-password-visibility-button:hover {
+    cursor: pointer;
+    background-color: rgb(216, 216, 216);
+}
+
+.toggle-password-visibility-button:active {
+    transform: translate(1px, 1px);
+}
