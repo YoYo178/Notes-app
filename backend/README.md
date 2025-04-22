@@ -22,6 +22,7 @@ This project was created with [express-generator-typescript](https://github.com/
 - `cors` for configuring CORS and setting allowed origins.
 - `express-rate-limit` for managing rate limits.
 - `helmet` for managing security against common attacks/exploits.
+- `AuthValidator` (Custom) for managing Authentication.
 
 ## Running the project
 Assuming you have the project cloned, navigate to the project folder and run the shown commands:
