@@ -1,50 +1,38 @@
-# React + TypeScript + Vite
+# Notes-App Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project was generated with [Vite](https://vite.dev/) using the Vite + React + TypeScript template.
 
-Currently, two official plugins are available:
+### Libraries used:
+- `@tanstack/react-query` and `axios` for backend communication and managing cache.
+- `lodash` for comparing deep nested arrays and objects.
+- `react` and `react-dom` for core logic of the application.
+- `react-icons` for the various icons used in the application.
+- `react-router-dom` for managing routes.
+- `validator` for validating input
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Running the project
+Assuming you have the project cloned, navigate to the project folder and run the shown commands:
+### Install dependencies
+```bash
+cd frontend
+yarn install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+### Run the web app
+```bash
+yarn run dev
 ```
+
+The app will automatically start listening for requests at `http://127.0.0.1:5173` or `http://localhost:5173`.
+
+## Building the web application
+Make sure you have all dependencies installed.
+
+```bash
+yarn run build
+```
+A `dist` folder will be created along with the built HTML, CSS, and JS files, and can be run using a web server such as [Apache](https://www.apache.org/) or [nginx](https://nginx.org/).
+
+## Other Available Scripts
+#### `yarn run lint`: Checks for linting errors.
+#### `yarn run preview`: Launches the application in preview environment.
