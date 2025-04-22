@@ -42,6 +42,7 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
     useEffect(() => {
         if (isOpen && !updateNoteMutation.error) {
             onClose();
+            setIsUploading(false);
         }
     }, [updateNoteMutation.isSuccess])
 

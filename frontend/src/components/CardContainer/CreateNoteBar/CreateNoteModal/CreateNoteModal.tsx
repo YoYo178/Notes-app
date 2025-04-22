@@ -56,6 +56,7 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
             setTitle('');
             setDescription('');
             setImages([]);
+            setIsUploading(false);
         }
     }, [createNoteMutation.isSuccess])
 
@@ -77,6 +78,7 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
         setTitle('');
         setDescription('');
         setImages([]);
+        setIsUploading(false);
     };
 
     if (!isOpen) return null;
