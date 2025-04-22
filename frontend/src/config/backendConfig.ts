@@ -1,1 +1,1 @@
-export const BACKEND_URL = "https://sp-az.duckdns.org/notes";
+export const BACKEND_URL = import.meta.env.PROD ? "https://sp-az.duckdns.org/notes" : "http://localhost:3000";
