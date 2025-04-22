@@ -64,6 +64,8 @@ export const ResetPasswordModal: FC = () => {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [resendTime, setResendTime] = useState(60);
 
+    const [emailLink, setEmailLink] = useState('');
+
     const [redirect, setRedirect] = useState<ReactNode | null>(null)
     const [buttonTitle, setButtonTitle] = useState('Find account');
 
@@ -88,6 +90,7 @@ export const ResetPasswordModal: FC = () => {
         if (recoverAccountMutation.isSuccess && !recoverAccountMutation.isError) {
             setUserID(recoverAccountMutation.data.id);
             setEmail(recoverAccountMutation.data.email);
+            setEmailLink(recoverAccountMutation.data.emailLink);
         }
     }, [recoverAccountMutation.isSuccess, recoverAccountMutation.isError])
 
@@ -98,6 +101,12 @@ export const ResetPasswordModal: FC = () => {
     useEffect(() => {
         mutationCallbackHandler(resetPasswordMutation, setCurrentStage, setErrorMessage, setSuccessMessage);
     }, [resetPasswordMutation.isSuccess, resetPasswordMutation.isError])
+
+    useEffect(() => {
+        if (resendCodeMutation.isSuccess && !resendCodeMutation.isError) {
+            setEmailLink(resendCodeMutation.data.emailLink);
+        }
+    }, [resendCodeMutation.isSuccess, resendCodeMutation.isError])
 
     useEffect(() => {
         switch (currentStage) {
@@ -154,6 +163,12 @@ export const ResetPasswordModal: FC = () => {
                         <span className='fpm-email'>{email}</span>
                         <span>Enter the code below before it expires.</span>
                         <span>Please also make sure to check your spam inbox.</span>
+                        {!!emailLink && (
+                            <>
+                                <span>Note: This project currently uses Ethereal, which is a Fake email service.</span>
+                                <span>Click <a href={emailLink} target='_blank'>here</a> to view email.</span>
+                            </>
+                        )}
                     </div>
 
                     {/* OTP Field */}

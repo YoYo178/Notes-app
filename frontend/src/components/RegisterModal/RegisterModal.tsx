@@ -68,6 +68,8 @@ export const RegisterModal: FC = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [email, setEmail] = useState('');
 
+    const [emailLink, setEmailLink] = useState('');
+
     const [OTP, setOTP] = useState('')
     const [resendTime, setResendTime] = useState(60);
 
@@ -90,12 +92,19 @@ export const RegisterModal: FC = () => {
         mutationCallbackHandler(registerMutation, setCurrentStage, setErrorMessage, setSuccessMessage);
         if (registerMutation.isSuccess && !registerMutation.isError) {
             setUserID(registerMutation.data.id);
+            setEmailLink(registerMutation.data.emailLink);
         }
     }, [registerMutation.isSuccess, registerMutation.isError])
 
     useEffect(() => {
         mutationCallbackHandler(verifyCodeMutation, setCurrentStage, setErrorMessage, setSuccessMessage);
     }, [verifyCodeMutation.isSuccess, verifyCodeMutation.isError])
+
+    useEffect(() => {
+        if (resendCodeMutation.isSuccess && !resendCodeMutation.isError) {
+            setEmailLink(resendCodeMutation.data.emailLink);
+        }
+    }, [resendCodeMutation.isSuccess, resendCodeMutation.isError])
 
     useEffect(() => {
         switch (currentStage) {
@@ -237,6 +246,12 @@ export const RegisterModal: FC = () => {
                         <span className='rm-email'><u>{email}</u></span>
                         <span>Enter the code below before it expires.</span>
                         <span>Please also make sure to check your spam inbox.</span>
+                        {!!emailLink && (
+                            <>
+                                <span>Note: This project currently uses Ethereal, which is a Fake email service.</span>
+                                <span>Click <a href={emailLink} target='_blank'>here</a> to view email.</span>
+                            </>
+                        )}
                     </div>
 
                     {/* OTP Field */}
@@ -255,7 +270,7 @@ export const RegisterModal: FC = () => {
                             maxLength={6}
                         />
                     </div>
-                    
+
                     <div className="rm-resend-code-container">
                         <button
                             className="rm-resend-code-button"
