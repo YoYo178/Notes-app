@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./frontend
+        working-directory: frontend
     steps:
       # Checkout repository
       - name: Checkout repository
@@ -22,17 +22,23 @@ jobs:
         with:
           node-version: latest
 
+      # Enable Corepack
+      - name: Enable Corepack
+        run: corepack enable
+
+      # Install Yarn V4
+      - name: Install Yarn v4
+        run: |
+          corepack prepare yarn@stable --activate
+          yarn --version
+
       # Install Dependencies
       - name: Install dependencies
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install
+        run: yarn install
 
       # Build project
       - name: Build project
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build
+        run: yarn build
 
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
