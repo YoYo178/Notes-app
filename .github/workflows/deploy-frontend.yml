@@ -1,0 +1,35 @@
+name: Deploy frontend to GitHub Pages
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4 
+      
+      # Setup Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+
+      # Install dependencies
+      - name: Install dependencies
+        run: yarn install
+
+      # Build project
+      - name: Build project
+        run: yarn run build
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
