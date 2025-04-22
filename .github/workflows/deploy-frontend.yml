@@ -16,16 +16,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Enable Corepack
-      - name: Enable Corepack
-        run: corepack enable
-
       # Setup Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: latest
-          cache: 'yarn'
+
+      # Setup yarn
+      - name: Setup Yarn
+        uses: threeal/setup-yarn-action@v2.0.0
+        with:
+          version: stable
 
       # Install dependencies
       - name: Install dependencies
