@@ -15,7 +15,7 @@ import { ResetPassword } from "./pages/ResetPassword"
 
 export const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Notes-app">
       <Routes>
         <Route element={<ProtectedRouteLayout />}>
           <Route element={<RootLayout />}>

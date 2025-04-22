@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "description": "Notes app frontend project",
+  "homepage": "https://yoyo178.github.io/Notes-app",
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
