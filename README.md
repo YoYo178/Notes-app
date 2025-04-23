@@ -6,7 +6,9 @@ This project was initially an assignment for a full stack web developer job role
 
 The project also required to be made using AI in minimal time, however I instead decided to use **minimal AI instead** so that I understand how the technologies/libraries used in the project actually work.
 
-## Preview Link: TODO
+## Preview Link: [Notes-app](https://yoyo178.github.io/Notes-app/)
+  - Frontend is currently hosted using GitHub Pages
+  - Backend is currently hosted on an Azure VM instance, running ubuntu, and located in Mumbai.
 
 ## Running the project locally
 ### Pre-requisites:
