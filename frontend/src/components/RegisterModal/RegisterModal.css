@@ -7,6 +7,7 @@
     background-color: #f8f9fa;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .rm-title {
@@ -27,6 +28,10 @@
     margin-top: 1rem;
 }
 
+.rm-field-container > input {
+    width: 100%
+}
+
 .rm-field-container:focus-within {
     border: 2px solid black;
 }
@@ -43,11 +48,11 @@
 }
 
 .rm-display-name-container .rm-field-container {
-    width: 13rem;
+    width: 50%
 }
 
 .rm-display-name-container .rm-field-container>input {
-    width: 10rem;
+    width: 100%
 }
 
 .rm-field-first-name,
