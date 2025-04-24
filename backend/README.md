@@ -15,7 +15,7 @@ This project was created with [express-generator-typescript](https://github.com/
 - `mongoose` ORM for managing MongoDB operations.
 - `morgan` for logging requests and responses with appropriate colors as their status codes.
 - `nodemailer` for sending emails from code for mail verification.
-    - When launched in development mode, `nodemailer` uses Ethereal instead of a real SMTP service.
+    - If `SMTP_MOCK` environment variable is set to true, `nodemailer` uses Ethereal instead of a real SMTP service.
 
 ### Middlewares used:
 - `cookie-parser` for parsing cookies from incoming requests.
