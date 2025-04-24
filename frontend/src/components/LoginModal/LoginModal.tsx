@@ -50,7 +50,7 @@ export const LoginModal: FC = () => {
                 </div>
 
                 <input
-                    type="password"
+                    type={isPasswordVisible ? "text" : "password"}
                     placeholder='Password'
                     id="password-field"
                     className="password-field"
