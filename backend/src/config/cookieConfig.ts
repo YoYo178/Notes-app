@@ -6,7 +6,7 @@ import { NodeEnvs } from '@src/common/constants';
 const cookieConfig: CookieOptions = {
   httpOnly: true,
   secure: Env.NodeEnv === NodeEnvs.Production,
-  sameSite: 'none',
+  sameSite: Env.NodeEnv === NodeEnvs.Production ? 'none' : 'lax',
   maxAge: tokenConfig.accessToken.expiry, // Re-used access token's expiry, 3 hours by default
 };
 
