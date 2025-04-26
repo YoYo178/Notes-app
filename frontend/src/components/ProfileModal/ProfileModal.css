@@ -120,8 +120,31 @@
     color: grey;
 }
 
-.pm-check-button {
+.pm-delete-acc-button {
     margin-left: auto;
+    padding: 0.7rem;
+    border-radius: 8px;
+    color: white;
+
+    display: flex;
+    gap: 0.4rem;
+
+    /* Properties needed after changing from div to button */
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    background-color: red;
+}
+
+.pm-delete-acc-button:hover {
+    background-color: rgb(221, 0, 0);
+
+    /* Properties needed after changing from div to button */
+    cursor: pointer;
+}
+
+.pm-check-button {
+    margin-left: 1rem;
     padding: 0.7rem;
     border-radius: 8px;
     color: grey;

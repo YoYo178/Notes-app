@@ -1,5 +1,5 @@
 import { User, UserUpdateFields } from "../../types/user.types";
-import { TOptimisticMutation } from "../../types/react.types";
+import { TMutation, TOptimisticMutation } from "../../types/react.types";
 
 function profileModalOnSubmit(
     updateUserMutation: TOptimisticMutation<Partial<UserUpdateFields>>,
@@ -20,6 +20,16 @@ function profileModalOnSubmit(
     });
 }
 
+function deleteAccButtonOnClick(
+    deleteUserMutation: TMutation<unknown>
+) {
+    const userAgrees = window.confirm("Are you sure you want to delete your account? All the notes associated with this account will be deleted!")
+
+    if (userAgrees)
+        deleteUserMutation.mutate({})
+}
+
 export const ButtonHandler = {
-    profileModalOnSubmit
+    profileModalOnSubmit,
+    deleteAccButtonOnClick
 }

@@ -1,12 +1,14 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, ReactNode, useEffect, useState } from 'react'
+import { Navigate, useLocation } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 
 import { IoMdClose } from 'react-icons/io';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaTrashAlt } from 'react-icons/fa';
 
 import { useAuthContext } from '../../contexts/AuthContext';
 
 import { useUpdateUserMutation } from '../../hooks/network/user/useUpdateUserMutation';
+import { useDeleteUserMutation } from '../../hooks/network/user/useDeleteUserMutation';
 
 import { ButtonHandler } from './ProfileModal';
 
@@ -19,6 +21,8 @@ interface CreateNoteModelProps {
 
 export const ProfileModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
     const updateUserMutation = useUpdateUserMutation({ queryKey: ['auth'] });
+    const deleteUserMutation = useDeleteUserMutation({ queryKey: ['auth'] });
+
     const { auth, setAuth } = useAuthContext();
 
     const [displayName, setDisplayName] = useState(auth?.displayName);
@@ -27,6 +31,9 @@ export const ProfileModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+    const [redirect, setRedirect] = useState<ReactNode>(null);
+    const location = useLocation();
 
     useEffect(() => {
         if (updateUserMutation.isSuccess) {
@@ -39,7 +46,17 @@ export const ProfileModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
         }
     }, [updateUserMutation.isSuccess])
 
+    useEffect(() => {
+        if (deleteUserMutation.isSuccess) {
+            setAuth(null);
+            setRedirect(<Navigate to='/' state={{ from: location }} replace />)
+        }
+    }, [deleteUserMutation.isSuccess])
+
     if (!isOpen) return null;
+
+    if(redirect)
+        return redirect;
 
     return createPortal(
         <div className='pm-backdrop' onMouseDown={onClose}>
@@ -136,6 +153,10 @@ export const ProfileModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
                         <label htmlFor="pm-id-field" className="pm-field-id-label">ID:</label>
                         <p id="pm-id-field" className="pm-field-id">{auth?.id}</p>
                     </div>
+                    <button className="pm-delete-acc-button" onClick={() => { ButtonHandler.deleteAccButtonOnClick(deleteUserMutation) }}>
+                        <FaTrashAlt />
+                        <span>Delete account</span>
+                    </button>
                     <button className="pm-check-button" onClick={() => {
                         const res = ButtonHandler.profileModalOnSubmit(updateUserMutation, auth, { displayName, email, currentPassword, newPassword, confirmNewPassword });
                         if (res === true) {
