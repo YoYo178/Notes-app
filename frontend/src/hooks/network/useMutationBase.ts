@@ -8,7 +8,7 @@ import { injectPathParams, injectQueryParams } from "../../util/api.utils";
 export const useMutationBase = <T>(
     endpoint: Endpoint,
     actionName: string,
-    sendCookies: boolean = false,
+    sendAndAcceptCookies: boolean = false,
     options?: {
         optimisticUpdate?: (variables: { payload: T }, oldData: any) => any;
     }
@@ -30,13 +30,13 @@ export const useMutationBase = <T>(
                 let response: AxiosResponse<any> | null = null;
 
                 if (["POST", "PUT", "PATCH"].includes(endpoint.METHOD))
-                    response = await HTTPFunc(URL, payload, { withCredentials: sendCookies });
+                    response = await HTTPFunc(URL, payload, { withCredentials: sendAndAcceptCookies });
 
                 if (endpoint.METHOD === "DELETE")
-                    response = await HTTPFunc(URL, { withCredentials: sendCookies, data: payload });
+                    response = await HTTPFunc(URL, { withCredentials: sendAndAcceptCookies, data: payload });
 
                 if (endpoint.METHOD === "OPTIONS")
-                    response = await HTTPFunc(URL, { withCredentials: sendCookies });
+                    response = await HTTPFunc(URL, { withCredentials: sendAndAcceptCookies });
 
                 return response?.data || null;
             },
