@@ -5,6 +5,8 @@ import bcrypt from 'bcrypt';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import { isEmail } from 'validator';
 import { ObjectId } from 'mongoose';
+import cookieConfig from '@src/config/cookieConfig';
+import { Note } from '@src/models/Note';
 
 /**
  * @route GET /users/me
@@ -84,6 +86,19 @@ const deleteUser = expressAsyncHandler(async (req: Request, res: Response) => {
     res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'User not found' });
     return;
   }
+
+  res.clearCookie('jwt_rt', {
+    ...cookieConfig,
+    maxAge: undefined,
+  });
+
+  res.clearCookie('jwt_at', {
+    ...cookieConfig,
+    maxAge: undefined,
+  });
+
+  // Delete all notes associated with the user
+  await Note.deleteMany({ user: user._id }).exec();
 
   await user.deleteOne();
 
