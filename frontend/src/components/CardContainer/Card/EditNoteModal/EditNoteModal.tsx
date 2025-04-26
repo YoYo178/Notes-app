@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom';
 
 import { RiDeleteBin6Line } from 'react-icons/ri';
@@ -33,6 +33,8 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
     const noteImagesRef = useRef<NoteFile[]>(note.images || []);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const [imagePreview, setImagePreview] = useState('');
+
     const updateNoteMutation = useUpdateNoteMutation({ queryKey: ['notes'] });
 
     const getUploadUrlMutation = useGetFileUploadURLMutation({});
@@ -50,6 +52,17 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
 
     return createPortal(
         <div className='enm-backdrop' onMouseDown={onClose}>
+            {imagePreview && (
+                <div className="enm-image-preview" onMouseDown={(e) => e.stopPropagation()}>
+                    <div className="enm-image-preview-header">
+                        <span>Image Preview</span>
+                        <button className='enm-image-preview-close-button' onClick={() => setImagePreview('')}>
+                            <IoMdClose className='enm-image-preview-close-button-icon' />
+                        </button>
+                    </div>
+                    <img src={imagePreview}></img>
+                </div>
+            )}
             <div className='enm' onMouseDown={(e) => e.stopPropagation()}>
                 <div className="enm-header">
                     <h2 className='enm-title'>Edit Note</h2>
@@ -69,7 +82,7 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
                         {images.map((image, i) => {
                             return (
                                 <div key={`enm-image-container-${i + 1}`} className="enm-image-container">
-                                    <img id={`enm-image-${i + 1}`} className="enm-image" src={image.localURL} />
+                                    <img id={`enm-image-${i + 1}`} className="enm-image" src={image.localURL} onClick={() => setImagePreview(image.localURL)} />
                                     <button
                                         id={`enm-image-delete-button-${i + 1}`}
                                         className="enm-image-delete-button"

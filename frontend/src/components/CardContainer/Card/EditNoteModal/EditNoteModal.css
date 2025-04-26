@@ -11,6 +11,62 @@
     justify-content: center;
 }
 
+.enm-image-preview {
+    position: absolute;
+    width: 50%;
+    height: 70%;
+    background-color: rgb(255, 255, 255);
+    padding: 2rem;
+    border-radius: 1rem;
+    border: 1px solid #d0d4d9;
+    box-shadow: 0px 0px 4px 0.5px #292929;
+
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    color: grey;
+
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+}
+
+.enm-image-preview-header {
+    display: flex;
+    justify-content: space-between;
+    color: grey;
+    font-size: 1.3rem;
+}
+
+.enm-image-preview-close-button {
+    margin-left: auto;
+    font-size: 2rem;
+    padding: 0.4rem;
+    border-radius: 8px;
+    border: none;
+    background-color: transparent;
+
+    display: flex;
+
+    transform: translate(1rem, -1rem);
+}
+
+.enm-image-preview-close-button:hover {
+    background-color: rgb(216, 216, 216);
+    cursor: pointer;
+}
+
+.enm-image-preview-close-button-icon {
+    color: #9b9b9b;
+}
+
+.enm-image-preview img {
+    flex: 1;
+    max-width: 100%;
+    max-height: calc(100% - 3rem); /* Account for header space */
+    object-fit: contain;
+    margin: auto;
+}
+
 .enm {
     width: 60%;
     height: 80%;
