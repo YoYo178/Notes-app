@@ -1,5 +1,6 @@
 import { FC, ReactNode, useEffect, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { createPortal } from 'react-dom';
 
 import { IoMdClose } from 'react-icons/io';
@@ -9,6 +10,8 @@ import { useAuthContext } from '../../contexts/AuthContext';
 
 import { useUpdateUserMutation } from '../../hooks/network/user/useUpdateUserMutation';
 import { useDeleteUserMutation } from '../../hooks/network/user/useDeleteUserMutation';
+
+import { clearCachedData } from '../../util/cache.utils';
 
 import { ButtonHandler } from './ProfileModal';
 
@@ -35,6 +38,8 @@ export const ProfileModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
     const [redirect, setRedirect] = useState<ReactNode>(null);
     const location = useLocation();
 
+    const queryClient = useQueryClient();
+
     useEffect(() => {
         if (updateUserMutation.isSuccess) {
             setAuth({ ...auth, displayName, email });
@@ -49,13 +54,16 @@ export const ProfileModal: FC<CreateNoteModelProps> = ({ isOpen, onClose }) => {
     useEffect(() => {
         if (deleteUserMutation.isSuccess) {
             setAuth(null);
-            setRedirect(<Navigate to='/' state={{ from: location }} replace />)
+            setRedirect(<Navigate to='/' state={{ from: location }} replace />);
+
+            // Clear cached data
+            clearCachedData(queryClient)
         }
     }, [deleteUserMutation.isSuccess])
 
     if (!isOpen) return null;
 
-    if(redirect)
+    if (redirect)
         return redirect;
 
     return createPortal(

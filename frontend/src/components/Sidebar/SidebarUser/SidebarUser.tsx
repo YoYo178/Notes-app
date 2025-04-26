@@ -10,10 +10,11 @@ import { useAuthContext } from "../../../contexts/AuthContext.tsx";
 import { useLogoutMutation } from "../../../hooks/network/auth/useLogoutMutation";
 import { useLostFocus } from "../../../hooks/ui/useLostFocus.ts";
 
-import { ButtonHandler, clearCachedData, DropdownOptionHandler } from "./SidebarUser";
+import { ButtonHandler, DropdownOptionHandler } from "./SidebarUser";
 import { ProfileModal } from "../../ProfileModal/ProfileModal.tsx";
 
 import "./SidebarUser.css";
+import { clearCachedData } from "../../../util/cache.utils.ts";
 
 interface SidebarUserProps {
     displayName: string | undefined;

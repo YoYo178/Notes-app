@@ -1,5 +1,3 @@
-import { QueryClient } from "@tanstack/react-query";
-
 import { ReactSetState, TMutation } from "../../../types/react.types";
 
 /***** Button handlers *****/
@@ -32,12 +30,6 @@ function logOutOnClick(params: LogoutParameters) {
         return;
 
     logoutMutation.mutate({});
-}
-
-/***** Miscellaneous *****/
-export function clearCachedData(queryClient: QueryClient) {
-    queryClient.invalidateQueries({ queryKey: ['notes'] });
-    queryClient.invalidateQueries({ queryKey: ['auth'] });
 }
 
 /***** Handler exports *****/
