@@ -223,18 +223,23 @@
     position: absolute;
     top: 0.2rem;
     right: 0.2rem;
-    padding: 0.2rem;
-    background-color: transparent;
-    border: none;
+    padding: 0.3rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #d1d1d1;
     border-radius: 4px;
-
-    transition: background-color 100ms ease-in-out;
+    color: #666;
+    transition: all 200ms ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .enm-image-delete-button:hover {
     cursor: pointer;
-    background-color: red;
+    background-color: #ff4444;
     color: white;
+    border-color: #ff4444;
+    transform: scale(1.1);
 }
 
 .enm-footer {
