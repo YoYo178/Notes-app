@@ -10,4 +10,4 @@ export interface VerifyCodeRequest {
     code: string
 }
 
-export const useVerifyCodeMutation = useMutationBase<VerifyCodeRequest>(APIEndpoints.VERIFY, "Mail Verification");
+export const useVerifyCodeMutation = useMutationBase<VerifyCodeRequest>(APIEndpoints.VERIFY, "Mail Verification", true);
