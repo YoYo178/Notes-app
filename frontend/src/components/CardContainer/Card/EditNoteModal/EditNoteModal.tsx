@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom';
 
 import { RiDeleteBin6Line } from 'react-icons/ri';
