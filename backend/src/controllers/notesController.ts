@@ -160,7 +160,7 @@ const deleteNote = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const note = await Note.findById(noteId).lean().exec();
+  const note = await Note.findById(noteId).exec();
 
   if (!note) {
     res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'No note found with the specified ID' });
