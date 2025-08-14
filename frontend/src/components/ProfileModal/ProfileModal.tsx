@@ -11,7 +11,7 @@ import { useAuthContext } from '../../contexts/AuthContext';
 import { useUpdateUserMutation } from '../../hooks/network/user/useUpdateUserMutation';
 import { useDeleteUserMutation } from '../../hooks/network/user/useDeleteUserMutation';
 
-import { clearCachedData } from '../../util/cache.utils';
+import { clearCachedData } from '../../utils/cache.utils';
 
 import { ButtonHandler } from './ProfileModal';
 

@@ -3,7 +3,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 
 import { API } from "../../api/backendAPI";
 import { Endpoint } from "../../types/api.types";
-import { injectPathParams, injectQueryParams } from "../../util/api.utils";
+import { injectPathParams, injectQueryParams } from "../../utils/api.utils";
 
 export const useMutationBase = <T>(
     endpoint: Endpoint,

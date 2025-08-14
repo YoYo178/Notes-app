@@ -17,7 +17,7 @@ import { ButtonHandler, EventHandler } from './ResetPasswordModal.ts';
 
 import './ResetPasswordModal.css';
 import { useResendCodeMutation } from '../../hooks/network/auth/useResendCodeMutation.ts';
-import { startCodeTimer } from '../../util/code.utils.ts';
+import { startCodeTimer } from '../../utils/code.utils.ts';
 
 function mutationCallbackHandler(
     mutation: TMutation<any>,

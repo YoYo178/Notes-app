@@ -24,6 +24,36 @@ const getAllNotes = expressAsyncHandler(async (req: Request, res: Response) => {
 });
 
 /**
+ * @route GET /notes/:noteId
+ * @description Returns all notes.
+ * @returns HTTP 200, 404
+ */
+const getNoteById = expressAsyncHandler(async (req: Request, res: Response) => {
+  const user = await User.findById(req.user.id).select('-password').lean().exec();
+
+  if (!user) {
+    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'User not found' });
+    return;
+  }
+
+  const noteId = req.params?.noteId;
+
+  if (!noteId) {
+    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Note ID is required!' });
+    return;
+  }
+
+  const note = await Note.findOne({ user: (user._id as ObjectId).toString(), _id: noteId }).lean().exec();
+
+  if (!note) {
+    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'Note not found' });
+    return;
+  }
+
+  res.status(HttpStatusCodes.OK).send({ data: { note } });
+});
+
+/**
  * @route POST /notes
  * @description Creates a new note.
  * @returns HTTP 200, 400, 404
@@ -61,7 +91,7 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
 });
 
 /**
- * @route PATCH /notes
+ * @route PATCH /notes/:noteId
  * @description Updates an existing note.
  * @returns HTTP 200, 404
  */
@@ -73,19 +103,21 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const { id, title, description, images, isFavorite } = req.body;
+  const noteId = req.params?.noteId;
 
-  if (!id) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Note ID is required' });
+  if (!noteId) {
+    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Note ID is required!' });
     return;
   }
 
-  if (!isObjectIdOrHexString(id)) {
+  const { title, description, images, isFavorite } = req.body;
+
+  if (!isObjectIdOrHexString(noteId)) {
     res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Invalid ID provided' });
     return;
   }
 
-  const note = await Note.findById(id).exec();
+  const note = await Note.findById(noteId).exec();
 
   if (!note) {
     res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'No note found with the specified ID' });
@@ -104,7 +136,7 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
 });
 
 /**
- * @route DELETE /notes
+ * @route DELETE /notes/:noteId
  * @description Deletes a note.
  * @returns HTTP 200, 404
  */
@@ -116,32 +148,33 @@ const deleteNote = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const { id } = req.body;
+  const noteId = req.params?.noteId;
 
-  if (!id) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Note ID is required' });
+  if (!noteId) {
+    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Note ID is required!' });
     return;
   }
 
-  if (!isObjectIdOrHexString(id)) {
+  if (!isObjectIdOrHexString(noteId)) {
     res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Invalid ID provided' });
     return;
   }
 
-  const note = await Note.findById(id).lean().exec();
+  const note = await Note.findById(noteId).lean().exec();
 
   if (!note) {
     res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'No note found with the specified ID' });
     return;
   }
 
-  await Note.deleteOne({ _id: id });
+  await note.deleteOne();
 
   res.status(HttpStatusCodes.OK).send({ message: 'Note deleted successfully' });
 });
 
 export default {
   getAllNotes,
+  getNoteById,
   createNote,
   updateNote,
   deleteNote,

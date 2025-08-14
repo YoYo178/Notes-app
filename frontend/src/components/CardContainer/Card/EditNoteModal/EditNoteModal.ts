@@ -1,16 +1,18 @@
 import { RefObject, BaseSyntheticEvent } from "react";
 import { UseMutationResult } from "@tanstack/react-query";
 
-import { Note, NoteFile, NotePayload } from "../../../../types/note.types";
-import { GetFileUploadURLParameters, ImageFile } from "../../../../types/file.types";
+import { INote } from "../../../../types/note.types";
+import { GetFileUploadURLParameters } from "../../../../types/file.types";
 import { ReactSetState, TMutation, TOptimisticMutation } from "../../../../types/react.types";
+import { deleteFileBlobURL } from "../../../../utils/note.utils";
 
 async function saveNoteOnClick(
-    updateNoteMutation: TOptimisticMutation<Partial<NotePayload> & { id: string }>,
-    oldNote: Note,
-    newNote: Partial<Note>,
-    oldImagesRef: RefObject<NoteFile[] | null>,
-    images: (NoteFile | ImageFile)[],
+    updateNoteMutation: TOptimisticMutation<Partial<INote>>,
+    oldNote: INote,
+    newNote: Partial<INote>,
+    images: { key: string, url: string }[],
+    addedImages: File[],
+    setAddedImages: ReactSetState<File[]>,
     deleteFileMutation: TMutation<unknown>,
     getUploadUrlMutation: TMutation<GetFileUploadURLParameters>,
     uploadToS3Mutation: UseMutationResult<any, Error, { url: string; file: File; }, unknown>,
@@ -23,7 +25,7 @@ async function saveNoteOnClick(
         return;
     }
 
-    const mutatedNote: Partial<NotePayload> & { id: string } = { id: oldNote.id };
+    const mutatedNote: Partial<INote> = {};
 
     if (title !== oldNote.title)
         mutatedNote.title = title;
@@ -31,25 +33,17 @@ async function saveNoteOnClick(
     if (description !== oldNote.description)
         mutatedNote.description = description;
 
-    const removedImages = oldImagesRef.current?.filter(image =>
-        !images.some(img =>
-            ('key' in img && !(img instanceof File)) && img.key === image.key
-        )
-    ) || [];
-
-    const addedImages = images.filter(image => image instanceof File);
+    const removedImages = oldNote.images?.filter(imageKey => !newNote.images?.includes(imageKey)) || []
 
     if (removedImages.length) {
         setIsUploading(true);
         const imageDeletionPromises = removedImages.map(async removedImage => {
-            await deleteFileMutation.mutateAsync({ pathParams: { fileKey: removedImage.key } });
-            URL.revokeObjectURL(removedImage.localURL)
+            await deleteFileMutation.mutateAsync({ pathParams: { fileKey: removedImage } });
+            deleteFileBlobURL(removedImage);
         });
 
         await Promise.all(imageDeletionPromises);
-
-        const imagesArr = oldNote.images?.filter(image => !removedImages.some(img => img.key === image.key));
-        mutatedNote.images = imagesArr?.map(image => image.key);
+        mutatedNote.images = images.map(el => el.key)
     }
 
     if (addedImages.length) {
@@ -75,20 +69,22 @@ async function saveNoteOnClick(
         });
 
         const imageKeys = await Promise.all(imageUploadPromises);
-        mutatedNote.images = imageKeys.concat(oldNote.images?.map(image => image.key)) || []
+        mutatedNote.images = imageKeys.concat(oldNote.images) || []
     }
 
     const hasChanged = oldNote.title !== title || oldNote.description !== description || removedImages.length || addedImages.length;
 
     if (hasChanged) {
         setIsUploading(true);
-        updateNoteMutation.mutate({
+        await updateNoteMutation.mutateAsync({
+            pathParams: { noteId: oldNote._id },
             payload: mutatedNote
-        })
+        });
+        setAddedImages([])
     }
 }
 
-function uploadImageOnClick(fileInputRef: RefObject<HTMLInputElement | null>, images: (NoteFile | ImageFile)[], setImages: ReactSetState<(NoteFile | ImageFile)[]>) {
+function uploadImageOnClick(fileInputRef: RefObject<HTMLInputElement | null>, currentImageCount: number, addedImages: File[], setAddedImages: ReactSetState<File[]>) {
     if (!fileInputRef.current)
         return;
 
@@ -98,38 +94,41 @@ function uploadImageOnClick(fileInputRef: RefObject<HTMLInputElement | null>, im
     inputButton.onchange = () => {
         if (!inputButton.files || inputButton.files.length === 0) return;
 
-        const remainingSlots = 5 - images.length;
+        let remainingSlots = 5 - currentImageCount;
         if (remainingSlots <= 0) {
             alert('Maximum 5 images allowed');
             return;
         }
 
-        const newImages = Array.from(inputButton.files).map(file => {
+        const newImages: File[] = [];
+
+        for (const file of Array.from(inputButton.files)) {
             if (file.size > 2 * 1024 * 1024) {
                 alert(`File ${file.name} exceeds 2MB limit`);
-                return null;
+                continue;
             }
 
-            const retObj: ImageFile = Object.assign(file, { localURL: URL.createObjectURL(file) });
-            Object.setPrototypeOf(retObj, File.prototype);
+            if (remainingSlots <= 0)
+                break;
 
-            return retObj;
-        }).filter(file => !!file);
+            remainingSlots--;
+            newImages.push(file);
+        };
 
-        setImages(images.concat(newImages));
+        setAddedImages([...addedImages, ...newImages]);
     }
 
     inputButton.value = '';
 }
 
-function deleteImageOnClick(e: React.MouseEvent<HTMLButtonElement>, images: (NoteFile | ImageFile)[], setImages: ReactSetState<(NoteFile | ImageFile)[]>) {
+function deleteImageOnClick(e: React.MouseEvent<HTMLButtonElement>, images: { key: string, url: string }[], setImages: ReactSetState<{ key: string, url: string }[]>) {
     const event = e as BaseSyntheticEvent;
 
     const ID = parseInt(event.target.closest(".enm-image-delete-button").id.split("-button-")[1]);
 
     const image = images[ID - 1];
-    if (image.localURL)
-        URL.revokeObjectURL(image.localURL);
+    if (image)
+        deleteFileBlobURL(image.url);
 
     const newArr = images.filter((_, i) => i != (ID - 1));
     setImages(newArr);

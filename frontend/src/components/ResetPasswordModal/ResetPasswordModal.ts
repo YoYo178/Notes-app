@@ -5,7 +5,7 @@ import { AccountRecoveryRequest } from "../../hooks/network/auth/useRecoverAccou
 import { VerifyCodeRequest } from "../../hooks/network/auth/useVerifyCodeMutation";
 import { ResetPasswordRequest } from "../../hooks/network/auth/useResetPasswordMutation";
 import { ResendVerificationCodeRequest } from "../../hooks/network/auth/useResendCodeMutation";
-import { startCodeTimer } from "../../util/code.utils";
+import { startCodeTimer } from "../../utils/code.utils";
 
 function onKeyDown(e: React.KeyboardEvent<HTMLFormElement>, buttonRef: RefObject<HTMLButtonElement | null>) {
     if (e.key === "Enter" && buttonRef.current) {

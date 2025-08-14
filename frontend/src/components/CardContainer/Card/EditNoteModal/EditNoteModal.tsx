@@ -10,36 +10,64 @@ import { useDeleteFileMutation } from '../../../../hooks/network/upload/useDelet
 import { useUploadToS3Mutation } from '../../../../hooks/network/s3/useS3UploadMutation';
 import { useGetFileUploadURLMutation } from '../../../../hooks/network/upload/useGetFileUploadURLMutation';
 
-import { Note, NoteFile } from '../../../../types/note.types';
-import { ImageFile } from '../../../../types/file.types';
+import { INote } from '../../../../types/note.types';
 
 import { ButtonHandler } from './EditNoteModal';
 
 import './EditNoteModal.css'
+import { getFileBlobURL } from '../../../../utils/note.utils';
 
 interface EditNoteModalProps {
     isOpen: boolean;
     onClose: () => void;
-    note: Note
+    note: INote
 }
 
 export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note }) => {
     const [title, setTitle] = useState(note.title);
     const [description, setDescription] = useState(note.description);
-    const [images, setImages] = useState<(NoteFile | ImageFile)[]>(note.images || []);
 
     const [isUploading, setIsUploading] = useState(false);
-
-    const noteImagesRef = useRef<NoteFile[]>(note.images || []);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [imagePreview, setImagePreview] = useState('');
+
+    const [audioURL, setAudioURL] = useState<string | null>(null);
+    const [images, setImages] = useState<{ key: string, url: string }[]>([]);
+
+    const [addedImages, setAddedImages] = useState<File[]>([]);
 
     const updateNoteMutation = useUpdateNoteMutation({ queryKey: ['notes'] });
 
     const getUploadUrlMutation = useGetFileUploadURLMutation({});
     const uploadToS3Mutation = useUploadToS3Mutation();
     const deleteFileMutation = useDeleteFileMutation({});
+
+    useEffect(() => {
+        if (isOpen && note.audio)
+            getFileBlobURL(note.audio).then(res => setAudioURL(res));
+    }, [isOpen, note.audio])
+
+    useEffect(() => {
+        const loadImages = async () => {
+            const loadedImages: { key: string, url: string }[] = [];
+            for (const imageKey of note.images || []) {
+                const URL = await getFileBlobURL(imageKey);
+
+                loadedImages.push({
+                    key: imageKey,
+                    url: URL
+                });
+            }
+
+            setImages(loadedImages);
+        }
+
+        if (isOpen && note.images?.length) {
+            loadImages();
+        }
+
+    }, [isOpen, note.images])
 
     useEffect(() => {
         if (isOpen && !updateNoteMutation.error) {
@@ -71,7 +99,8 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
                     </button>
                 </div>
                 <div className="enm-fields">
-                    {!note.isText && (<audio controls src={note.audio?.localURL} className="enm-audio-player" />)}
+                    {/* HACK: src attribute expects a 'string | undefined' but we forcefully pass 'string | null' because react doesn't like the former */}
+                    {!note.isText && (<audio controls src={audioURL as string | undefined} className="enm-audio-player" />)}
                     <div className="enm-text-field-container">
                         <input type="text" className="enm-field-title" placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} />
                     </div>
@@ -82,7 +111,22 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
                         {images.map((image, i) => {
                             return (
                                 <div key={`enm-image-container-${i + 1}`} className="enm-image-container">
-                                    <img id={`enm-image-${i + 1}`} className="enm-image" src={image.localURL} onClick={() => setImagePreview(image.localURL)} />
+                                    <img id={`enm-image-${i + 1}`} className="enm-image" src={image.url} onClick={() => setImagePreview(image.url)} />
+                                    <button
+                                        id={`enm-image-delete-button-${i + 1}`}
+                                        className="enm-image-delete-button"
+                                        onClick={(e) => ButtonHandler.deleteImageOnClick(e, images, setImages)}
+                                        disabled={isUploading}
+                                    >
+                                        <RiDeleteBin6Line />
+                                    </button>
+                                </div>
+                            )
+                        })}
+                        {addedImages.map((image, i) => {
+                            return (
+                                <div key={`enm-image-container-${i + 1}`} className="enm-image-container">
+                                    <img id={`enm-image-${i + 1}`} className="enm-image" src={URL.createObjectURL(image)} onClick={() => setImagePreview(URL.createObjectURL(image))} />
                                     <button
                                         id={`enm-image-delete-button-${i + 1}`}
                                         className="enm-image-delete-button"
@@ -95,7 +139,7 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
                             )
                         })}
                         {(!images || images.length < 5) && (
-                            <div className="enm-upload-image-button" onClick={() => ButtonHandler.uploadImageOnClick(fileInputRef, images, setImages)}>
+                            <div className="enm-upload-image-button" onClick={() => ButtonHandler.uploadImageOnClick(fileInputRef, images.length, addedImages, setAddedImages)}>
                                 <input
                                     ref={fileInputRef}
                                     name="Upload Image"
@@ -115,8 +159,9 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
                             updateNoteMutation,
                             note,
                             { title, description },
-                            noteImagesRef,
                             images,
+                            addedImages,
+                            setAddedImages,
                             deleteFileMutation,
                             getUploadUrlMutation,
                             uploadToS3Mutation,

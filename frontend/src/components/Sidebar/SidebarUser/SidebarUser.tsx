@@ -14,7 +14,7 @@ import { ButtonHandler, DropdownOptionHandler } from "./SidebarUser";
 import { ProfileModal } from "../../ProfileModal/ProfileModal.tsx";
 
 import "./SidebarUser.css";
-import { clearCachedData } from "../../../util/cache.utils.ts";
+import { clearCachedData } from "../../../utils/cache.utils.ts";
 
 interface SidebarUserProps {
     displayName: string | undefined;

@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import { API } from "../../api/backendAPI";
 
 import { Endpoint } from "../../types/api.types";
-import { injectPathParams } from "../../util/api.utils";
+import { injectPathParams } from "../../utils/api.utils";
 
 export function useQueryBase(endpoint: Endpoint, sendCookies: boolean = false, shouldRetry: boolean | ((failureCount: number, error: any) => boolean) = false, staleTime: number | undefined = undefined) {
     return ({ queryKey, pathParams, enabled = true }: { queryKey?: string[]; pathParams?: Record<string, string>; enabled?: boolean }) => {

@@ -17,7 +17,7 @@ import { RegisterStages } from '../../types/modal.types.ts';
 import { ButtonHandler, EventHandler } from './RegisterModal.ts';
 
 import './RegisterModal.css';
-import { startCodeTimer } from '../../util/code.utils.ts';
+import { startCodeTimer } from '../../utils/code.utils.ts';
 
 function mutationCallbackHandler(
     mutation: TMutation<any>,

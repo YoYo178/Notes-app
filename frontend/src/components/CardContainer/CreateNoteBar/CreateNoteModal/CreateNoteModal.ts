@@ -1,13 +1,13 @@
 import { BaseSyntheticEvent, RefObject } from "react";
 import { UseMutationResult } from "@tanstack/react-query";
 
-import { NotePayload } from "../../../../types/note.types";
+import { INote } from "../../../../types/note.types";
 import { ReactSetState, TMutation, TOptimisticMutation } from "../../../../types/react.types";
 import { GetFileUploadURLParameters, ImageFile } from "../../../../types/file.types";
 
 async function addNoteOnClick(
-    createNoteMutation: TOptimisticMutation<NotePayload>,
-    fields: NotePayload,
+    createNoteMutation: TOptimisticMutation<Partial<INote>>,
+    fields: Partial<INote>,
     setIsUploading: ReactSetState<boolean>,
     images: ImageFile[],
     getUploadUrlMutation: TMutation<GetFileUploadURLParameters>,
@@ -49,7 +49,7 @@ async function addNoteOnClick(
         const imageKeys = await Promise.all(imageUploadPromises);
 
         // Upload audio if present
-        let audioKey: string | undefined;
+        let audio: string | undefined;
         if (noteType === 'audio' && recordedAudio) {
             // Convert base64 to blob
             const response = await fetch(recordedAudio);
@@ -73,7 +73,7 @@ async function addNoteOnClick(
                 file,
             });
 
-            audioKey = key;
+            audio = key;
         }
 
         // Create the note with uploaded file keys
@@ -82,8 +82,8 @@ async function addNoteOnClick(
                 title,
                 description,
                 isText: noteType === 'text',
-                duration: `00:${String(recordingTime).padStart(2, '0')}`,
-                audioKey,
+                duration: recordingTime,
+                audio,
                 images: imageKeys,
                 isFavorite
             }

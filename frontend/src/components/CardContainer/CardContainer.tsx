@@ -9,9 +9,9 @@ import "./CardContainer.css"
 
 export const CardContainer: FC = () => {
     const [isCreateNoteBarVisible, setIsCreateNoteBarVisible] = useState(true);
-    const { notes, hasFinished } = useNotesContext();
+    const { notes, isLoading } = useNotesContext();
 
-    if (!hasFinished) {
+    if (isLoading) {
         return (<h1>Loading Notes...</h1>)
     }
 
@@ -27,20 +27,8 @@ export const CardContainer: FC = () => {
                     }
                 }
             >
-                {notes.map(note => (
-                    <Card
-                        key={note.id}
-                        id={note.id}
-                        title={note.title}
-                        description={note.description}
-                        date={note.date}
-                        duration={note.duration}
-                        isText={note.isText}
-                        isFavorite={note.isFavorite}
-                        rawDate={note.rawDate}
-                        images={note.images}
-                        audio={note.audio}
-                    />
+                {notes.map((note, i) => (
+                    <Card key={i} note={note} />
                 ))}
             </div>
         </>

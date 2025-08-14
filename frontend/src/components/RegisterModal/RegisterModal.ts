@@ -5,7 +5,7 @@ import { RegisterFields } from "../../types/auth.types";
 import { RegisterStages } from "../../types/modal.types";
 import { ReactSetState, TMutation } from "../../types/react.types";
 import { VerifyCodeRequest } from "../../hooks/network/auth/useVerifyCodeMutation";
-import { startCodeTimer } from "../../util/code.utils";
+import { startCodeTimer } from "../../utils/code.utils";
 import { ResendVerificationCodeRequest } from "../../hooks/network/auth/useResendCodeMutation";
 
 const passwordCriteria: StrongPasswordOptions & { returnScore?: false | undefined; } = {

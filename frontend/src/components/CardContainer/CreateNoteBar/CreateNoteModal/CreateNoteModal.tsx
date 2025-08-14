@@ -137,7 +137,7 @@ export const CreateNoteModal: FC<CreateNoteModelProps> = ({ isOpen, onClose, not
                                 title,
                                 description,
                                 isText: noteType === 'text',
-                                duration: noteType === 'audio' ? `00:${String(recordingTime).padStart(2, '0')}` : null,
+                                duration: noteType === 'audio' ? recordingTime : null,
                             },
                             setIsUploading,
                             images,
