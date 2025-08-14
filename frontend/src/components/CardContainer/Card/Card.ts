@@ -12,7 +12,7 @@ function favoriteOnClick(useUpdateNoteMutation: TOptimisticMutation<Partial<INot
     });
 }
 
-async function deleteOnClick(deleteNoteMutation: TOptimisticMutation<{ _id: string }>, deleteFileMutation: TMutation<unknown>, note: INote) {
+async function deleteOnClick(deleteNoteMutation: TMutation<unknown>, deleteFileMutation: TMutation<unknown>, note: INote) {
 
     await deleteNoteMutation.mutateAsync({
         pathParams: {
