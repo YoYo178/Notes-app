@@ -71,7 +71,7 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
 
   await user.save();
 
-  res.status(HttpStatusCodes.OK).send({ message: 'User updated successfully' });
+  res.status(HttpStatusCodes.OK).send({ message: 'User updated successfully', data: { user } });
 });
 
 /**

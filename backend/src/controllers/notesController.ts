@@ -18,7 +18,7 @@ const getAllNotes = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const notes = await Note.find({ user: (user._id as ObjectId).toString() }).lean().exec() || [];
+  const notes = await Note.find({ user: (user._id as ObjectId).toString() }).lean().exec();
 
   res.status(HttpStatusCodes.OK).send({ notes });
 });
@@ -57,7 +57,7 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
     audioKey,
   });
 
-  res.status(HttpStatusCodes.OK).send({ message: 'Note created successfully', id: (note._id as ObjectId).toString() });
+  res.status(HttpStatusCodes.OK).send({ message: 'Note created successfully', data: { note } });
 });
 
 /**
@@ -99,7 +99,7 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
 
   await note.save();
 
-  res.status(HttpStatusCodes.OK).send({ message: 'Note updated successfully' });
+  res.status(HttpStatusCodes.OK).send({ message: 'Note updated successfully', data: { note } });
 
 });
 
