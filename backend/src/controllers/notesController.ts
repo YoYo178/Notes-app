@@ -36,7 +36,7 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const { title, description, images, isText, isFavorite, duration, audioKey } = req.body as INote;
+  const { title, description, images, isText, isFavorite, duration, audio } = req.body as INote;
 
   if (
     !title || !description || duration === undefined ||
@@ -54,7 +54,7 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
     isText,
     isFavorite: isFavorite ?? false,
     duration: duration ?? null,
-    audioKey,
+    audio,
   });
 
   res.status(HttpStatusCodes.OK).send({ message: 'Note created successfully', data: { note } });
