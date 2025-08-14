@@ -12,6 +12,6 @@ NotesRouter.get('/', getAllNotes);
 NotesRouter.get('/', getNoteById);
 NotesRouter.post('/', createNote);
 NotesRouter.patch('/:noteId', updateNote);
-NotesRouter.patch('/:noteId', deleteNote);
+NotesRouter.delete('/:noteId', deleteNote);
 
 export default NotesRouter;
