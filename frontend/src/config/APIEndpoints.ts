@@ -42,11 +42,11 @@ const APIEndpoints: Endpoints = {
         METHOD: "POST"
     },
     UPDATE_NOTE: {
-        URL: "/api/notes",
+        URL: "/api/notes/:noteId",
         METHOD: "PATCH"
     },
     DELETE_NOTE: {
-        URL: "/api/notes",
+        URL: "/api/notes/:noteId",
         METHOD: "DELETE"
     },
 
