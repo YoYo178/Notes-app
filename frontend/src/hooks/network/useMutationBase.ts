@@ -53,8 +53,7 @@ export const useMutationBase = <T>(
                 await queryClient.cancelQueries({ queryKey });
 
                 const previousData = queryClient.getQueryData(queryKey);
-
-                console.log({ variables, previousData })
+                
                 if (queryKey.length && !!optimistic?.onMutate) {
                     const updated = optimistic.onMutate(variables, previousData, queryClient);
                     queryClient.setQueryData(queryKey, updated);
