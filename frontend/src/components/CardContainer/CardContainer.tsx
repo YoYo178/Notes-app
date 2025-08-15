@@ -27,8 +27,8 @@ export const CardContainer: FC = () => {
                     }
                 }
             >
-                {notes.map((note, i) => (
-                    <Card key={i} note={note} />
+                {notes.map((note) => (
+                    <Card key={note._id} note={note} />
                 ))}
             </div>
         </>
