@@ -8,16 +8,12 @@ export const useUpdateNoteMutation = useMutationBase<Partial<INote>>(
     "Updating Notes",
     true,
     {
-        optimisticUpdate: ({ payload }, oldData) => {
-            if (!oldData || !oldData.notes || !payload?._id) return oldData;
+        onMutate: (variables, data: { notes?: INote[] }) => {
+            if (!data.notes?.length || !variables.payload || !variables.pathParams?.noteId) return data.notes;
 
             return {
-                notes: oldData.notes.map((note: INote) =>
-                    note._id === payload._id
-                        ? { ...note, ...payload }
-                        : note
-                )
+                notes: data.notes?.map(note => note._id === variables.pathParams?.noteId ? { ...note, ...variables.payload } : note)
             }
-        }
+        },
     }
 );

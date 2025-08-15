@@ -8,11 +8,25 @@ export const useCreateNoteMutation = useMutationBase<Partial<INote>>(
     "Creating note",
     true,
     {
-        optimisticUpdate: ({ payload }, oldData: { notes: INote[] }) => {
-            if (!oldData || !oldData.notes || !payload) return oldData;
+        onMutate: (variables, data: { notes?: INote[] }) => {
+            if (!data.notes?.length || !variables.payload) return data.notes;
+
             return {
-                notes: [{ ...payload, _id: crypto.randomUUID(), createdAt: Date.now() }, ...oldData.notes]
-            };
+                notes: [...data.notes, { ...variables.payload, _id: crypto.randomUUID(), createdAt: Date.now() }]
+            }
+        },
+        onSettled: (data: { message?: string, data?: { note: INote } }, error, _, context: { previousData: { notes?: INote[] } } | undefined, queryClient) => {
+            if (error) {
+                console.error('An error occured while handling optimistic updates! More info below:');
+                console.error(error.message);
+
+                queryClient.invalidateQueries({ queryKey: ['notes'] });
+                return;
+            }
+
+            return {
+                notes: [...context?.previousData?.notes || [], data?.data?.note]
+            }
         }
     }
 );

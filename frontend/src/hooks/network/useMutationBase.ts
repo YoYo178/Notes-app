@@ -1,23 +1,31 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError, AxiosResponse } from "axios";
 
 import { API } from "../../api/backendAPI";
 import { Endpoint } from "../../types/api.types";
 import { injectPathParams, injectQueryParams } from "../../utils/api.utils";
 
+type MutationOptions<T> = {
+    payload?: T,
+    queryParams?: Record<string, string>,
+    pathParams?: Record<string, string>
+}
+
 export const useMutationBase = <T>(
     endpoint: Endpoint,
     actionName: string,
     sendAndAcceptCookies: boolean = false,
-    options?: {
-        optimisticUpdate?: (variables: { payload: T }, oldData: any) => any;
+    optimistic?: {
+        onMutate?: (variables: MutationOptions<T>, data: any, queryClient: QueryClient) => any;
+        onError?: (error: Error | null, variables: MutationOptions<T>, context: { previousData: any } | undefined, queryClient: QueryClient) => any;
+        onSettled?: (data: any, error: Error | null, variables: MutationOptions<T>, context: { previousData: any } | undefined, queryClient: QueryClient) => any;
     }
 ) => {
     return ({ queryKey = [] }: { queryKey?: string[]; }) => {
         const queryClient = useQueryClient();
 
         return useMutation({
-            mutationFn: async ({ payload, queryParams, pathParams }: { payload?: T, queryParams?: Record<string, string>, pathParams?: Record<string, string> }) => {
+            mutationFn: async ({ payload, queryParams, pathParams }: MutationOptions<T>) => {
                 // @ts-ignore
                 const HTTPFunc = API[endpoint.METHOD.toLowerCase()];
                 const URL =
@@ -46,18 +54,22 @@ export const useMutationBase = <T>(
 
                 const previousData = queryClient.getQueryData(queryKey);
 
-                if (queryKey.length && options?.optimisticUpdate) {
-                    const updated = options.optimisticUpdate(variables as { payload: T }, previousData);
+                console.log({ variables, previousData })
+                if (queryKey.length && !!optimistic?.onMutate) {
+                    const updated = optimistic.onMutate(variables, previousData, queryClient);
                     queryClient.setQueryData(queryKey, updated);
                 }
 
                 return { previousData };
             },
 
-            onError: (err, _variables, context) => {
+            onError: (err, variables, context) => {
                 if (context?.previousData) {
                     queryClient.setQueryData(queryKey, context.previousData);
                 }
+
+                if (!!optimistic?.onError)
+                    optimistic.onError(err, variables, context, queryClient);
 
                 if (axios.isAxiosError(err)) {
                     const error = err as AxiosError<{ message: unknown }>;
@@ -69,9 +81,10 @@ export const useMutationBase = <T>(
                 }
             },
 
-            onSettled: (_data, _error, _variables, _context) => {
-                if (!options?.optimisticUpdate) {
-                    queryClient.invalidateQueries({ queryKey });
+            onSettled: (data, error, variables, context) => {
+                if (!!optimistic?.onSettled) {
+                    const finalData = optimistic.onSettled(data, error, variables, context, queryClient);
+                    queryClient.setQueryData(queryKey, finalData);
                 }
             },
         });

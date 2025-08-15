@@ -1,8 +1,8 @@
 import { INote } from "../../../types/note.types"
 import { ReactSetState, TMutation, TOptimisticMutation } from "../../../types/react.types";
 
-function favoriteOnClick(useUpdateNoteMutation: TOptimisticMutation<Partial<INote>>, id: string, isFavorite: boolean | undefined) {
-    useUpdateNoteMutation.mutate({
+function favoriteOnClick(updateNoteMutation: TOptimisticMutation<Partial<INote>>, id: string, isFavorite: boolean | undefined) {
+    updateNoteMutation.mutate({
         pathParams: {
             noteId: id
         },
@@ -12,7 +12,7 @@ function favoriteOnClick(useUpdateNoteMutation: TOptimisticMutation<Partial<INot
     });
 }
 
-async function deleteOnClick(deleteNoteMutation: TMutation<unknown>, deleteFileMutation: TMutation<unknown>, note: INote) {
+async function deleteOnClick(deleteNoteMutation: TOptimisticMutation<unknown>, deleteFileMutation: TMutation<unknown>, note: INote) {
 
     await deleteNoteMutation.mutateAsync({
         pathParams: {
