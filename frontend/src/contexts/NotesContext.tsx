@@ -11,11 +11,12 @@ interface NotesProviderProps {
 }
 
 interface NotesValues {
-    notes: INote[]; setNotes: ReactSetState<INote[]> | null;
+    notes: INote[];
+    isLoading: boolean;
+
     favoritesOnly: boolean; setFavoritesOnly: ReactSetState<boolean>;
     filter: string; setFilter: ReactSetState<string>;
     sortOrder: NoteSortMethods; setSortOrder: ReactSetState<NoteSortMethods>;
-    isLoading: boolean; setIsLoading: ReactSetState<boolean>;
 }
 
 export const NotesContext = createContext<NotesValues | null>(null)
@@ -92,11 +93,11 @@ export const NotesProvider: FC<NotesProviderProps> = ({ children }) => {
 
     return (
         <NotesContext value={{
-            notes, setNotes,
+            notes,
+            isLoading,
             favoritesOnly, setFavoritesOnly,
             filter, setFilter,
-            sortOrder, setSortOrder,
-            isLoading, setIsLoading
+            sortOrder, setSortOrder
         }}>
             {children}
         </NotesContext>
