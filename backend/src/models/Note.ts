@@ -1,8 +1,7 @@
-import { MongooseModel } from '@src/util/db.utils';
-import { Schema, ObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 
 interface INote {
-    user: ObjectId;
+    user: mongoose.Types.ObjectId;
     title: string;
     description: string;
     images?: string[];
@@ -12,22 +11,22 @@ interface INote {
     duration: null | number;
 }
 
-const noteSchema: Schema = new Schema<INote>(
+const noteSchema: mongoose.Schema = new mongoose.Schema<INote>(
   {
-    user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
+    user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
     title: { type: String, required: true },
     description: { type: String, required: true },
     isText: { type: Boolean, required: true, default: true },
     images: { type: [String], required: false },
     audio: { type: String, required: false },
     isFavorite: { type: Boolean, required: false, default: false },
-    duration: { type: Schema.Types.Mixed, required: false, default: null },
+    duration: { type: mongoose.Schema.Types.Mixed, required: false, default: null },
   },
   {
     timestamps: true,
   },
 );
 
-const Note = MongooseModel<INote>('notes', noteSchema);
+const Note = mongoose.model<INote>('notes', noteSchema);
 
 export { INote, Note };

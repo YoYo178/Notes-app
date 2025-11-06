@@ -1,16 +1,15 @@
-import { MongooseModel } from '@src/util/db.utils';
-import { ObjectId, Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 interface IVerificationCode {
-    user: ObjectId;
-    code: string;
-    purpose: string;
-    expiresAt: Date;
+  user: mongoose.Types.ObjectId;
+  code: string;
+  purpose: string;
+  expiresAt: Date;
 }
 
-const codeSchema: Schema = new Schema<IVerificationCode>(
+const codeSchema: mongoose.Schema = new mongoose.Schema<IVerificationCode>(
   {
-    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     code: { type: String, required: true },
     purpose: { type: String, required: true, enum: ['user-verification', 'reset-password'] },
     expiresAt: { type: Date, required: true, index: { expires: 0 } },
@@ -20,6 +19,6 @@ const codeSchema: Schema = new Schema<IVerificationCode>(
   },
 );
 
-const VerificationCode = MongooseModel<IVerificationCode>('codes', codeSchema);
+const VerificationCode = mongoose.model<IVerificationCode>('codes', codeSchema);
 
 export { IVerificationCode, VerificationCode };
