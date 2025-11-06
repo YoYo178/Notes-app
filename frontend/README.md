@@ -15,12 +15,12 @@ Assuming you have the project cloned, navigate to the project folder and run the
 ### Install dependencies
 ```bash
 cd frontend
-yarn install
+pnpm install
 ```
 
 ### Run the web app
 ```bash
-yarn run dev
+pnpm run dev
 ```
 
 The app will automatically start listening for requests at `http://127.0.0.1:5173` or `http://localhost:5173`.
@@ -29,10 +29,10 @@ The app will automatically start listening for requests at `http://127.0.0.1:517
 Make sure you have all dependencies installed.
 
 ```bash
-yarn run build
+pnpm run build
 ```
 A `dist` folder will be created along with the built HTML, CSS, and JS files, and can be run using a web server such as [Apache](https://www.apache.org/) or [nginx](https://nginx.org/).
 
 ## Other Available Scripts
-#### `yarn run lint`: Checks for linting errors.
-#### `yarn run preview`: Launches the application in preview environment.
+#### `pnpm run lint`: Checks for linting errors.
+#### `pnpm run preview`: Launches the application in preview environment.

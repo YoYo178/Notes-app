@@ -31,19 +31,19 @@ OR if you are using GitHub Desktop:
 4. Adjust path as required using the "Local Path" option and click "Clone"
 
 ### Installing dependencies
-Run `yarn install` in both frontend and backend folders.
+Run `pnpm install` in both frontend and backend folders.
 
 ### Running the project
 
 Frontend:
-```yarn
-yarn run dev
+```bash
+pnpm run dev
 ```
 Backend:
 ```bash
-yarn run dev
+pnpm run dev
 # OR
-yarn run dev:hot
+pnpm run dev:hot
 ```
 
 For more instructions, view the project-specific README.md files.

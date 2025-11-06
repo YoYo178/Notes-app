@@ -29,14 +29,14 @@ Assuming you have the project cloned, navigate to the project folder and run the
 ### Install dependencies
 ```bash
 cd backend
-yarn install
+pnpm install
 ```
 
 ### Run the web app
 ```bash
-yarn run dev
+pnpm run dev
 # OR
-yarn run dev:hot # Features hot-reloading
+pnpm run dev:hot # Features hot-reloading
 ```
 
 The app will automatically start listening for requests at `http://127.0.0.1:3000` or `http://localhost:3000` or as specified in the `PORT` environment variable.
@@ -45,9 +45,9 @@ The app will automatically start listening for requests at `http://127.0.0.1:300
 Make sure you have all dependencies installed.
 
 ```bash
-yarn run build
+pnpm run build
 ```
-A `dist` folder will be created along with the built JavaScript files, which can be run using the `start` script (`yarn run start` OR `yarn start`)
+A `dist` folder will be created along with the built JavaScript files, which can be run using the `start` script (`pnpm run start` OR `pnpm start`)
 
 ## Setting environment variables
 ### Rename the `.env.example` file to `.env` and add the values accordingly.
@@ -78,6 +78,6 @@ A `dist` folder will be created along with the built JavaScript files, which can
 - `SMTP_PASS` - The password for the SMTP Email address.
 
 ## Other Available Scripts
-#### `yarn run clean-install`: Removes the existing `node_modules/` folder, `package-lock.json`, and reinstall all library modules.
-#### `yarn run lint`: Checks for linting errors.
-#### `yarn run type-check`: Check for typescript errors.
+#### `pnpm run clean-install`: Removes the existing `node_modules/` folder, `package-lock.json`, and reinstall all library modules.
+#### `pnpm run lint`: Checks for linting errors.
+#### `pnpm run type-check`: Check for typescript errors.

@@ -28,19 +28,19 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      # Install Yarn V4
-      - name: Install Yarn v4
+      # Install latest version of PNPM
+      - name: Install PNPM
         run: |
-          corepack prepare yarn@stable --activate
-          yarn --version
+          corepack prepare pnpm@latest --activate
+          pnpm --version
 
       # Install Dependencies
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       # Build project
       - name: Build project
-        run: yarn build
+        run: pnpm build
 
       # Create 404.html
       - name: Create 404.html

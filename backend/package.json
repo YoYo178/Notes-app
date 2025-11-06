@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "ts-node ./scripts/build.ts",
-    "clean-install": "rm -rf ./node_modules && rm -r yarn.lock && yarn install",
+    "clean-install": "rm -rf ./node_modules && rm -r pnpm-lock.yaml && pnpm install",
     "dev": "NODE_ENV=development ts-node ./src",
     "dev:hot": "NODE_ENV=development nodemon --exec \"ts-node ./src\" --watch ./src --ext .ts",
     "lint": "eslint",
@@ -80,5 +80,5 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.45.0"
   },
-  "packageManager": "yarn@4.10.3+sha512.c38cafb5c7bb273f3926d04e55e1d8c9dfa7d9c3ea1f36a4868fa028b9e5f72298f0b7f401ad5eb921749eb012eb1c3bb74bf7503df3ee43fd600d14a018266f"
+  "packageManager": "pnpm@10.20.0+sha512.cf9998222162dd85864d0a8102e7892e7ba4ceadebbf5a31f9c2fce48dfce317a9c53b9f6464d1ef9042cba2e02ae02a9f7c143a2b438cd93c91840f0192b9dd"
 }
