@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
 interface IUserRecoveryState {
-    isRecovering: boolean;
-    hasVerifiedMail: boolean;
-    hasSetPassword: boolean;
+  isRecovering: boolean;
+  hasVerifiedMail: boolean;
+  hasSetPassword: boolean;
 }
 
 const userRecoveryStateSchema = new mongoose.Schema<IUserRecoveryState>({
@@ -13,12 +13,14 @@ const userRecoveryStateSchema = new mongoose.Schema<IUserRecoveryState>({
 });
 
 interface IUser {
-    displayName: string;
-    username: string;
-    password: string;
-    email: string;
-    isVerified: boolean;
-    recoveryState: IUserRecoveryState;
+  _id: mongoose.Types.ObjectId;
+
+  displayName: string;
+  username: string;
+  password: string;
+  email: string;
+  isVerified: boolean;
+  recoveryState: IUserRecoveryState;
 }
 
 const userSchema: mongoose.Schema = new mongoose.Schema<IUser>({

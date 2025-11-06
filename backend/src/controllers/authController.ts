@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import logger from 'jet-logger';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
-import { ObjectId } from 'mongoose';
 import { isEmail } from 'validator';
 import { Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
@@ -74,7 +73,7 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
   const code = generateVerificationCode();
   const mailInfo = await sendVerificationMail(email, code);
 
-  codeCooldownManager.set((user._id as ObjectId).toString(), Date.now() + CODE_REQUEST_COOLDOWN);
+  codeCooldownManager.set(user._id.toString(), Date.now() + CODE_REQUEST_COOLDOWN);
 
   await VerificationCode.create({
     user: user._id,
@@ -86,7 +85,7 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
   if (user) {
     res.status(HttpStatusCodes.CREATED).send({
       message: 'User created successfully',
-      id: (user._id as ObjectId).toString(),
+      id: user._id.toString(),
       emailLink: !!mailInfo && Env.SmtpMock ? nodemailer.getTestMessageUrl(mailInfo) : null,
     });
     return;
@@ -160,7 +159,7 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
 
     const resetPasswordAccessToken = jwt.sign(
       {
-        userID: (user._id as ObjectId).toString(),
+        userID: user._id.toString(),
         purpose: 'reset-password',
       },
       ResetPasswordAccessTokenSecret,
@@ -223,7 +222,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const lastCodeRequestTime = codeCooldownManager.get((user._id as ObjectId).toString());
+  const lastCodeRequestTime = codeCooldownManager.get(user._id.toString());
   const hasRecentlyRequestedCode = lastCodeRequestTime ? lastCodeRequestTime > Date.now() : false;
 
   if (hasRecentlyRequestedCode) {
@@ -248,7 +247,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
   else if (purpose === 'reset-password')
     mailInfo = await sendPasswordResetEmail(user.email, code);
 
-  codeCooldownManager.set((user._id as ObjectId).toString(), Date.now() + CODE_REQUEST_COOLDOWN);
+  codeCooldownManager.set(user._id.toString(), Date.now() + CODE_REQUEST_COOLDOWN);
 
   await VerificationCode.create({
     user: user._id,
@@ -305,7 +304,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
   const accessToken = jwt.sign(
     {
       User: {
-        id: (user._id as ObjectId).toString(),
+        id: user._id.toString(),
         username: user.username,
         displayName: user.displayName,
       },
@@ -325,7 +324,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
   const refreshToken = jwt.sign(
     {
       User: {
-        id: (user._id as ObjectId).toString(),
+        id: user._id.toString(),
         username: user.username,
       },
     },
@@ -345,7 +344,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
       message: 'Logged in successfully',
       user: {
         displayName: user.displayName,
-        id: (user._id as ObjectId).toString(),
+        id: user._id.toString(),
         email: user.email,
       },
     });
@@ -380,7 +379,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
   }
 
   // Delete all previous codes
-  await VerificationCode.deleteMany({ user: (user._id as ObjectId).toString(), purpose: 'reset-password' });
+  await VerificationCode.deleteMany({ user: user._id.toString(), purpose: 'reset-password' });
 
   user.recoveryState.isRecovering = true;
   user.recoveryState.hasVerifiedMail = false;
@@ -390,7 +389,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
   const code = generateVerificationCode();
   const mailInfo = await sendPasswordResetEmail(user.email, code);
 
-  codeCooldownManager.set((user._id as ObjectId).toString(), Date.now() + CODE_REQUEST_COOLDOWN);
+  codeCooldownManager.set(user._id.toString(), Date.now() + CODE_REQUEST_COOLDOWN);
 
   await VerificationCode.create({
     user: user._id,
@@ -400,7 +399,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
   });
 
   res.status(HttpStatusCodes.OK).json({
-    id: (user._id as ObjectId).toString(),
+    id: user._id.toString(),
     email: isEmail(input) ? input : obfuscateEmail(user.email),
     emailLink: !!mailInfo && Env.SmtpMock ? nodemailer.getTestMessageUrl(mailInfo) : null,
   });

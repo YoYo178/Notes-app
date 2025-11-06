@@ -4,7 +4,6 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
 import { isEmail } from 'validator';
-import { ObjectId } from 'mongoose';
 import cookieConfig from '@src/config/cookieConfig';
 import { Note } from '@src/models/Note';
 
@@ -40,7 +39,7 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
   }
 
   const duplicateEmailUser = await User.findOne({ email }).exec();
-  if (duplicateEmailUser && (duplicateEmailUser._id as ObjectId).toString() !== req.user.id) {
+  if (duplicateEmailUser && duplicateEmailUser._id.toString() !== req.user.id) {
     res.status(HttpStatusCodes.CONFLICT).send({ message: 'Email is already registered' });
     return;
   }

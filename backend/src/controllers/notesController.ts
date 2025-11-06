@@ -2,7 +2,7 @@ import { User } from '@src/models/User';
 import expressAsyncHandler from 'express-async-handler';
 import { Request, Response } from 'express';
 import HttpStatusCodes from '@src/common/HttpStatusCodes';
-import { isObjectIdOrHexString, ObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 import { INote, Note } from '@src/models/Note';
 
 /**
@@ -18,7 +18,7 @@ const getAllNotes = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const notes = await Note.find({ user: (user._id as ObjectId).toString() }).lean().exec();
+  const notes = await Note.find({ user: user._id.toString() }).lean().exec();
 
   res.status(HttpStatusCodes.OK).send({ notes });
 });
@@ -43,7 +43,7 @@ const getNoteById = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const note = await Note.findOne({ user: (user._id as ObjectId).toString(), _id: noteId }).lean().exec();
+  const note = await Note.findOne({ user: user._id.toString(), _id: noteId }).lean().exec();
 
   if (!note) {
     res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'Note not found' });
@@ -77,7 +77,7 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
   }
 
   const note = await Note.create({
-    user: (user._id as ObjectId).toString(),
+    user: user._id.toString(),
     title,
     description,
     images: images ?? [],
@@ -112,7 +112,7 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
 
   const { title, description, images, isFavorite } = req.body;
 
-  if (!isObjectIdOrHexString(noteId)) {
+  if (!mongoose.Types.ObjectId.isValid(noteId)) {
     res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Invalid ID provided' });
     return;
   }
@@ -155,7 +155,7 @@ const deleteNote = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  if (!isObjectIdOrHexString(noteId)) {
+  if (!mongoose.Types.ObjectId.isValid(noteId)) {
     res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Invalid ID provided' });
     return;
   }
