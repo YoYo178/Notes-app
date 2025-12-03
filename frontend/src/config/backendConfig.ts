@@ -1,1 +1,1 @@
-export const BACKEND_URL = import.meta.env.PROD ? "https://sp-az.duckdns.org/notes" : "http://localhost:3000";
+export const BACKEND_URL = import.meta.env.PROD ? "https://notes-app-i6ea.onrender.com/" : "http://localhost:3000";
