@@ -5,7 +5,7 @@
     "lib": ["ES2022"],                        
     "strict": true,
     "baseUrl": "./",
-    "outDir": "temp",
+    "outDir": "dist",
     "esModuleInterop": true,                 
     "skipLibCheck": true,                     
     "forceConsistentCasingInFileNames": true,
@@ -20,15 +20,12 @@
     "swc": true,
     "require": [
       "tsconfig-paths/register",
-      "./config.ts"
     ],
   },
   "include": [
     "src/**/*.ts",
-    "config.ts"
   ],
   "exclude": [
-    "scripts",
     "eslint.config.ts"
   ]
 }
