@@ -3,8 +3,8 @@
                               Enums
 ******************************************************************************/
 
-export enum NodeEnvs {
-  Dev = 'development',
-  Test = 'test',
-  Production = 'production'
-}
+export const NODE_ENVS = {
+  Dev: 'development',
+  Test: 'test',
+  Production: 'production',
+} as const;

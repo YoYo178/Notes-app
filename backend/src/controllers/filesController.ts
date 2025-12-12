@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler';
 import logger from 'jet-logger';
 import { s3Service } from '../services/s3Service';
 import { S3_CONFIG } from '../config/s3Config';
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import HTTP_STATUS_CODES from '@src/common/HTTP_STATUS_CODES';
 
 interface UploadRequestBody {
   fileName: string;
@@ -18,19 +18,19 @@ const getUploadURL = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user.id;
 
   if (!fileName || !fileType || !contentType || !fileSize) {
-    res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'All fields are required' });
+    res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'All fields are required' });
     return;
   }
 
   if (!userId) {
-    res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized' });
+    res.status(HTTP_STATUS_CODES.Unauthorized).json({ message: 'Unauthorized' });
     return;
   }
 
   // Validate file size
   const maxSize = fileType === 'image' ? S3_CONFIG.maxImageSize : S3_CONFIG.maxAudioSize;
   if (fileSize > maxSize) {
-    res.status(HttpStatusCodes.BAD_REQUEST).json({ message: `File size exceeds maximum allowed size of ${maxSize / (1024 * 1024)}MB` });
+    res.status(HTTP_STATUS_CODES.BadRequest).json({ message: `File size exceeds maximum allowed size of ${maxSize / (1024 * 1024)}MB` });
     return;
   }
 
@@ -42,19 +42,19 @@ const getUploadURL = asyncHandler(async (req: Request, res: Response) => {
 
   case 'audio':
     if (!audioDuration) {
-      res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'audioDuration field is required' });
+      res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'audioDuration field is required' });
       return;
     }
 
     if (audioDuration > 60) {
-      res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Given audio file exceeds maximum duration of 60s' });
+      res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'Given audio file exceeds maximum duration of 60s' });
       return;
     }
     break;
 
   default:
     logger.err('File type not supported:', fileType);
-    res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'File type not supported.' });
+    res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'File type not supported.' });
     return;
   }
 
@@ -62,16 +62,16 @@ const getUploadURL = asyncHandler(async (req: Request, res: Response) => {
     const key = s3Service.generateKey(userId, fileType, fileName);
     const uploadUrl = await s3Service.generateUploadUrl(key, contentType, fileType);
 
-    res.status(HttpStatusCodes.OK).json({
+    res.status(HTTP_STATUS_CODES.Ok).json({
       uploadUrl,
       key,
       expiresIn: S3_CONFIG.urlExpirationTime,
     });
   } catch (error) {
     if (error instanceof Error)
-      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+      res.status(HTTP_STATUS_CODES.InternalServerError).json({ message: error.message });
     else
-      res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+      res.send(HTTP_STATUS_CODES.InternalServerError);
 
     return;
   }
@@ -82,33 +82,33 @@ const getURL = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user.id;
 
   if (!userId) {
-    res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized' });
+    res.status(HTTP_STATUS_CODES.Unauthorized).json({ message: 'Unauthorized' });
     return;
   }
 
   if (!fileKey || typeof fileKey != 'string') {
-    res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Invalid payload, fileKey must be a string!' });
+    res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'Invalid payload, fileKey must be a string!' });
     return;
   }
 
   // Verify that the file belongs to the user
   if (!fileKey.includes(`/${userId}/`)) {
-    res.status(HttpStatusCodes.FORBIDDEN).json({ message: 'Forbidden' });
+    res.status(HTTP_STATUS_CODES.Forbidden).json({ message: 'Forbidden' });
     return;
   }
 
   try {
     const url = await s3Service.generateFileUrl(fileKey);
 
-    res.status(HttpStatusCodes.OK).json({
+    res.status(HTTP_STATUS_CODES.Ok).json({
       url,
       expiresIn: S3_CONFIG.urlExpirationTime,
     });
   } catch (error) {
     if (error instanceof Error)
-      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+      res.status(HTTP_STATUS_CODES.InternalServerError).json({ message: error.message });
     else
-      res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+      res.send(HTTP_STATUS_CODES.InternalServerError);
 
     return;
   }
@@ -119,7 +119,7 @@ const getMultipleURL = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user.id;
 
   if (!fileKeys || !Array.isArray(fileKeys) || !fileKeys?.length) {
-    res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Invalid payload, fileKeys must be a non-empty array!' });
+    res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'Invalid payload, fileKeys must be a non-empty array!' });
     return;
   }
 
@@ -127,7 +127,7 @@ const getMultipleURL = asyncHandler(async (req: Request, res: Response) => {
     fileKeys.map(async key => {
       // Verify that the file belongs to the user
       if (!key.includes(`/${userId}/`)) {
-        res.status(HttpStatusCodes.FORBIDDEN).json({ message: 'Forbidden' });
+        res.status(HTTP_STATUS_CODES.Forbidden).json({ message: 'Forbidden' });
         return;
       }
 
@@ -135,16 +135,16 @@ const getMultipleURL = asyncHandler(async (req: Request, res: Response) => {
         return await s3Service.generateFileUrl(key);
       } catch (error) {
         if (error instanceof Error)
-          res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+          res.status(HTTP_STATUS_CODES.InternalServerError).json({ message: error.message });
         else
-          res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+          res.send(HTTP_STATUS_CODES.InternalServerError);
 
         return;
       }
     }),
   );
 
-  res.status(HttpStatusCodes.OK).json({
+  res.status(HTTP_STATUS_CODES.Ok).json({
     urlArray,
     expiresIn: S3_CONFIG.urlExpirationTime,
   });
@@ -155,13 +155,13 @@ const deleteFile = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user.id;
 
   if (!userId) {
-    res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized' });
+    res.status(HTTP_STATUS_CODES.Unauthorized).json({ message: 'Unauthorized' });
     return;
   }
 
   // Verify that the file belongs to the user
   if (!fileKey.includes(`/${userId}/`)) {
-    res.status(HttpStatusCodes.FORBIDDEN).json({ message: 'Forbidden' });
+    res.status(HTTP_STATUS_CODES.Forbidden).json({ message: 'Forbidden' });
     return;
   }
 
@@ -170,9 +170,9 @@ const deleteFile = asyncHandler(async (req: Request, res: Response) => {
     res.json({ message: 'File deleted successfully' });
   } catch (error) {
     if (error instanceof Error)
-      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: error.message });
+      res.status(HTTP_STATUS_CODES.InternalServerError).json({ message: error.message });
     else
-      res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+      res.send(HTTP_STATUS_CODES.InternalServerError);
 
     return;
   }

@@ -1,4 +1,4 @@
-import Env from '@src/common/Env';
+import Env from '@src/common/ENV';
 import { mailService } from '@src/services/mailService';
 import Mail from 'nodemailer/lib/mailer';
 

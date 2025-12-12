@@ -1,4 +1,4 @@
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import HTTP_STATUS_CODES, { HttpStatusCodes } from '@src/common/HTTP_STATUS_CODES';
 
 
 /******************************************************************************
@@ -44,6 +44,6 @@ export class ValidationErr extends RouteError {
     if (!!moreInfo) {
       msgObj['more-info'] = moreInfo;
     }
-    super(HttpStatusCodes.BAD_REQUEST, JSON.stringify(msgObj));
+    super(HTTP_STATUS_CODES.BadRequest, JSON.stringify(msgObj));
   }
 }

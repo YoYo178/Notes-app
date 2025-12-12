@@ -3,9 +3,9 @@ import logger from 'jet-logger';
 import { Request, Response, NextFunction } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
-import { NodeEnvs } from '@src/common/constants';
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
-import Env from '@src/common/Env';
+import { NODE_ENVS } from '@src/common/constants';
+import HTTP_STATUS_CODES from '@src/common/HTTP_STATUS_CODES';
+import Env from '@src/common/ENV';
 
 import cookieConfig from '@src/config/cookieConfig';
 
@@ -33,7 +33,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
 
     if (!ResetPasswordAccessTokenSecret) {
       logger.err('RESET_PASSWORD_ACCESS_TOKEN_SECRET is undefined!');
-      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'An error occured in the server.' });
+      res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured in the server.' });
       return;
     }
 
@@ -53,17 +53,17 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
       // Need to check for jwt.TokenExpiredError first
       // because it inherits from jwt.JsonWebTokenError
       if (err instanceof jwt.TokenExpiredError) {
-        res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: err?.message === 'jwt expired' ? 'Expired token' : err?.message });
+        res.status(HTTP_STATUS_CODES.Unauthorized).send({ message: err?.message === 'jwt expired' ? 'Expired token' : err?.message });
         return;
       } else if (err instanceof jwt.JsonWebTokenError) {
-        res.status(HttpStatusCodes.BAD_REQUEST).send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
+        res.status(HTTP_STATUS_CODES.BadRequest).send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
         return;
       }
 
       if (err instanceof Error)
-        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: err.message });
+        res.status(HTTP_STATUS_CODES.InternalServerError).json({ message: err.message });
       else
-        res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+        res.send(HTTP_STATUS_CODES.InternalServerError);
 
       return;
     }
@@ -71,7 +71,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
 
   // Make sure the user is logged in
   if (!refreshToken) {
-    res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: 'User is not logged in' });
+    res.status(HTTP_STATUS_CODES.Unauthorized).send({ message: 'User is not logged in' });
     return;
   }
 
@@ -84,7 +84,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
      * - Use IP instead of token, makes it more secure
      */
   if (accessToken && tokenBlacklist.includes(accessToken)) {
-    res.status(HttpStatusCodes.FORBIDDEN).send({ message: 'Forbidden' });
+    res.status(HTTP_STATUS_CODES.Forbidden).send({ message: 'Forbidden' });
     return;
   }
 
@@ -92,7 +92,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
 
   if (!AccessTokenSecret) {
     logger.err('ACCESS_TOKEN_SECRET is undefined!');
-    res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'An error occured in the server.' });
+    res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured in the server.' });
     return;
   }
 
@@ -100,7 +100,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
 
   if (!RefreshTokenSecret) {
     logger.err('REFRESH_TOKEN_SECRET is undefined!');
-    res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'An error occured in the server.' });
+    res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured in the server.' });
     return;
   }
 
@@ -122,24 +122,24 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
     // Need to check for jwt.TokenExpiredError first
     // because it inherits from jwt.JsonWebTokenError
     if (err instanceof jwt.TokenExpiredError) {
-      res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: err?.message === 'jwt expired' ? 'Expired token' : err?.message });
+      res.status(HTTP_STATUS_CODES.Unauthorized).send({ message: err?.message === 'jwt expired' ? 'Expired token' : err?.message });
       return;
     } else if (err instanceof jwt.JsonWebTokenError) {
-      res.status(HttpStatusCodes.BAD_REQUEST).send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
+      res.status(HTTP_STATUS_CODES.BadRequest).send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
       return;
     }
 
     if (err instanceof Error)
-      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: err.message });
+      res.status(HTTP_STATUS_CODES.InternalServerError).json({ message: err.message });
     else
-      res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+      res.send(HTTP_STATUS_CODES.InternalServerError);
 
     return;
   }
 
   const user = userID ? await User.findById(userID).select('-password').lean().exec() : null;
   if (!user) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'User not found' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'User not found' });
     return;
   }
 
@@ -178,13 +178,13 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
       res.clearCookie('jwt-at', {
         httpOnly: true,
         sameSite: 'none',
-        secure: Env.NodeEnv === NodeEnvs.Production,
+        secure: Env.NodeEnv === NODE_ENVS.Production,
       });
 
       res.clearCookie('jwt-rt', {
         httpOnly: true,
         sameSite: 'none',
-        secure: Env.NodeEnv === NodeEnvs.Production,
+        secure: Env.NodeEnv === NODE_ENVS.Production,
       });
 
       // Add the access token to token blacklist
@@ -195,7 +195,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
         tokenBlacklist.shift();
       }, (decoded.exp * 1000) - Date.now());
 
-      res.status(HttpStatusCodes.CONFLICT).send({ message: 'Malicious attempt detected, You have been added to the blacklist' });
+      res.status(HTTP_STATUS_CODES.Conflict).send({ message: 'Malicious attempt detected, You have been added to the blacklist' });
       return;
     }
 
@@ -222,14 +222,14 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
       next();
       return;
     } else if (err instanceof jwt.JsonWebTokenError) {
-      res.status(HttpStatusCodes.BAD_REQUEST).send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
+      res.status(HTTP_STATUS_CODES.BadRequest).send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
       return;
     }
 
     if (err instanceof Error)
-      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: err.message });
+      res.status(HTTP_STATUS_CODES.InternalServerError).json({ message: err.message });
     else
-      res.send(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+      res.send(HTTP_STATUS_CODES.InternalServerError);
 
     return;
   }

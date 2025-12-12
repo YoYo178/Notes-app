@@ -1,7 +1,7 @@
 import { User } from '@src/models/User';
 import expressAsyncHandler from 'express-async-handler';
 import { Request, Response } from 'express';
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import HTTP_STATUS_CODES from '@src/common/HTTP_STATUS_CODES';
 import mongoose from 'mongoose';
 import { INote, Note } from '@src/models/Note';
 
@@ -14,13 +14,13 @@ const getAllNotes = expressAsyncHandler(async (req: Request, res: Response) => {
   const user = await User.findById(req.user.id).select('-password').lean().exec();
 
   if (!user) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'User not found' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'User not found' });
     return;
   }
 
   const notes = await Note.find({ user: user._id.toString() }).lean().exec();
 
-  res.status(HttpStatusCodes.OK).send({ notes });
+  res.status(HTTP_STATUS_CODES.Ok).send({ notes });
 });
 
 /**
@@ -32,25 +32,25 @@ const getNoteById = expressAsyncHandler(async (req: Request, res: Response) => {
   const user = await User.findById(req.user.id).select('-password').lean().exec();
 
   if (!user) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'User not found' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'User not found' });
     return;
   }
 
   const noteId = req.params?.noteId;
 
   if (!noteId) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Note ID is required!' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Note ID is required!' });
     return;
   }
 
   const note = await Note.findOne({ user: user._id.toString(), _id: noteId }).lean().exec();
 
   if (!note) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'Note not found' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'Note not found' });
     return;
   }
 
-  res.status(HttpStatusCodes.OK).send({ data: { note } });
+  res.status(HTTP_STATUS_CODES.Ok).send({ data: { note } });
 });
 
 /**
@@ -62,7 +62,7 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
   const user = await User.findById(req.user.id).select('-password').lean().exec();
 
   if (!user) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'User not found' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'User not found' });
     return;
   }
 
@@ -72,7 +72,7 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
     !title || !description || duration === undefined ||
     (isText === undefined || isText === null)
   ) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'All fields except images and isFavorite are required' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'All fields except images and isFavorite are required' });
     return;
   }
 
@@ -87,7 +87,7 @@ const createNote = expressAsyncHandler(async (req: Request, res: Response) => {
     audio,
   });
 
-  res.status(HttpStatusCodes.OK).send({ message: 'Note created successfully', data: { note } });
+  res.status(HTTP_STATUS_CODES.Ok).send({ message: 'Note created successfully', data: { note } });
 });
 
 /**
@@ -99,28 +99,28 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
   const user = await User.findById(req.user.id).select('-password').lean().exec();
 
   if (!user) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'User not found' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'User not found' });
     return;
   }
 
   const noteId = req.params?.noteId;
 
   if (!noteId) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Note ID is required!' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Note ID is required!' });
     return;
   }
 
   const { title, description, images, isFavorite } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(noteId)) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Invalid ID provided' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Invalid ID provided' });
     return;
   }
 
   const note = await Note.findById(noteId).exec();
 
   if (!note) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'No note found with the specified ID' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'No note found with the specified ID' });
     return;
   }
 
@@ -131,7 +131,7 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
 
   await note.save();
 
-  res.status(HttpStatusCodes.OK).send({ message: 'Note updated successfully', data: { note } });
+  res.status(HTTP_STATUS_CODES.Ok).send({ message: 'Note updated successfully', data: { note } });
 
 });
 
@@ -144,32 +144,32 @@ const deleteNote = expressAsyncHandler(async (req: Request, res: Response) => {
   const user = await User.findById(req.user.id).select('-password').lean().exec();
 
   if (!user) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'User not found' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'User not found' });
     return;
   }
 
   const noteId = req.params?.noteId;
 
   if (!noteId) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Note ID is required!' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Note ID is required!' });
     return;
   }
 
   if (!mongoose.Types.ObjectId.isValid(noteId)) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Invalid ID provided' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Invalid ID provided' });
     return;
   }
 
   const note = await Note.findById(noteId).exec();
 
   if (!note) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'No note found with the specified ID' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'No note found with the specified ID' });
     return;
   }
 
   await note.deleteOne();
 
-  res.status(HttpStatusCodes.OK).send({ message: 'Note deleted successfully' });
+  res.status(HTTP_STATUS_CODES.Ok).send({ message: 'Note deleted successfully' });
 });
 
 export default {

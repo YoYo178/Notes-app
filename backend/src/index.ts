@@ -1,6 +1,6 @@
 import logger from 'jet-logger';
 
-import Env from '@src/common/Env';
+import Env from '@src/common/ENV';
 import server from './server';
 import mongoose from 'mongoose';
 

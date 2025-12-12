@@ -7,8 +7,8 @@ import { Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
-import Env from '@src/common/Env';
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import Env from '@src/common/ENV';
+import HTTP_STATUS_CODES from '@src/common/HTTP_STATUS_CODES';
 
 import { User } from '@src/models/User';
 import { VerificationCode } from '@src/models/VerificationCode';
@@ -31,12 +31,12 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
   const { username, password, confirmPassword, displayName, email }: Record<string, string> = req.body;
 
   if (!username || !password || !confirmPassword || !displayName || !email) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'All fields are required' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'All fields are required' });
     return;
   }
 
   if (!isEmail(email)) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Invalid email' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Invalid email' });
     return;
   }
 
@@ -44,7 +44,7 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
   const usernameExists = !!await User.findOne({ username }).select('-password').lean().exec();
 
   if (usernameExists) {
-    res.status(HttpStatusCodes.CONFLICT).send({ message: 'A user already exists with the provided username' });
+    res.status(HTTP_STATUS_CODES.Conflict).send({ message: 'A user already exists with the provided username' });
     return;
   }
 
@@ -52,12 +52,12 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
   const userEmailExists = !!await User.findOne({ email }).select('-password').lean().exec();
 
   if (userEmailExists) {
-    res.status(HttpStatusCodes.CONFLICT).send({ message: 'A user already exists with the provided email' });
+    res.status(HTTP_STATUS_CODES.Conflict).send({ message: 'A user already exists with the provided email' });
     return;
   }
 
   if (password !== confirmPassword) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Passwords do not match' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Passwords do not match' });
     return;
   }
 
@@ -83,14 +83,14 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
   });
 
   if (user) {
-    res.status(HttpStatusCodes.CREATED).send({
+    res.status(HTTP_STATUS_CODES.Created).send({
       message: 'User created successfully',
       id: user._id.toString(),
       emailLink: !!mailInfo && Env.SmtpMock ? nodemailer.getTestMessageUrl(mailInfo) : null,
     });
     return;
   } else {
-    res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'An error occured while creating a new user.' });
+    res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured while creating a new user.' });
   }
 });
 
@@ -103,32 +103,32 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
   const { id, purpose, code }: Record<string, string> = req.body;
 
   if (!id) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'User ID is required' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'User ID is required' });
     return;
   }
 
   const user = await User.findById(id).select('-password').exec();
   if (!user) {
-    res.status(HttpStatusCodes.NOT_FOUND).json({ message: 'User not found' });
+    res.status(HTTP_STATUS_CODES.NotFound).json({ message: 'User not found' });
     return;
   }
 
   if (user.isVerified && (!user.recoveryState.isRecovering || user.recoveryState.hasVerifiedMail)) {
-    res.status(HttpStatusCodes.FORBIDDEN).json({ message: 'You have verified your email already' });
+    res.status(HTTP_STATUS_CODES.Forbidden).json({ message: 'You have verified your email already' });
     return;
   }
 
   const verificationCode = await VerificationCode.findOne({ user: id }).exec();
 
   if (!verificationCode) {
-    res.status(HttpStatusCodes.NOT_FOUND).json({ message: 'Verification code expired, kindly request a new code.' });
+    res.status(HTTP_STATUS_CODES.NotFound).json({ message: 'Verification code expired, kindly request a new code.' });
     return;
   }
 
   const codeMatches = await bcrypt.compare(code, verificationCode?.code);
 
   if (!codeMatches || verificationCode.purpose !== purpose) {
-    res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Invalid verification code' });
+    res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'Invalid verification code' });
     return;
   }
 
@@ -139,7 +139,7 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
   {
     user.isVerified = true;
     await user.save();
-    res.status(HttpStatusCodes.OK).json({ message: 'Verification successful' });
+    res.status(HTTP_STATUS_CODES.Ok).json({ message: 'Verification successful' });
     break;
   }
   case 'reset-password':
@@ -153,7 +153,7 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
 
     if (!ResetPasswordAccessTokenSecret) {
       logger.err('RESET_PASSWORD_ACCESS_TOKEN_SECRET is undefined!');
-      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'An error occurred in the server.' });
+      res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occurred in the server.' });
       return;
     }
 
@@ -171,13 +171,13 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
       maxAge: tokenConfig.resetPasswordAccessToken.expiry, // 15 minutes
     });
 
-    res.status(HttpStatusCodes.OK).json({ message: 'Success' });
+    res.status(HTTP_STATUS_CODES.Ok).json({ message: 'Success' });
     break;
   }
   default:
   {
     logger.err('[POST /api/auth/verify]: Unknown method!');
-    res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Unknown purpose' });
+    res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'Unknown purpose' });
     return;
   }
   }
@@ -193,32 +193,32 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
   const { id, purpose } = req.body;
 
   if (!id) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'User ID is required' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'User ID is required' });
     return;
   }
 
   const user = await User.findById(id).select('-password').lean().exec();
   if (!user) {
-    res.status(HttpStatusCodes.NOT_FOUND).json({ message: 'User not found' });
+    res.status(HTTP_STATUS_CODES.NotFound).json({ message: 'User not found' });
     return;
   }
 
   switch (purpose) {
   case 'user-verification':
     if (user.isVerified) {
-      res.status(HttpStatusCodes.FORBIDDEN).json({ message: 'User is already verified!' });
+      res.status(HTTP_STATUS_CODES.Forbidden).json({ message: 'User is already verified!' });
       return;
     }
     break;
   case 'reset-password':
     if (user.recoveryState.isRecovering && user.recoveryState.hasVerifiedMail) {
-      res.status(HttpStatusCodes.FORBIDDEN).json({ message: 'You have verified your email already' });
+      res.status(HTTP_STATUS_CODES.Forbidden).json({ message: 'You have verified your email already' });
       return;
     }
     break;
   default:
     logger.err('[POST /api/auth/resend-verification-code]: Unknown method!');
-    res.status(HttpStatusCodes.BAD_REQUEST).json({ message: 'Unknown method' });
+    res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'Unknown method' });
     return;
   }
 
@@ -226,7 +226,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
   const hasRecentlyRequestedCode = lastCodeRequestTime ? lastCodeRequestTime > Date.now() : false;
 
   if (hasRecentlyRequestedCode) {
-    res.status(HttpStatusCodes.TOO_MANY_REQUESTS)
+    res.status(HTTP_STATUS_CODES.TooManyRequests)
       .json({
         message: 'You have recently requested a verification code, Please wait before requesting a new one!',
       });
@@ -256,7 +256,7 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
     expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL),
   });
 
-  res.status(HttpStatusCodes.OK).json({
+  res.status(HTTP_STATUS_CODES.Ok).json({
     message: 'Success',
     emailLink: !!mailInfo && Env.SmtpMock ? nodemailer.getTestMessageUrl(mailInfo) : null,
   });
@@ -271,25 +271,25 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
   const { username, password }: Record<string, string> = req.body;
 
   if (!username || !password) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'All fields are required' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'All fields are required' });
     return;
   }
 
   const user = await User.findOne({ username }).lean().exec();
 
   if (!user) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'User not found' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'User not found' });
     return;
   }
 
   const passwordMatches = await bcrypt.compare(password, user.password);
   if (!passwordMatches) {
-    res.status(HttpStatusCodes.UNAUTHORIZED).send({ message: 'Invalid password' });
+    res.status(HTTP_STATUS_CODES.Unauthorized).send({ message: 'Invalid password' });
     return;
   }
 
   if (!user.isVerified) {
-    res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: 'User is not verified!' });
+    res.status(HTTP_STATUS_CODES.Unauthorized).json({ message: 'User is not verified!' });
     return;
   }
 
@@ -297,7 +297,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
 
   if (!AccessTokenSecret) {
     logger.err('ACCESS_TOKEN_SECRET is undefined!');
-    res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'An error occured in the server.' });
+    res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured in the server.' });
     return;
   }
 
@@ -317,7 +317,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
 
   if (!RefreshTokenSecret) {
     logger.err('REFRESH_TOKEN_SECRET is undefined!');
-    res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'An error occured in the server.' });
+    res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured in the server.' });
     return;
   }
 
@@ -339,7 +339,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
 
   res.cookie('jwt_at', accessToken, cookieConfig);
 
-  res.status(HttpStatusCodes.OK)
+  res.status(HTTP_STATUS_CODES.Ok)
     .send({
       message: 'Logged in successfully',
       user: {
@@ -359,19 +359,19 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
   const { input }: Record<string, string> = req.body;
 
   if (!input) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'All fields are required' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'All fields are required' });
     return;
   }
 
   const user = await User.findOne({ $or: [{ username: input }, { email: input }] }).select('-password').exec();
 
   if (!user) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'No account found' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'No account found' });
     return;
   }
 
   if (user.recoveryState.isRecovering && user.recoveryState.hasVerifiedMail && req.cookies?.jwt_reset_at) {
-    res.status(HttpStatusCodes.FORBIDDEN)
+    res.status(HTTP_STATUS_CODES.Forbidden)
       .json({
         message: 'You are already in the process of recovering your account. Finish your attempt or restart account recovery process.',
       });
@@ -398,7 +398,7 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
     expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL),
   });
 
-  res.status(HttpStatusCodes.OK).json({
+  res.status(HTTP_STATUS_CODES.Ok).json({
     id: user._id.toString(),
     email: isEmail(input) ? input : obfuscateEmail(user.email),
     emailLink: !!mailInfo && Env.SmtpMock ? nodemailer.getTestMessageUrl(mailInfo) : null,
@@ -414,19 +414,19 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
   const { password, confirmPassword }: Record<string, string> = req.body;
 
   if (!password || !confirmPassword) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Both password fields are required' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Both password fields are required' });
     return;
   }
 
   const user = await User.findById(req.recoveringUser.id).exec();
 
   if (!user) {
-    res.status(HttpStatusCodes.NOT_FOUND).send({ message: 'User not found' });
+    res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'User not found' });
     return;
   }
 
   if (!user.recoveryState.isRecovering || !user.recoveryState.hasVerifiedMail) {
-    res.status(HttpStatusCodes.FORBIDDEN)
+    res.status(HTTP_STATUS_CODES.Forbidden)
       .json({
         message: 'You haven\'t completed the earlier stages of account recovery, complete them or restart the account recovery process.',
       });
@@ -434,7 +434,7 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
   }
 
   if (password != confirmPassword) {
-    res.status(HttpStatusCodes.BAD_REQUEST).send({ message: 'Passwords do not match' });
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Passwords do not match' });
     return;
   }
 
@@ -456,7 +456,7 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
     maxAge: undefined,
   });
 
-  res.status(HttpStatusCodes.OK).json({ message: 'Password changed successfully' });
+  res.status(HTTP_STATUS_CODES.Ok).json({ message: 'Password changed successfully' });
 });
 
 /**
@@ -475,7 +475,7 @@ const logout = expressAsyncHandler((req: Request, res: Response) => {
     maxAge: undefined,
   });
 
-  res.status(HttpStatusCodes.OK).send({ message: 'User logged out successfully' });
+  res.status(HTTP_STATUS_CODES.Ok).send({ message: 'User logged out successfully' });
 });
 
 export default {

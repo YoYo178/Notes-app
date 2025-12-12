@@ -1,4 +1,4 @@
-import Env from '@src/common/Env';
+import Env from '@src/common/ENV';
 
 export const S3_CONFIG = {
   // Credentials

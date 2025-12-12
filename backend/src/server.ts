@@ -7,10 +7,10 @@ import cookieParser from 'cookie-parser';
 
 import BaseRouter from '@src/routes';
 
-import Env from '@src/common/Env';
-import HttpStatusCodes from '@src/common/HttpStatusCodes';
+import Env from '@src/common/ENV';
+import HTTPS_STATUS_CODES, { HttpStatusCodes } from '@src/common/HTTP_STATUS_CODES';
 import { RouteError } from '@src/common/route-errors';
-import { NodeEnvs } from '@src/common/constants';
+import { NODE_ENVS } from '@src/common/constants';
 import { CORS_CONFIG } from '@src/config/CORS';
 
 
@@ -33,12 +33,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Show routes called in console during development
-if (Env.NodeEnv === NodeEnvs.Dev.valueOf()) {
+if (Env.NodeEnv === NODE_ENVS.Dev.valueOf()) {
   app.use(morgan('dev'));
 }
 
 // Security
-if (Env.NodeEnv === NodeEnvs.Production.valueOf()) {
+if (Env.NodeEnv === NODE_ENVS.Production.valueOf()) {
   app.use(helmet());
 }
 
@@ -47,10 +47,10 @@ app.use('/api', BaseRouter);
 
 // Add error handler
 app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
-  if (Env.NodeEnv !== NodeEnvs.Test.valueOf()) {
+  if (Env.NodeEnv !== NODE_ENVS.Test.valueOf()) {
     logger.err(err, true);
   }
-  let status = HttpStatusCodes.BAD_REQUEST;
+  let status: HttpStatusCodes = HTTPS_STATUS_CODES.BadRequest;
   if (err instanceof RouteError) {
     status = err.status;
     res.status(status).json({ error: err.message });
