@@ -58,6 +58,7 @@ A `dist` folder will be created along with the built JavaScript files, which can
 #### App:
 - `APP_NAME` - Application name, used in mails.
 - `PORT` - The port at which the application will listen at for incoming requests.
+- `FRONTEND_ORIGIN` - The URL of the application's frontend, used to manage CORS.
 #### MongoDB:
 - `MONGODB_URI` - MongoDB URL (Atlas or Local)
 #### Token Secrets:

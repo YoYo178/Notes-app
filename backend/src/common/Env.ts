@@ -15,6 +15,7 @@ export default jetEnv({
   AppName: str,
   Port: num,
   MongodbUri: str,
+  FrontendOrigin: str,
   
   /* AWS */
   AwsRegion: str,
