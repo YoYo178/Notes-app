@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import logger from 'jet-logger';
-import Env from './ENV';
+import Env from './Env';
 
 export async function connectDB() {
   try {

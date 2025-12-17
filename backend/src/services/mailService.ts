@@ -1,4 +1,4 @@
-import Env from '@src/common/ENV';
+import Env from '@src/common/Env';
 import nodemailer, { Transporter } from 'nodemailer';
 import logger from 'jet-logger';
 import Mail from 'nodemailer/lib/mailer';

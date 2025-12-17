@@ -5,7 +5,7 @@ import expressAsyncHandler from 'express-async-handler';
 
 import { NODE_ENVS } from '@src/common/constants';
 import HTTP_STATUS_CODES from '@src/common/HTTP_STATUS_CODES';
-import Env from '@src/common/ENV';
+import Env from '@src/common/Env';
 
 import cookieConfig from '@src/config/cookieConfig';
 

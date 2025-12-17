@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 
 import BaseRouter from '@src/routes';
 
-import Env from '@src/common/ENV';
+import Env from '@src/common/Env';
 import HTTPS_STATUS_CODES, { HttpStatusCodes } from '@src/common/HTTP_STATUS_CODES';
 import { RouteError } from '@src/common/route-errors';
 import { NODE_ENVS } from '@src/common/constants';

@@ -1,6 +1,6 @@
 import { CookieOptions } from 'express';
 import { tokenConfig } from './tokenConfig';
-import Env from '@src/common/ENV';
+import Env from '@src/common/Env';
 import { NODE_ENVS } from '@src/common/constants';
 
 const cookieConfig: CookieOptions = {

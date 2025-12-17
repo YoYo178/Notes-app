@@ -1,4 +1,4 @@
-import Env from '@src/common/ENV';
+import Env from '@src/common/Env';
 import { tokenConfig } from '@src/config/tokenConfig';
 import { IUser } from '@src/models/User';
 import jwt from 'jsonwebtoken';

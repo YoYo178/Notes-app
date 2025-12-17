@@ -7,7 +7,7 @@ import { Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
-import Env from '@src/common/ENV';
+import Env from '@src/common/Env';
 import HTTP_STATUS_CODES from '@src/common/HTTP_STATUS_CODES';
 
 import { User } from '@src/models/User';
