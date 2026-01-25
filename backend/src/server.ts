@@ -71,6 +71,9 @@ app.use(
     if (!fs.existsSync(filePath))
       return res.status(HTTPS_STATUS_CODES.NotFound).json({ success: false, message: 'Not Found' });
 
+    // allow resource to be used cross-origin
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+
     res.sendFile(filePath);
   },
 );
