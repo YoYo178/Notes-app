@@ -4,6 +4,8 @@ import UsersRouter from './Users/UsersRouter';
 import NotesRouter from './Notes/NotesRouter';
 import FilesRouter from './Files/FilesRouter';
 
+import AuthValidator from '@src/middleware/AuthValidator';
+
 /******************************************************************************
                                 Variables
 ******************************************************************************/
@@ -11,9 +13,9 @@ import FilesRouter from './Files/FilesRouter';
 const apiRouter = Router();
 
 apiRouter.use('/auth', AuthRouter);
-apiRouter.use('/users', UsersRouter);
-apiRouter.use('/notes', NotesRouter);
-apiRouter.use('/files', FilesRouter);
+apiRouter.use('/users', AuthValidator, UsersRouter);
+apiRouter.use('/notes', AuthValidator, NotesRouter);
+apiRouter.use('/files', AuthValidator, FilesRouter);
 
 /******************************************************************************
                                 Export default
