@@ -12,8 +12,6 @@ import { NoteType } from '../../../types/note.types.ts';
 
 import { CreateNoteModal } from './CreateNoteModal/CreateNoteModal.tsx';
 
-import { ButtonHandler } from './CreateNoteBar.ts';
-
 import './CreateNoteBar.css'
 
 interface CreateNoteBarProps {
@@ -62,6 +60,23 @@ export const CreateNoteBar: FC<CreateNoteBarProps> = ({ isVisible }) => {
         deleteTranscription();
     }
 
+    const handleToggleRecording = async () => {
+        if (!hasMicPermissions && !isMicDeniedPopupVisible)
+            setIsMicDeniedPopupVisible(true);
+
+        if (isRecording) {
+            if (isTranscribing)
+                stopTranscribing();
+
+            return stopRecording();
+        }
+
+        await startRecording(MAX_AUDIO_RECORD_DURATION);
+
+        if (hasSpeechRecognitionSupport && !isTranscribing && !!startTranscribing)
+            startTranscribing();
+    }
+
     return (
         <>
             <CreateNoteModal
@@ -85,20 +100,7 @@ export const CreateNoteBar: FC<CreateNoteBarProps> = ({ isVisible }) => {
                 <button className='add-note-button' onClick={() => { setNoteType('text'); setModalOpen(true) }}>
                     <FiFilePlus />
                 </button>
-                <div className="record-note-button-container" onClick={
-                    async () => {
-                        ButtonHandler.recordButtonOnClick(
-                            startRecording, stopRecording,
-                            isRecording,
-                            hasMicPermissions,
-
-                            startTranscribing, stopTranscribing,
-                            isTranscribing,
-                            hasSpeechRecognitionSupport,
-
-                            isMicDeniedPopupVisible, setIsMicDeniedPopupVisible
-                        )
-                    }}>
+                <div className="record-note-button-container" onClick={handleToggleRecording}>
                     {isRecording ? (
                         <>
                             <BsStopFill />
