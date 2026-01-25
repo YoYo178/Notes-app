@@ -65,20 +65,16 @@ const APIEndpoints: Endpoints = {
     },
 
     /***** FILES *****/
-    GET_FILE_URL: {
-        URL: "/api/files/getURL",
-        METHOD: "GET"
-    },
-    GET_MULTIPLE_FILES_URL: {
-        URL: "/api/files/getMultipleURL",
+    UPLOAD_AUDIO: {
+        URL: "/api/files/upload/audio",
         METHOD: "POST"
     },
-    GET_FILE_UPLOAD_URL: {
-        URL: "/api/files/getUploadURL",
+    UPLOAD_IMAGES: {
+        URL: "/api/files/upload/image",
         METHOD: "POST"
     },
-    DELETE_FILE: {
-        URL: "/api/files/delete/:fileKey",
+    DELETE_FILES: {
+        URL: "/api/files",
         METHOD: "DELETE"
     }
 }

@@ -15,11 +15,6 @@ export interface INote {
     updatedAt: DateString;
 }
 
-export type NoteFile = {
-    key: string;
-    localURL: string;
-}
-
 export type NoteType = 'text' | 'audio';
 
 export enum NoteSortMethods {

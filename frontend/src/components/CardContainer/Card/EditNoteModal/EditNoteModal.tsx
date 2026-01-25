@@ -5,17 +5,15 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { FaCheck, FaPlus } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 
+import { useAuthContext } from '../../../../contexts/AuthContext';
 import { useUpdateNoteMutation } from '../../../../hooks/network/note/useUpdateNoteMutation';
-import { useDeleteFileMutation } from '../../../../hooks/network/upload/useDeleteFileMutation';
-import { useUploadToS3Mutation } from '../../../../hooks/network/s3/useS3UploadMutation';
-import { useGetFileUploadURLMutation } from '../../../../hooks/network/upload/useGetFileUploadURLMutation';
+import { useUploadImagesMutation } from '../../../../hooks/network/files/useUploadImagesMutation';
+import { useDeleteFileMutation } from '../../../../hooks/network/files/useDeleteFileMutation';
 
 import { INote } from '../../../../types/note.types';
-
-import { ButtonHandler } from './EditNoteModal';
+import { getFileURL } from '../../../../utils/note.utils';
 
 import './EditNoteModal.css'
-import { getFileBlobURL } from '../../../../utils/note.utils';
 
 interface EditNoteModalProps {
     isOpen: boolean;
@@ -24,59 +22,133 @@ interface EditNoteModalProps {
 }
 
 export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note }) => {
+    const { auth } = useAuthContext();
+
     const [title, setTitle] = useState(note.title);
     const [description, setDescription] = useState(note.description);
 
-    const [isUploading, setIsUploading] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [images, setImages] = useState(note.images ?? []);
+    const [removedImages, setRemovedImages] = useState<string[]>([]);
+    const [newImages, setNewImages] = useState<File[]>([]);
+
+    const imageURLs = [
+        ...images.map(filename => getFileURL(auth?.id ?? '', 'image', filename)),
+        ...newImages.map(file => URL.createObjectURL(file))
+    ];
 
     const [imagePreview, setImagePreview] = useState('');
+    const [isUploading, setIsUploading] = useState(false);
 
-    const [audioURL, setAudioURL] = useState<string | null>(null);
-    const [images, setImages] = useState<{ key: string, url: string }[]>([]);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const [addedImages, setAddedImages] = useState<File[]>([]);
+    const audioURL = getFileURL(auth?.id ?? '', 'audio', note.audio ?? '');
 
     const updateNoteMutation = useUpdateNoteMutation({ queryKey: ['notes'] });
-
-    const getUploadUrlMutation = useGetFileUploadURLMutation({});
-    const uploadToS3Mutation = useUploadToS3Mutation();
-    const deleteFileMutation = useDeleteFileMutation({});
+    const uploadImageMutation = useUploadImagesMutation({});
+    const deleteFilesMutation = useDeleteFileMutation({});
 
     useEffect(() => {
-        if (isOpen && note.audio)
-            getFileBlobURL(note.audio).then(res => setAudioURL(res));
-    }, [isOpen, note.audio])
-
-    useEffect(() => {
-        const loadImages = async () => {
-            const loadedImages: { key: string, url: string }[] = [];
-            for (const imageKey of note.images || []) {
-                const URL = await getFileBlobURL(imageKey);
-
-                loadedImages.push({
-                    key: imageKey,
-                    url: URL
-                });
-            }
-
-            setImages(loadedImages);
-        }
-
-        if (isOpen && note.images?.length) {
-            loadImages();
-        }
-
-    }, [isOpen, note.images])
-
-    useEffect(() => {
-        if (isOpen && !updateNoteMutation.error) {
-            onClose();
-            setIsUploading(false);
-        }
-    }, [updateNoteMutation.isSuccess])
+        setTitle(note.title);
+        setDescription(note.description);
+        setImages(note.images ?? []);
+        setRemovedImages([]);
+        setNewImages([]);
+        setImagePreview('');
+    }, [isOpen])
 
     if (!isOpen) return null;
+
+    const handleDeleteImage = async (index: number) => {
+        const element = images?.[index];
+
+        if (element) {
+            setImages(images.filter((_, i) => i !== index));
+            setRemovedImages([...removedImages, element]);
+        } else {
+            setNewImages([
+                ...newImages.filter((_, i) => i !== index - images.length)
+            ]);
+        }
+    }
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+
+        let remainingSlots = 5 - imageURLs.length;
+
+        if (remainingSlots <= 0) {
+            alert('Maximum 5 images allowed');
+            return;
+        }
+
+        const imgs = [];
+
+        for (const file of Array.from(e.target.files)) {
+            if (file.size > 2 * 1024 * 1024) {
+                alert(`File ${file.name} exceeds 2MB limit`);
+                continue;
+            }
+
+            if (remainingSlots <= 0)
+                break;
+
+            remainingSlots--;
+            imgs.push(file);
+        };
+
+        setNewImages([...newImages, ...imgs]);
+        e.target.value = '';
+    }
+
+    const handleSaveNote = async () => {
+        if (!title || !description) {
+            console.error("Title or description fields cannot be empty!")
+            return;
+        }
+
+        const mutatedNote: Partial<INote> = {};
+
+        if (title !== note.title)
+            mutatedNote.title = title;
+
+        if (description !== note.description)
+            mutatedNote.description = description;
+
+        if (removedImages.length) {
+            await deleteFilesMutation.mutateAsync({
+                payload: { files: removedImages }
+            })
+
+            mutatedNote.images = [...images];
+        }
+
+        if (newImages.length) {
+            const fd = new FormData();
+            newImages.forEach(img => {
+                fd.append('images[]', img);
+            });
+
+            const response = await uploadImageMutation.mutateAsync({ payload: fd })
+
+            mutatedNote.images = [...images, ...response.filenames];
+        }
+
+        const hasChanged = note.title !== title || note.description !== description || removedImages.length || newImages.length;
+
+        if (hasChanged) {
+            setIsUploading(true);
+
+            await updateNoteMutation.mutateAsync({
+                pathParams: { noteId: note._id },
+                payload: mutatedNote
+            });
+
+            onClose();
+            setIsUploading(false);
+            setNewImages([]);
+            setRemovedImages([]);
+        }
+    }
 
     return createPortal(
         <div className='enm-backdrop' onMouseDown={onClose}>
@@ -108,29 +180,14 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
                         <textarea className="enm-field-description" placeholder='Description' value={description} onChange={(e) => setDescription(e.target.value)} />
                     </div>
                     <div className="enm-images-container">
-                        {images.map((image, i) => {
+                        {imageURLs.map((url, i) => {
                             return (
                                 <div key={`enm-image-container-${i + 1}`} className="enm-image-container">
-                                    <img id={`enm-image-${i + 1}`} className="enm-image" src={image.url} onClick={() => setImagePreview(image.url)} />
+                                    <img id={`enm-image-${i + 1}`} className="enm-image" src={url} onClick={() => setImagePreview(url)} />
                                     <button
                                         id={`enm-image-delete-button-${i + 1}`}
                                         className="enm-image-delete-button"
-                                        onClick={(e) => ButtonHandler.deleteImageOnClick(e, images, setImages)}
-                                        disabled={isUploading}
-                                    >
-                                        <RiDeleteBin6Line />
-                                    </button>
-                                </div>
-                            )
-                        })}
-                        {addedImages.map((image, i) => {
-                            return (
-                                <div key={`enm-image-container-${i + 1}`} className="enm-image-container">
-                                    <img id={`enm-image-${i + 1}`} className="enm-image" src={URL.createObjectURL(image)} onClick={() => setImagePreview(URL.createObjectURL(image))} />
-                                    <button
-                                        id={`enm-image-delete-button-${i + 1}`}
-                                        className="enm-image-delete-button"
-                                        onClick={(e) => ButtonHandler.deleteImageOnClick(e, images, setImages)}
+                                        onClick={() => handleDeleteImage(i)}
                                         disabled={isUploading}
                                     >
                                         <RiDeleteBin6Line />
@@ -139,7 +196,7 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
                             )
                         })}
                         {(!images || images.length < 5) && (
-                            <div className="enm-upload-image-button" onClick={() => ButtonHandler.uploadImageOnClick(fileInputRef, images.length, addedImages, setAddedImages)}>
+                            <div className="enm-upload-image-button" onClick={() => fileInputRef.current?.click()}>
                                 <input
                                     ref={fileInputRef}
                                     name="Upload Image"
@@ -147,6 +204,7 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
                                     accept='image/*'
                                     hidden
                                     multiple
+                                    onChange={handleInputChange}
                                 />
                                 <FaPlus />
                             </div>
@@ -154,22 +212,7 @@ export const EditNoteModal: FC<EditNoteModalProps> = ({ isOpen, onClose, note })
                     </div>
                 </div>
                 <div className="enm-footer">
-                    <button className="cnm-check-button" disabled={isUploading} onClick={async () => {
-                        await ButtonHandler.saveNoteOnClick(
-                            updateNoteMutation,
-                            note,
-                            { title, description },
-                            images,
-                            addedImages,
-                            setAddedImages,
-                            deleteFileMutation,
-                            getUploadUrlMutation,
-                            uploadToS3Mutation,
-                            setIsUploading
-                        )
-
-                        setIsUploading(false);
-                    }}>
+                    <button className="cnm-check-button" disabled={isUploading} onClick={handleSaveNote}>
                         <FaCheck />
                     </button>
                 </div>

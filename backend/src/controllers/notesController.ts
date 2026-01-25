@@ -110,7 +110,14 @@ const updateNote = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const { title, description, images, isFavorite } = req.body;
+  if (Array.isArray(noteId)) {
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Invalid note ID format' });
+    return;
+  }
+
+  const { title, description, images, isFavorite } = req.body as {
+    title?: string, description?: string, images?: string[], isFavorite?: boolean,
+  };
 
   if (!mongoose.Types.ObjectId.isValid(noteId)) {
     res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Invalid ID provided' });
@@ -152,6 +159,11 @@ const deleteNote = expressAsyncHandler(async (req: Request, res: Response) => {
 
   if (!noteId) {
     res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Note ID is required!' });
+    return;
+  }
+
+  if (Array.isArray(noteId)) {
+    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Invalid note ID format' });
     return;
   }
 

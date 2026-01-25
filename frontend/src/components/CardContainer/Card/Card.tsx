@@ -9,25 +9,23 @@ import { TiEdit } from 'react-icons/ti';
 
 import { useUpdateNoteMutation } from '../../../hooks/network/note/useUpdateNoteMutation';
 import { useDeleteNoteMutation } from '../../../hooks/network/note/useDeleteNoteMutation';
+import { useDeleteFileMutation } from '../../../hooks/network/files/useDeleteFileMutation.ts';
 import { INote } from '../../../types/note.types.ts';
 
 import { EditNoteModal } from './EditNoteModal/EditNoteModal.tsx'
-import { ButtonHandler } from './Card';
 
 import "./Card.css"
-import { useDeleteFileMutation } from '../../../hooks/network/upload/useDeleteFileMutation.ts';
 
 interface CardProps {
     note: INote
 };
 
 export const Card: FC<CardProps> = ({ note }) => {
-    const [isCopied, setIsCopied] = useState(false);
+    const [hasCopied, setHasCopied] = useState(false);
     const timeoutRef = useRef<number>(0);
 
     const updateNoteMutation = useUpdateNoteMutation({ queryKey: ['notes'] });
     const deleteNoteMutation = useDeleteNoteMutation({ queryKey: ['notes'] });
-
     const deleteFileMutation = useDeleteFileMutation({});
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,6 +42,42 @@ export const Card: FC<CardProps> = ({ note }) => {
                 hour12: true
             }
         )} · ${dateCreatedString.substring(4, 10)}, ${dateCreatedString.substring(11, 15)}`
+
+    const handleToggleFavorite = async () => {
+        await updateNoteMutation.mutateAsync({
+            pathParams: { noteId: note._id },
+            payload: { isFavorite: !note.isFavorite }
+        });
+    }
+
+    const handleDeleteNote = async () => {
+        await deleteNoteMutation.mutateAsync({
+            pathParams: { noteId: note._id }
+        });
+
+        await deleteFileMutation.mutateAsync({
+            payload: {
+                files: [note.audio ?? '', ...(note.images ?? [])]
+            }
+        });
+
+    }
+
+    const handleCopyNote = async () => {
+        if (hasCopied)
+            return;
+
+        await navigator.clipboard.writeText(`${note.title}\n${note.description}`);
+
+        setHasCopied(true);
+
+        if (timeoutRef.current)
+            clearTimeout(timeoutRef.current);
+
+        timeoutRef.current = setTimeout(() => {
+            setHasCopied(false);
+        }, 2000);
+    }
 
     return (
         <div className="card">
@@ -72,20 +106,22 @@ export const Card: FC<CardProps> = ({ note }) => {
             )}
 
             <div className="card-buttons-container">
-                <button className='card-favorite-button' onClick={() => ButtonHandler.favoriteOnClick(updateNoteMutation, note._id, note.isFavorite)}>
-                    {note.isFavorite ? (
-                        <FaStar />
-                    ) : (
-                        <FaRegStar />
-                    )}
+                <button className='card-favorite-button' onClick={handleToggleFavorite}>
+                    {
+                        note.isFavorite ? (
+                            <FaStar />
+                        ) : (
+                            <FaRegStar />
+                        )
+                    }
                 </button>
 
-                <button className='card-copy-button' onClick={() => ButtonHandler.copyOnClick(note.title, note.description, setIsCopied, timeoutRef)}>
-                    {isCopied && (<div className="card-copied-tooltip">Copied to clipboard!</div>)}
+                <button className='card-copy-button' onClick={handleCopyNote}>
+                    {hasCopied && (<div className="card-copied-tooltip">Copied to clipboard!</div>)}
                     <FaRegCopy />
                 </button>
 
-                <button className='card-delete-button' onClick={async () => await ButtonHandler.deleteOnClick(deleteNoteMutation, deleteFileMutation, note)}>
+                <button className='card-delete-button' onClick={handleDeleteNote}>
                     <RiDeleteBin6Line />
                 </button>
 

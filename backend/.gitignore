@@ -8,3 +8,5 @@ config.js
 config/*.env.*
 
 !config/.env.example
+
+assets
