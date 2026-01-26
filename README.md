@@ -1,6 +1,6 @@
 # Notes-app
 
-This is a simple to-do notes application built upon the MERN stack, that has advanced features such as Speech Recognition & Transcription, Recording audio, Storing recorded audio and images in AWS S3 buckets, Authentication and Authorization using JWT, input validation using validator, storing data using MongoDB, sending tokens securely to the client using HTTP only cookies, mail verification etc.
+This is a simple to-do notes application built upon the MERN stack, that has advanced features such as Speech Recognition & Transcription, Recording audio, Storing recorded audio and images in the backend using Multer, Authentication and Authorization using JWT, input validation using validator, storing data using MongoDB, sending tokens securely to the client using HTTP only cookies, mail verification etc.
 
 This project was initially an assignment for a full stack web developer job role, however due to unrealistic requirements and/or due to me not possessing the required skills at that time, decided to turn this into a learning project instead, through which I have learnt JWT, Authentication & Authorization, Backend<->Frontend communication, Caching, AWS S3, Mailing from code, Backend security against XSS and XSRF, etc.
 

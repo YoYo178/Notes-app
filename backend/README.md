@@ -3,7 +3,7 @@
 This project was created with [express-generator-typescript](https://github.com/seanpmaxwell/express-generator-typescript).
 
 ### Libraries used:
-- `@aws-sdk/client-s3` and `@aws-sdk/s3-request-presigner` for backend communicating with AWS S3 and issuing pre-signed GET and PUT URLs.
+- `multer` for handling uploading and deleting of files.
 - `bcrypt` for hashing passwords.
 - `dotenv` and `jet-env` for preparing environmental variables to use in code.
 - `express` for core logic of the application.
@@ -65,12 +65,6 @@ A `dist` folder will be created along with the built JavaScript files, which can
 - `ACCESS_TOKEN_SECRET` - Secret string for signing Access Tokens.
 - `REFRESH_TOKEN_SECRET`- Secret string for signing Refresh tokens.
 - `RESET_PASSWORD_ACCESS_TOKEN_SECRET` - Secret string for signing special, short-lived tokens used only for resetting password in case of account recovery.
-
-#### AWS S3:
-- `AWS_REGION` - The region in which the AWS S3 Bucket is created.
-- `AWS_BUCKET_NAME` - The AWS S3 bucket name.
-- `AWS_ACCESS_KEY_ID` - AWS S3 Access Key ID.
-- `AWS_SECRET_ACCESS_KEY` - AWS S3 Secret Access Key.
 
 #### SMTP:
 - `SMTP_MOCK` (Boolean) - Whether to use Fake email service such as Ethereal or use real email service.
