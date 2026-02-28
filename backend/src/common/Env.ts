@@ -1,7 +1,4 @@
 import jetEnv, { bool, num, str } from 'jet-env';
-import { isValueOf } from 'jet-validators';
-
-import { NODE_ENVS } from './constants';
 
 
 /******************************************************************************
@@ -9,7 +6,7 @@ import { NODE_ENVS } from './constants';
 ******************************************************************************/
 
 export default jetEnv({
-  NodeEnv: isValueOf(NODE_ENVS),  
+  NodeEnv: str,
   
   /* App */
   AppName: str,

@@ -10,7 +10,7 @@ import cookieParser from 'cookie-parser';
 import BaseRouter from '@src/routes';
 
 import Env from '@src/common/Env';
-import HTTPS_STATUS_CODES, { HttpStatusCodes } from '@src/common/HTTP_STATUS_CODES';
+import HTTPS_STATUS_CODES from '@src/common/HTTP_STATUS_CODES';
 import { RouteError } from '@src/common/route-errors';
 import { NODE_ENVS } from '@src/common/constants';
 
@@ -86,9 +86,8 @@ app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
   if (Env.NodeEnv !== NODE_ENVS.Test.valueOf()) {
     logger.err(err, true);
   }
-  let status: HttpStatusCodes = HTTPS_STATUS_CODES.BadRequest;
   if (err instanceof RouteError) {
-    status = err.status;
+    const status = err.status;
     res.status(status).json({ error: err.message });
   }
   return next(err);

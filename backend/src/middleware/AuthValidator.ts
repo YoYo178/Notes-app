@@ -104,7 +104,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
     return;
   }
 
-  let userID: string | null = null;
+  let userID: string;
 
   // Check for user's refresh token first, make sure it's valid
   try {
