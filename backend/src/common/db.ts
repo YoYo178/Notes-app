@@ -21,7 +21,7 @@ export async function connectDB() {
 
     await mongoose.connect(mongoURI);
 
-    logger.info(`Connected to MongoDB (${ENV.NODE_ENV})`);
+    logger.info('Connected to MongoDB');
   } catch (error) {
     logger.error('An error occured while connecting to MongoDB! More details below:');
     logger.error(error);
