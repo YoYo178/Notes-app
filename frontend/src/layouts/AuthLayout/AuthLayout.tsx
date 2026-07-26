@@ -1,11 +1,11 @@
-import { Outlet } from "react-router-dom"
+import { Outlet } from 'react-router-dom';
 
-import "./AuthLayout.css"
+import './AuthLayout.css';
 
 export const AuthLayout = () => {
   return (
-    <div className="auth-form-container">
+    <div className='auth-form-container'>
       <Outlet />
     </div>
-  )
-}
+  );
+};

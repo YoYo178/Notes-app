@@ -1,9 +1,7 @@
-import { FC } from "react"
+import { FC } from 'react';
 
-import { SplashModal } from "../components/SplashModal/SplashModal"
+import { SplashModal } from '../components/SplashModal/SplashModal';
 
 export const Home: FC = () => {
-  return (
-    <SplashModal />
-  )
-}
+  return <SplashModal />;
+};

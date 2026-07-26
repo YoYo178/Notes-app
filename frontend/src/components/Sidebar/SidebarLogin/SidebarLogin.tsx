@@ -1,9 +1,11 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
-import "./SidebarLogin.css"
+import './SidebarLogin.css';
 
 export const SidebarLogin = () => {
   return (
-    <Link to="/login" className='sidebar-login-btn'>Login/Sign-up</Link>
-  )
-}
+    <Link to='/login' className='sidebar-login-btn'>
+      Login/Sign-up
+    </Link>
+  );
+};

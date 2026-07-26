@@ -1,66 +1,66 @@
 .pm-backdrop {
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    background-color: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: rgba(0, 0, 0, 0.6);
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pm {
-    width: 60%;
-    min-width: fit-content;
-    height: 80%;
-    background-color: rgb(255, 255, 255);
-    padding: 2rem;
-    border-radius: 1rem;
-    border: 1px solid #d0d4d9;
-    /* box-shadow: 0px 0px 5px 1px #292929; */
+  width: 60%;
+  min-width: fit-content;
+  height: 80%;
+  background-color: rgb(255, 255, 255);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid #d0d4d9;
+  /* box-shadow: 0px 0px 5px 1px #292929; */
 
-    font-family: 'Inter', sans-serif;
-    font-weight: bold;
-    color: #1b1b1b;
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+  color: #1b1b1b;
 
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .pm-header {
-    display: flex;
-    justify-content: space-between;
-    color: grey;
+  display: flex;
+  justify-content: space-between;
+  color: grey;
 }
 
 .pm-close-button {
-    font-size: 2rem;
-    padding: 0.4rem;
-    border-radius: 8px;
-    border: none;
-    background-color: transparent;
+  font-size: 2rem;
+  padding: 0.4rem;
+  border-radius: 8px;
+  border: none;
+  background-color: transparent;
 
-    display: flex;
+  display: flex;
 
-    transform: translate(1rem, -1rem);
+  transform: translate(1rem, -1rem);
 }
 
 .pm-close-button:hover {
-    background-color: rgb(216, 216, 216);
-    cursor: pointer;
+  background-color: rgb(216, 216, 216);
+  cursor: pointer;
 }
 
 .pm-close-button-icon {
-    color: grey;
+  color: grey;
 }
 
 .pm-fields {
-    display: flex;
-    flex-direction: column;
-    height: calc(100% - 6rem);
-    gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 6rem);
+  gap: 2rem;
 }
 
 .pm-field-username-container,
@@ -69,14 +69,14 @@
 .pm-field-current-password-container,
 .pm-field-new-password-container,
 .pm-field-confirm-new-password-container {
-    display: flex;
-    gap: 1rem;
+  display: flex;
+  gap: 1rem;
 }
 
 .pm-field-password-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .pm-field-username-label,
@@ -85,7 +85,7 @@
 .pm-field-current-password-label,
 .pm-field-new-password-label,
 .pm-field-confirm-new-password-label {
-    min-width: max(12rem, 30%)
+  min-width: max(12rem, 30%);
 }
 
 .pm-field-username,
@@ -94,76 +94,76 @@
 .pm-field-current-password,
 .pm-field-new-password,
 .pm-field-confirm-new-password {
-    padding: 0.8rem 1rem;
-    border-radius: 8px;
-    border: 1px solid #858585;
-    width: 25rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #858585;
+  width: 25rem;
 }
 
 .pm-field-username:hover {
-    cursor: not-allowed
+  cursor: not-allowed;
 }
 
 .pm-footer {
-    flex: 1;
+  flex: 1;
 
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .pm-field-id-container {
-    display: flex;
-    align-items: center;
-    justify-self: flex-start;
+  display: flex;
+  align-items: center;
+  justify-self: flex-start;
 
-    gap: 0.5rem;
-    color: grey;
+  gap: 0.5rem;
+  color: grey;
 }
 
 .pm-delete-acc-button {
-    margin-left: auto;
-    padding: 0.7rem;
-    border-radius: 8px;
+  margin-left: auto;
+  padding: 0.7rem;
+  border-radius: 8px;
 
-    display: flex;
-    gap: 0.4rem;
+  display: flex;
+  gap: 0.4rem;
 
-    /* Properties needed after changing from div to button */
-    font-size: 1rem;
-    outline: none;
-    border: none;
-    background-color: red;
+  /* Properties needed after changing from div to button */
+  font-size: 1rem;
+  outline: none;
+  border: none;
+  background-color: red;
 
-    font-family: 'Inter', sans-serif;
-    font-weight: bold;
-    color: white;
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+  color: white;
 }
 
 .pm-delete-acc-button:hover {
-    background-color: rgb(221, 0, 0);
+  background-color: rgb(221, 0, 0);
 
-    /* Properties needed after changing from div to button */
-    cursor: pointer;
+  /* Properties needed after changing from div to button */
+  cursor: pointer;
 }
 
 .pm-check-button {
-    margin-left: 1rem;
-    padding: 0.7rem;
-    border-radius: 8px;
-    color: grey;
+  margin-left: 1rem;
+  padding: 0.7rem;
+  border-radius: 8px;
+  color: grey;
 
-    display: flex;
+  display: flex;
 
-    /* Properties needed after changing from div to button */
-    font-size: 1rem;
-    outline: none;
-    border: none;
-    background-color: transparent;
+  /* Properties needed after changing from div to button */
+  font-size: 1rem;
+  outline: none;
+  border: none;
+  background-color: transparent;
 }
 
 .pm-check-button:hover {
-    background-color: rgb(216, 216, 216);
+  background-color: rgb(216, 216, 216);
 
-    /* Properties needed after changing from div to button */
-    cursor: pointer;
+  /* Properties needed after changing from div to button */
+  cursor: pointer;
 }

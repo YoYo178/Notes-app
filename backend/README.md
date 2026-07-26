@@ -3,6 +3,7 @@
 This project was created with [express-generator-typescript](https://github.com/seanpmaxwell/express-generator-typescript).
 
 ### Libraries used:
+
 - `multer` for handling uploading and deleting of files.
 - `bcrypt` for hashing passwords.
 - `dotenv` and `jet-env` for preparing environmental variables to use in code.
@@ -15,9 +16,10 @@ This project was created with [express-generator-typescript](https://github.com/
 - `mongoose` ORM for managing MongoDB operations.
 - `morgan` for logging requests and responses with appropriate colors as their status codes.
 - `nodemailer` for sending emails from code for mail verification.
-    - If `SMTP_MOCK` environment variable is set to true, `nodemailer` uses Ethereal instead of a real SMTP service.
+  - If `SMTP_MOCK` environment variable is set to true, `nodemailer` uses Ethereal instead of a real SMTP service.
 
 ### Middlewares used:
+
 - `cookie-parser` for parsing cookies from incoming requests.
 - `cors` for configuring CORS and setting allowed origins.
 - `express-rate-limit` for managing rate limits.
@@ -25,14 +27,18 @@ This project was created with [express-generator-typescript](https://github.com/
 - `AuthValidator` (Custom) for managing Authentication.
 
 ## Running the project
+
 Assuming you have the project cloned, navigate to the project folder and run the shown commands:
+
 ### Install dependencies
+
 ```bash
 cd backend
 pnpm install
 ```
 
 ### Run the web app
+
 ```bash
 pnpm run dev
 # OR
@@ -42,37 +48,53 @@ pnpm run dev:hot # Features hot-reloading
 The app will automatically start listening for requests at `http://127.0.0.1:3000` or `http://localhost:3000` or as specified in the `PORT` environment variable.
 
 ## Building the web application
+
 Make sure you have all dependencies installed.
 
 ```bash
 pnpm run build
 ```
+
 A `dist` folder will be created along with the built JavaScript files, which can be run using the `start` script (`pnpm run start` OR `pnpm start`)
 
 ## Setting environment variables
+
 ### Rename the `.env.example` file to `.env` and add the values accordingly.
+
 - #### Optionally you can also create environment specific .env files such as `.env.development` and `.env.production`.
+
 #### General:
+
 - `NODE_ENV` - The environment to run the application in:
-    - `development` or `production`
+  - `development` or `production`
+
 #### App:
+
 - `APP_NAME` - Application name, used in mails.
 - `PORT` - The port at which the application will listen at for incoming requests.
 - `FRONTEND_ORIGIN` - The URL of the application's frontend, used to manage CORS.
+
 #### MongoDB:
+
 - `MONGODB_URI` - MongoDB URL (Atlas or Local)
+
 #### Token Secrets:
+
 - `ACCESS_TOKEN_SECRET` - Secret string for signing Access Tokens.
 - `REFRESH_TOKEN_SECRET`- Secret string for signing Refresh tokens.
 - `RESET_PASSWORD_ACCESS_TOKEN_SECRET` - Secret string for signing special, short-lived tokens used only for resetting password in case of account recovery.
 
 #### SMTP:
+
 - `SMTP_MOCK` (Boolean) - Whether to use Fake email service such as Ethereal or use real email service.
 - `SMTP_PROVIDER` - The provider of the SMTP service.
 - `SMTP_EMAIL` - The Email address from the SMTP service to use.
 - `SMTP_PASS` - The password for the SMTP Email address.
 
 ## Other Available Scripts
+
 #### `pnpm run clean-install`: Removes the existing `node_modules/` folder, `package-lock.json`, and reinstall all library modules.
+
 #### `pnpm run lint`: Checks for linting errors.
+
 #### `pnpm run type-check`: Check for typescript errors.

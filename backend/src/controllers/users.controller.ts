@@ -23,7 +23,13 @@ const getLoggedInUser = (req: Request, res: Response) => {
  * @returns HTTP 200, 400, 404, 409
  */
 const updateUser = async (req: Request, res: Response) => {
-  const { currentPassword = '', newPassword, confirmNewPassword, displayName, email = '' }: Record<string, string> = req.body;
+  const {
+    currentPassword = '',
+    newPassword,
+    confirmNewPassword,
+    displayName,
+    email = '',
+  }: Record<string, string> = req.body;
 
   if (!validator.isEmail(email)) {
     res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Invalid Email' });
@@ -52,7 +58,9 @@ const updateUser = async (req: Request, res: Response) => {
     }
 
     if (!newPassword || !confirmNewPassword) {
-      res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Both new password fields are required' });
+      res
+        .status(HTTP_STATUS_CODES.BadRequest)
+        .send({ message: 'Both new password fields are required' });
       return;
     }
 

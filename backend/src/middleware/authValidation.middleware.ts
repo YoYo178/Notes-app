@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
 
 import HTTP_STATUS_CODES from '@src/common/HttpStatusCodes.js';
-import ENV, {NODE_ENVS} from '@src/common/env.js';
+import ENV, { NODE_ENVS } from '@src/common/env.js';
 
 import cookieConfig from '@src/config/cookies.config.js';
 
@@ -28,10 +28,13 @@ const AuthValidator = async (req: Request, res: Response, next: NextFunction) =>
 
     try {
       // Decode user's password reset access token
-      const decoded = jwt.verify(resetPasswordAccessToken, ENV.RESET_PASSWORD_ACCESS_TOKEN_SECRET) as {
-                userID: string,
-                purpose: 'reset-password' | 'user-verification',
-            };
+      const decoded = jwt.verify(
+        resetPasswordAccessToken,
+        ENV.RESET_PASSWORD_ACCESS_TOKEN_SECRET,
+      ) as {
+        userID: string;
+        purpose: 'reset-password' | 'user-verification';
+      };
 
       if (wantsToChangePassword && decoded.purpose === 'reset-password') {
         req.recoveringUser = { id: decoded.userID };
@@ -42,17 +45,20 @@ const AuthValidator = async (req: Request, res: Response, next: NextFunction) =>
       // Need to check for jwt.TokenExpiredError first
       // because it inherits from jwt.JsonWebTokenError
       if (err instanceof jwt.TokenExpiredError) {
-        res.status(HTTP_STATUS_CODES.Unauthorized).send({ message: err?.message === 'jwt expired' ? 'Expired token' : err?.message });
+        res
+          .status(HTTP_STATUS_CODES.Unauthorized)
+          .send({ message: err?.message === 'jwt expired' ? 'Expired token' : err?.message });
         return;
       } else if (err instanceof jwt.JsonWebTokenError) {
-        res.status(HTTP_STATUS_CODES.BadRequest).send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
+        res
+          .status(HTTP_STATUS_CODES.BadRequest)
+          .send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
         return;
       }
 
       if (err instanceof Error)
         res.status(HTTP_STATUS_CODES.InternalServerError).json({ message: err.message });
-      else
-        res.send(HTTP_STATUS_CODES.InternalServerError);
+      else res.send(HTTP_STATUS_CODES.InternalServerError);
 
       return;
     }
@@ -66,12 +72,12 @@ const AuthValidator = async (req: Request, res: Response, next: NextFunction) =>
 
   // Check if the access token is in token blacklist
   /** TODOs:
-     * - Move this check into a global middleware
-     *   so we can restrict access to our entire API.
-     *   i.e - User cannot login either, until their token expires
-     * 
-     * - Use IP instead of token, makes it more secure
-     */
+   * - Move this check into a global middleware
+   *   so we can restrict access to our entire API.
+   *   i.e - User cannot login either, until their token expires
+   *
+   * - Use IP instead of token, makes it more secure
+   */
   if (accessToken && tokenBlacklist.includes(accessToken)) {
     res.status(HTTP_STATUS_CODES.Forbidden).send({ message: 'Forbidden' });
     return;
@@ -83,29 +89,32 @@ const AuthValidator = async (req: Request, res: Response, next: NextFunction) =>
   try {
     // Decode user's refresh token
     const decoded = jwt.verify(refreshToken, ENV.REFRESH_TOKEN_SECRET) as {
-            User: {
-                id: string,
-                username: string,
-            },
-            exp: number,
-            iat: number,
-        };
+      User: {
+        id: string;
+        username: string;
+      };
+      exp: number;
+      iat: number;
+    };
     userID = decoded.User.id;
   } catch (err) {
     // Need to check for jwt.TokenExpiredError first
     // because it inherits from jwt.JsonWebTokenError
     if (err instanceof jwt.TokenExpiredError) {
-      res.status(HTTP_STATUS_CODES.Unauthorized).send({ message: err?.message === 'jwt expired' ? 'Expired token' : err?.message });
+      res
+        .status(HTTP_STATUS_CODES.Unauthorized)
+        .send({ message: err?.message === 'jwt expired' ? 'Expired token' : err?.message });
       return;
     } else if (err instanceof jwt.JsonWebTokenError) {
-      res.status(HTTP_STATUS_CODES.BadRequest).send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
+      res
+        .status(HTTP_STATUS_CODES.BadRequest)
+        .send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
       return;
     }
 
     if (err instanceof Error)
       res.status(HTTP_STATUS_CODES.InternalServerError).json({ message: err.message });
-    else
-      res.send(HTTP_STATUS_CODES.InternalServerError);
+    else res.send(HTTP_STATUS_CODES.InternalServerError);
 
     return;
   }
@@ -123,7 +132,12 @@ const AuthValidator = async (req: Request, res: Response, next: NextFunction) =>
     res.cookie('jwt_at', accessToken, cookieConfig);
 
     // Add the user's id and username in the request for other handlers
-    req.user = { id: user._id.toString(), username: user.username, displayName: user.displayName, email: user.email };
+    req.user = {
+      id: user._id.toString(),
+      username: user.username,
+      displayName: user.displayName,
+      email: user.email,
+    };
 
     // Move to other routes
     next();
@@ -135,14 +149,14 @@ const AuthValidator = async (req: Request, res: Response, next: NextFunction) =>
   try {
     // Decode user's access token
     const decoded = jwt.verify(accessToken, ENV.ACCESS_TOKEN_SECRET) as {
-            User: {
-                id: string,
-                username: string,
-                displayName: string,
-            },
-            exp: number,
-            iat: number,
-        };
+      User: {
+        id: string;
+        username: string;
+        displayName: string;
+      };
+      exp: number;
+      iat: number;
+    };
 
     // Make sure the access token and refresh token belong to the same account
     // It's a malicious attempt otherwise
@@ -164,16 +178,26 @@ const AuthValidator = async (req: Request, res: Response, next: NextFunction) =>
       tokenBlacklist.push(accessToken);
 
       // Remove the token from blacklist after it expires
-      setTimeout(() => {
-        tokenBlacklist.shift();
-      }, (decoded.exp * 1000) - Date.now());
+      setTimeout(
+        () => {
+          tokenBlacklist.shift();
+        },
+        decoded.exp * 1000 - Date.now(),
+      );
 
-      res.status(HTTP_STATUS_CODES.Conflict).send({ message: 'Malicious attempt detected, You have been added to the blacklist' });
+      res
+        .status(HTTP_STATUS_CODES.Conflict)
+        .send({ message: 'Malicious attempt detected, You have been added to the blacklist' });
       return;
     }
 
     // Everything was valid, add the user's id and username in the request for other handlers
-    req.user = { id: decoded.User.id, username: decoded.User.username, displayName: decoded.User.displayName, email: user.email };
+    req.user = {
+      id: decoded.User.id,
+      username: decoded.User.username,
+      displayName: decoded.User.displayName,
+      email: user.email,
+    };
 
     // Move to other routes
     next();
@@ -189,20 +213,26 @@ const AuthValidator = async (req: Request, res: Response, next: NextFunction) =>
       res.cookie('jwt_at', accessToken, cookieConfig);
 
       // Add the user's id and username in the request for other handlers
-      req.user = { id: user._id.toString(), username: user.username, displayName: user.displayName, email: user.email };
+      req.user = {
+        id: user._id.toString(),
+        username: user.username,
+        displayName: user.displayName,
+        email: user.email,
+      };
 
       // Move to other routes
       next();
       return;
     } else if (err instanceof jwt.JsonWebTokenError) {
-      res.status(HTTP_STATUS_CODES.BadRequest).send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
+      res
+        .status(HTTP_STATUS_CODES.BadRequest)
+        .send({ message: err?.message === 'invalid signature' ? 'Invalid token' : err?.message });
       return;
     }
 
     if (err instanceof Error)
       res.status(HTTP_STATUS_CODES.InternalServerError).json({ message: err.message });
-    else
-      res.send(HTTP_STATUS_CODES.InternalServerError);
+    else res.send(HTTP_STATUS_CODES.InternalServerError);
 
     return;
   }

@@ -1,43 +1,46 @@
-import { ReactSetState, TMutation } from "../../../types/react.types";
+import { ReactSetState, TMutation } from '../../../types/react.types';
 
 /***** Button handlers *****/
-function dropdownButtonOnClick(setAngle: ReactSetState<number>, angle: number, setIsDropdownMenuVisible: ReactSetState<boolean>) {
-    setAngle(180 - angle);
-    setIsDropdownMenuVisible((180 - angle) === 180);
+function dropdownButtonOnClick(
+  setAngle: ReactSetState<number>,
+  angle: number,
+  setIsDropdownMenuVisible: ReactSetState<boolean>,
+) {
+  setAngle(180 - angle);
+  setIsDropdownMenuVisible(180 - angle === 180);
 }
 
 /***** Dropdown option handlers *****/
 interface ProfileParameters {
-    isProfileModalOpen: boolean,
-    setIsProfileModalOpen: ReactSetState<boolean>
+  isProfileModalOpen: boolean;
+  setIsProfileModalOpen: ReactSetState<boolean>;
 }
 function profileOnClick(params: ProfileParameters) {
-    const { isProfileModalOpen, setIsProfileModalOpen } = params;
+  const { isProfileModalOpen, setIsProfileModalOpen } = params;
 
-    if (isProfileModalOpen === null || isProfileModalOpen === undefined || !setIsProfileModalOpen)
-        return;
+  if (isProfileModalOpen === null || isProfileModalOpen === undefined || !setIsProfileModalOpen)
+    return;
 
-    setIsProfileModalOpen(!isProfileModalOpen);
+  setIsProfileModalOpen(!isProfileModalOpen);
 }
 
 interface LogoutParameters {
-    logoutMutation: TMutation<unknown>
+  logoutMutation: TMutation<unknown>;
 }
 function logOutOnClick(params: LogoutParameters) {
-    const { logoutMutation } = params;
+  const { logoutMutation } = params;
 
-    if (!logoutMutation)
-        return;
+  if (!logoutMutation) return;
 
-    logoutMutation.mutate({});
+  logoutMutation.mutate({});
 }
 
 /***** Handler exports *****/
 export const ButtonHandler = {
-    dropdownButtonOnClick
-}
+  dropdownButtonOnClick,
+};
 
 export const DropdownOptionHandler = {
-    profileOnClick,
-    logOutOnClick
-}
+  profileOnClick,
+  logOutOnClick,
+};

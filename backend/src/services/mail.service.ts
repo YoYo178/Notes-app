@@ -54,28 +54,35 @@ class MailService {
     html,
     attachments,
   }: {
-        to: string | Mail.Address | (string | Mail.Address)[],
-        subject: string,
-        text?: string | Buffer | Stream.Readable | Mail.AttachmentLike,
-        html?: string | Buffer | Stream.Readable | Mail.AttachmentLike,
-        attachments?: Mail.Attachment[],
-    }) {
-    if (!this.transporter)
-      return;
+    to: string | Mail.Address | (string | Mail.Address)[];
+    subject: string;
+    text?: string | Buffer | Stream.Readable | Mail.AttachmentLike;
+    html?: string | Buffer | Stream.Readable | Mail.AttachmentLike;
+    attachments?: Mail.Attachment[];
+  }) {
+    if (!this.transporter) return;
 
     if (ENV.SMTP_MOCK) {
       logger.info('New mail draft:');
-      logger.info({ from: `"${ENV.APP_NAME}" <${ENV.SMTP_EMAIL}>`, to, subject, text, html, attachments });
+      logger.info({
+        from: `"${ENV.APP_NAME}" <${ENV.SMTP_EMAIL}>`,
+        to,
+        subject,
+        text,
+        html,
+        attachments,
+      });
     }
 
-    const info: SESTransport.SentMessageInfo | SMTPTransport.SentMessageInfo = await this.transporter.sendMail({
-      from: `"${ENV.APP_NAME}" <${ENV.SMTP_EMAIL}>`,
-      to,
-      subject,
-      text,
-      html,
-      attachments,
-    });
+    const info: SESTransport.SentMessageInfo | SMTPTransport.SentMessageInfo =
+      await this.transporter.sendMail({
+        from: `"${ENV.APP_NAME}" <${ENV.SMTP_EMAIL}>`,
+        to,
+        subject,
+        text,
+        html,
+        attachments,
+      });
 
     if (ENV.SMTP_MOCK) {
       logger.info('Message sent:');
@@ -88,4 +95,4 @@ class MailService {
   }
 }
 
-export const mailService = new MailService(); 
+export const mailService = new MailService();

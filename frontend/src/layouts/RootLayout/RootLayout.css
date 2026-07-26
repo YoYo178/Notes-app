@@ -11,9 +11,9 @@
   grid-template-columns: auto 1.8fr 0.2fr;
   grid-template-rows: 0.2fr 1.8fr 1fr;
   grid-template-areas:
-    "sidebar search-box sort-button"
-    "sidebar main-content main-content"
-    "sidebar main-content main-content";
+    'sidebar search-box sort-button'
+    'sidebar main-content main-content'
+    'sidebar main-content main-content';
   min-height: 100vh;
 }
 
@@ -29,8 +29,8 @@
 @media screen and (max-width: 680px) {
   .app-container {
     grid-template-areas:
-      "sidebar-hamburger-button search-box sort-button"
-      "main-content main-content main-content"
-      "main-content main-content main-content";
+      'sidebar-hamburger-button search-box sort-button'
+      'main-content main-content main-content'
+      'main-content main-content main-content';
   }
 }

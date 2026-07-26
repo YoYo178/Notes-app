@@ -7,8 +7,6 @@ const UsersRouter = Router();
 
 UsersRouter.get('/me', getLoggedInUser);
 
-UsersRouter.route('/')
-  .patch(updateUser)
-  .delete(deleteUser);
+UsersRouter.route('/').patch(updateUser).delete(deleteUser);
 
 export default UsersRouter;

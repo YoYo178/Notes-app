@@ -1,9 +1,9 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { useNotesContext } from '../contexts/NotesContext';
 
-import { CardContainer } from '../components/CardContainer/CardContainer'
+import { CardContainer } from '../components/CardContainer/CardContainer';
 
 export const Dashboard: FC = () => {
   const { setFavoritesOnly } = useNotesContext();
@@ -11,9 +11,7 @@ export const Dashboard: FC = () => {
 
   useEffect(() => {
     setFavoritesOnly(location.pathname.includes('/favorites'));
-  }, [location.pathname])
+  }, [location.pathname]);
 
-  return (
-    <CardContainer />
-  )
-} 
+  return <CardContainer />;
+};

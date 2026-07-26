@@ -1,12 +1,12 @@
-import { FC, useRef, useState } from "react";
+import { FC, useRef, useState } from 'react';
 
-import { GrSort } from "react-icons/gr";
+import { GrSort } from 'react-icons/gr';
 
-import { useNotesContext } from "../../contexts/NotesContext.tsx";
+import { useNotesContext } from '../../contexts/NotesContext.tsx';
 
-import { SortDropdownMenu } from './SortDropdownMenu/SortDropdownMenu.tsx'
+import { SortDropdownMenu } from './SortDropdownMenu/SortDropdownMenu.tsx';
 
-import "./SortButton.css"
+import './SortButton.css';
 
 interface SortButtonProps {
   isSearchBoxOpen: boolean;
@@ -15,15 +15,14 @@ interface SortButtonProps {
 
 export const SortButton: FC<SortButtonProps> = ({ isSearchBoxOpen, isMediaQueryActive }) => {
   const { sortOrder, setSortOrder } = useNotesContext();
-  const [isDropdownMenuOpen, setIsDropdownMenuOpen] = useState(false)
+  const [isDropdownMenuOpen, setIsDropdownMenuOpen] = useState(false);
 
   const sortButtonRef = useRef<HTMLButtonElement>(null);
 
-  if (isMediaQueryActive && isSearchBoxOpen)
-    return null;
+  if (isMediaQueryActive && isSearchBoxOpen) return null;
 
   return (
-    <button ref={sortButtonRef} className="sort-button" onClick={() => setIsDropdownMenuOpen(true)}>
+    <button ref={sortButtonRef} className='sort-button' onClick={() => setIsDropdownMenuOpen(true)}>
       <GrSort className='sort-button-icon' />
       <span className='sort-button-text'>Sort</span>
       <SortDropdownMenu
@@ -34,5 +33,5 @@ export const SortButton: FC<SortButtonProps> = ({ isSearchBoxOpen, isMediaQueryA
         setSortOrder={setSortOrder}
       />
     </button>
-  )
-}
+  );
+};

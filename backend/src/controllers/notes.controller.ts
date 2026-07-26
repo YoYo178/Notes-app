@@ -65,13 +65,20 @@ const createNote = async (req: Request, res: Response) => {
     return;
   }
 
-  const { title, description, images, isText, isFavorite, duration, audio = '' } = req.body as INote;
+  const {
+    title,
+    description,
+    images,
+    isText,
+    isFavorite,
+    duration,
+    audio = '',
+  } = req.body as INote;
 
-  if (
-    !title || !description || duration === undefined ||
-    (isText === undefined || isText === null)
-  ) {
-    res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'All fields except images and isFavorite are required' });
+  if (!title || !description || duration === undefined || isText === undefined || isText === null) {
+    res
+      .status(HTTP_STATUS_CODES.BadRequest)
+      .send({ message: 'All fields except images and isFavorite are required' });
     return;
   }
 
@@ -115,7 +122,10 @@ const updateNote = async (req: Request, res: Response) => {
   }
 
   const { title, description, images, isFavorite } = req.body as {
-    title?: string, description?: string, images?: string[], isFavorite?: boolean,
+    title?: string;
+    description?: string;
+    images?: string[];
+    isFavorite?: boolean;
   };
 
   if (!mongoose.Types.ObjectId.isValid(noteId)) {
@@ -138,7 +148,6 @@ const updateNote = async (req: Request, res: Response) => {
   await note.save();
 
   res.status(HTTP_STATUS_CODES.Ok).send({ message: 'Note updated successfully', data: { note } });
-
 };
 
 /**

@@ -1,23 +1,17 @@
-import { defineConfig } from "oxlint";
+import { defineConfig } from 'oxlint';
 
 export default defineConfig({
-  ignorePatterns: [
-    "**/node_modules/*",
-    "**/*.js",
-    "**/*.mjs",
-  ],
+  ignorePatterns: ['**/node_modules/*', '**/*.js', '**/*.mjs'],
 
   env: {
     node: true,
   },
 
-  plugins: [
-    "typescript",
-  ],
+  plugins: ['typescript'],
 
   rules: {
-    "no-unused-vars": "warn",
-    "no-console": "warn",
-    "prefer-const": "warn",
+    'no-unused-vars': 'warn',
+    'no-console': 'warn',
+    'prefer-const': 'warn',
   },
 });

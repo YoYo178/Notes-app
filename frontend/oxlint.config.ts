@@ -1,11 +1,11 @@
-import { defineConfig } from "oxlint";
+import { defineConfig } from 'oxlint';
 
 export default defineConfig({
-  ignorePatterns: ["dist"],
+  ignorePatterns: ['dist'],
 
   env: {
     browser: true,
   },
 
-  plugins: ["typescript", "react"],
+  plugins: ['typescript', 'react'],
 });

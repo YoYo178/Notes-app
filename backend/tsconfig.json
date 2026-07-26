@@ -38,7 +38,5 @@
       "@src/*": ["./src/*"]
     }
   },
-  "exclude": [
-    "oxlint.config.ts"
-  ]
+  "exclude": ["oxlint.config.ts"]
 }

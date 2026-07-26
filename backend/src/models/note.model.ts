@@ -1,14 +1,14 @@
 import mongoose from 'mongoose';
 
 interface INote {
-    user: mongoose.Types.ObjectId;
-    title: string;
-    description: string;
-    images?: string[];
-    audio?: string;
-    isFavorite: boolean;
-    isText: boolean;
-    duration: null | number;
+  user: mongoose.Types.ObjectId;
+  title: string;
+  description: string;
+  images?: string[];
+  audio?: string;
+  isFavorite: boolean;
+  isText: boolean;
+  duration: null | number;
 }
 
 const noteSchema: mongoose.Schema = new mongoose.Schema<INote>(

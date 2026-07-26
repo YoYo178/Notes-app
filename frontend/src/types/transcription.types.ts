@@ -1,22 +1,22 @@
-import { ReactSetState } from "./react.types";
+import { ReactSetState } from './react.types';
 
 export interface TranscriptionState {
-    /* React States */
-    isTranscribing: boolean;
-    setIsTranscribing: ReactSetState<boolean>;
+  /* React States */
+  isTranscribing: boolean;
+  setIsTranscribing: ReactSetState<boolean>;
 
-    hasSpeechRecognitionSupport: boolean;
-    setHasSpeechRecognitionSupport: ReactSetState<boolean>;
+  hasSpeechRecognitionSupport: boolean;
+  setHasSpeechRecognitionSupport: ReactSetState<boolean>;
 
-    hasMicPermissions: boolean;
-    setHasMicPermissions: ReactSetState<boolean>;
+  hasMicPermissions: boolean;
+  setHasMicPermissions: ReactSetState<boolean>;
 
-    transcript: string;
-    setTranscript: ReactSetState<string>;
+  transcript: string;
+  setTranscript: ReactSetState<string>;
 
-    /* Miscellaneous */
-    startTranscribing: () => void;
-    stopTranscribing: () => void;
+  /* Miscellaneous */
+  startTranscribing: () => void;
+  stopTranscribing: () => void;
 
-    deleteTranscription: () => void;
+  deleteTranscription: () => void;
 }

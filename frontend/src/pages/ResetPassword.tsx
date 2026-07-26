@@ -1,9 +1,7 @@
-import { FC } from 'react'
+import { FC } from 'react';
 
-import { ResetPasswordModal } from '../components/ResetPasswordModal/ResetPasswordModal.tsx'
+import { ResetPasswordModal } from '../components/ResetPasswordModal/ResetPasswordModal.tsx';
 
 export const ResetPassword: FC = () => {
-    return (
-        <ResetPasswordModal />
-    )
-}
+  return <ResetPasswordModal />;
+};
