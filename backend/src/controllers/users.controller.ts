@@ -1,6 +1,7 @@
 import { User } from '@src/models/user.model.js';
 import type { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+import argon2 from 'argon2';
 import HTTP_STATUS_CODES from '@src/common/HttpStatusCodes.js';
 import validator from 'validator';
 import cookieConfig from '@src/config/cookies.config.js';
@@ -51,7 +52,9 @@ const updateUser = async (req: Request, res: Response) => {
 
   const isChangingPassword = !!currentPassword || !!newPassword || !!confirmNewPassword;
   if (isChangingPassword) {
-    const passwordMatches = await bcrypt.compare(currentPassword, user.password);
+    const passwordMatches = user.hasLegacyHashing
+      ? await bcrypt.compare(currentPassword, user.password)
+      : await argon2.verify(user.password, currentPassword);
     if (!passwordMatches) {
       res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Invalid password' });
       return;
@@ -69,7 +72,7 @@ const updateUser = async (req: Request, res: Response) => {
       return;
     }
 
-    user.password = await bcrypt.hash(newPassword, 10);
+    user.password = await argon2.hash(newPassword);
   }
 
   user.displayName = displayName ?? user.displayName;

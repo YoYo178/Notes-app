@@ -18,6 +18,7 @@ interface IUser {
   displayName: string;
   username: string;
   password: string;
+  hasLegacyHashing: boolean;
   email: string;
   isVerified: boolean;
   recoveryState: IUserRecoveryState;
@@ -27,6 +28,7 @@ const userSchema: mongoose.Schema = new mongoose.Schema<IUser>({
   displayName: { type: String, required: true },
   username: { type: String, required: true },
   password: { type: String, required: true },
+  hasLegacyHashing: { type: Boolean, default: false },
   email: { type: String, required: true },
   isVerified: { type: Boolean, required: false, default: false },
   recoveryState: { type: userRecoveryStateSchema, required: false, default: () => ({}) },

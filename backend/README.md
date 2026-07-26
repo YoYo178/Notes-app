@@ -5,7 +5,7 @@ This project was created with [express-generator-typescript](https://github.com/
 ### Libraries used:
 
 - `multer` for handling uploading and deleting of files.
-- `bcrypt` for hashing passwords.
+- `argon2` for hashing passwords. (Previously bcrypt, safe migration code added)
 - `dotenv` and `jet-env` for preparing environmental variables to use in code.
 - `express` for core logic of the application.
 - `express-async-handler` for asynchronous request handling and basic level error handling.

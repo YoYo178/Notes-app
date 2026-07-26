@@ -1,3 +1,4 @@
+import argon2 from 'argon2';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
@@ -21,6 +22,7 @@ import {
   sendVerificationMail,
 } from '@src/utils/mail.utils.js';
 import logger from '@src/utils/logger.utils.js';
+import { handleHashMigration } from '@src/utils/auth.utils.js';
 
 const codeCooldownManager = new Map<string, number>();
 const CODE_REQUEST_COOLDOWN = 60 * 1000; // 60 seconds
@@ -69,7 +71,7 @@ const register = async (req: Request, res: Response) => {
     return;
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await argon2.hash(password);
 
   const user = await User.create({
     username,
@@ -78,14 +80,14 @@ const register = async (req: Request, res: Response) => {
     email,
   });
 
-  const code = generateVerificationCode();
+  const code = await argon2.hash(generateVerificationCode());
   const mailInfo = await sendVerificationMail(email, code);
 
   codeCooldownManager.set(user._id.toString(), Date.now() + CODE_REQUEST_COOLDOWN);
 
   await VerificationCode.create({
     user: user._id,
-    code: await bcrypt.hash(code, 10),
+    code,
     purpose: 'user-verification',
     expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL),
   });
@@ -139,7 +141,7 @@ const verify = async (req: Request, res: Response) => {
     return;
   }
 
-  const codeMatches = await bcrypt.compare(code, verificationCode?.code);
+  const codeMatches = await argon2.verify(verificationCode?.code, code);
 
   if (!codeMatches || verificationCode.purpose !== purpose) {
     res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'Invalid verification code' });
@@ -241,7 +243,7 @@ const resendCode = async (req: Request, res: Response) => {
 
   if (verificationCode) await verificationCode.deleteOne();
 
-  const code = generateVerificationCode();
+  const code = await argon2.hash(generateVerificationCode());
 
   let mailInfo: null | undefined | SMTPTransport.SentMessageInfo = null;
 
@@ -252,7 +254,7 @@ const resendCode = async (req: Request, res: Response) => {
 
   await VerificationCode.create({
     user: user._id,
-    code: await bcrypt.hash(code, 10),
+    code,
     purpose,
     expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL),
   });
@@ -278,12 +280,18 @@ const login = async (req: Request, res: Response) => {
 
   const user = await User.findOne({ username }).lean().exec();
 
+  // Added for safe transition from bcrypt-hashed passwords to argon2-hashed passwords
+  if (user?.hasLegacyHashing) await handleHashMigration(user?._id?.toString?.() ?? '', password);
+
   if (!user) {
     res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'User not found' });
     return;
   }
 
-  const passwordMatches = await bcrypt.compare(password, user.password);
+  const passwordMatches = user.hasLegacyHashing
+    ? await bcrypt.compare(password, user.password)
+    : await argon2.verify(user.password, password);
+
   if (!passwordMatches) {
     res.status(HTTP_STATUS_CODES.Unauthorized).send({ message: 'Invalid password' });
     return;
@@ -376,14 +384,14 @@ const recoverAccount = async (req: Request, res: Response) => {
   user.recoveryState.hasSetPassword = false;
   await user.save();
 
-  const code = generateVerificationCode();
+  const code = await argon2.hash(generateVerificationCode());
   const mailInfo = await sendPasswordResetEmail(user.email, code);
 
   codeCooldownManager.set(user._id.toString(), Date.now() + CODE_REQUEST_COOLDOWN);
 
   await VerificationCode.create({
     user: user._id,
-    code: await bcrypt.hash(code, 10),
+    code,
     purpose: 'reset-password',
     expiresAt: new Date(Date.now() + VERIFICATION_CODE_TTL),
   });
@@ -428,7 +436,7 @@ const resetPassword = async (req: Request, res: Response) => {
     return;
   }
 
-  user.password = await bcrypt.hash(password, 10);
+  user.password = await argon2.hash(password);
   user.recoveryState.isRecovering = true;
   user.recoveryState.hasVerifiedMail = true;
   user.recoveryState.hasSetPassword = true; // TODO: might remove later
