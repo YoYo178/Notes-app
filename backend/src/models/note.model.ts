@@ -29,4 +29,4 @@ const noteSchema: mongoose.Schema = new mongoose.Schema<INote>(
 
 const Note = mongoose.model<INote>('notes', noteSchema);
 
-export { INote, Note };
+export { type INote, Note };

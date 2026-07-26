@@ -1,23 +1,26 @@
 import bcrypt from 'bcrypt';
-import logger from 'jet-logger';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
-import { isEmail } from 'validator';
-import { Request, Response } from 'express';
-import expressAsyncHandler from 'express-async-handler';
-import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import validator from 'validator';
+import type { Request, Response } from 'express';
+import SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
 
-import Env from '@src/common/Env';
-import HTTP_STATUS_CODES from '@src/common/HTTP_STATUS_CODES';
+import ENV from '@src/common/env.js';
+import HTTP_STATUS_CODES from '@src/common/HttpStatusCodes.js';
 
-import { User } from '@src/models/User';
-import { VerificationCode } from '@src/models/VerificationCode';
+import { User } from '@src/models/user.model.js';
+import { VerificationCode } from '@src/models/verificationCode.model.js';
 
-import cookieConfig from '@src/config/cookieConfig';
-import { tokenConfig } from '@src/config/tokenConfig';
+import cookieConfig from '@src/config/cookies.config.js';
+import { tokenConfig } from '@src/config/token.config.js';
 
-import { generateVerificationCode, VERIFICATION_CODE_TTL } from '@src/util/code.utils';
-import { obfuscateEmail, sendPasswordResetEmail, sendVerificationMail } from '@src/util/mail.utils';
+import { generateVerificationCode, VERIFICATION_CODE_TTL } from '@src/utils/code.utils.js';
+import {
+  obfuscateEmail,
+  sendPasswordResetEmail,
+  sendVerificationMail,
+} from '@src/utils/mail.utils.js';
+import logger from '@src/utils/logger.utils.js';
 
 const codeCooldownManager = new Map<string, number>();
 const CODE_REQUEST_COOLDOWN = 60 * 1000; // 60 seconds
@@ -27,32 +30,37 @@ const CODE_REQUEST_COOLDOWN = 60 * 1000; // 60 seconds
  * @description Creates a new user.
  * @returns HTTP 201, 400, 409, 500
  */
-const register = expressAsyncHandler(async (req: Request, res: Response) => {
-  const { username, password, confirmPassword, displayName, email }: Record<string, string> = req.body;
+const register = async (req: Request, res: Response) => {
+  const { username, password, confirmPassword, displayName, email }: Record<string, string> =
+    req.body;
 
   if (!username || !password || !confirmPassword || !displayName || !email) {
     res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'All fields are required' });
     return;
   }
 
-  if (!isEmail(email)) {
+  if (!validator.isEmail(email)) {
     res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Invalid email' });
     return;
   }
 
   // Check username, if it's already taken
-  const usernameExists = !!await User.findOne({ username }).select('-password').lean().exec();
+  const usernameExists = !!(await User.findOne({ username }).select('-password').lean().exec());
 
   if (usernameExists) {
-    res.status(HTTP_STATUS_CODES.Conflict).send({ message: 'A user already exists with the provided username' });
+    res
+      .status(HTTP_STATUS_CODES.Conflict)
+      .send({ message: 'A user already exists with the provided username' });
     return;
   }
 
   // Check email, if the user already has an account with this email
-  const userEmailExists = !!await User.findOne({ email }).select('-password').lean().exec();
+  const userEmailExists = !!(await User.findOne({ email }).select('-password').lean().exec());
 
   if (userEmailExists) {
-    res.status(HTTP_STATUS_CODES.Conflict).send({ message: 'A user already exists with the provided email' });
+    res
+      .status(HTTP_STATUS_CODES.Conflict)
+      .send({ message: 'A user already exists with the provided email' });
     return;
   }
 
@@ -86,21 +94,23 @@ const register = expressAsyncHandler(async (req: Request, res: Response) => {
     res.status(HTTP_STATUS_CODES.Created).send({
       message: 'User created successfully',
       id: user._id.toString(),
-      emailLink: !!mailInfo && Env.SmtpMock ? nodemailer.getTestMessageUrl(mailInfo) : null,
+      emailLink: !!mailInfo && ENV.SMTP_MOCK ? nodemailer.getTestMessageUrl(mailInfo) : null,
     });
     return;
   } else {
-    res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured while creating a new user.' });
+    res
+      .status(HTTP_STATUS_CODES.InternalServerError)
+      .send({ message: 'An error occured while creating a new user.' });
   }
-});
+};
 
 /**
  * @route POST /auth/verify
  * @description Used for email verification in case of a new account or account recovery
  * @returns HTTP 200, 400, 403, 404, 500
  */
-const verify = expressAsyncHandler(async (req: Request, res: Response) => {
-  const { id, purpose, code }: Record<string, string> = req.body;
+const verify = async (req: Request, res: Response) => {
+  const { id = '', purpose = '', code = '' }: Record<string, string> = req.body;
 
   if (!id) {
     res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'User ID is required' });
@@ -114,14 +124,18 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
   }
 
   if (user.isVerified && (!user.recoveryState.isRecovering || user.recoveryState.hasVerifiedMail)) {
-    res.status(HTTP_STATUS_CODES.Forbidden).json({ message: 'You have verified your email already' });
+    res
+      .status(HTTP_STATUS_CODES.Forbidden)
+      .json({ message: 'You have verified your email already' });
     return;
   }
 
   const verificationCode = await VerificationCode.findOne({ user: id }).exec();
 
   if (!verificationCode) {
-    res.status(HTTP_STATUS_CODES.NotFound).json({ message: 'Verification code expired, kindly request a new code.' });
+    res
+      .status(HTTP_STATUS_CODES.NotFound)
+      .json({ message: 'Verification code expired, kindly request a new code.' });
     return;
   }
 
@@ -135,61 +149,49 @@ const verify = expressAsyncHandler(async (req: Request, res: Response) => {
   await verificationCode.deleteOne();
 
   switch (purpose) {
-  case 'user-verification':
-  {
-    user.isVerified = true;
-    await user.save();
-    res.status(HTTP_STATUS_CODES.Ok).json({ message: 'Verification successful' });
-    break;
-  }
-  case 'reset-password':
-  {
-    user.recoveryState.isRecovering = true;
-    user.recoveryState.hasVerifiedMail = true;
-    user.recoveryState.hasSetPassword = false;
-    await user.save();
+    case 'user-verification': {
+      user.isVerified = true;
+      await user.save();
+      res.status(HTTP_STATUS_CODES.Ok).json({ message: 'Verification successful' });
+      break;
+    }
+    case 'reset-password': {
+      user.recoveryState.isRecovering = true;
+      user.recoveryState.hasVerifiedMail = true;
+      user.recoveryState.hasSetPassword = false;
+      await user.save();
 
-    const ResetPasswordAccessTokenSecret = Env.ResetPasswordAccessTokenSecret;
+      const resetPasswordAccessToken = jwt.sign(
+        {
+          userID: user._id.toString(),
+          purpose: 'reset-password',
+        },
+        ENV.RESET_PASSWORD_ACCESS_TOKEN_SECRET,
+        { expiresIn: tokenConfig.resetPasswordAccessToken.expiry / 1000 },
+      );
 
-    if (!ResetPasswordAccessTokenSecret) {
-      logger.err('RESET_PASSWORD_ACCESS_TOKEN_SECRET is undefined!');
-      res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occurred in the server.' });
+      res.cookie('jwt_reset_at', resetPasswordAccessToken, {
+        ...cookieConfig,
+        maxAge: tokenConfig.resetPasswordAccessToken.expiry, // 15 minutes
+      });
+
+      res.status(HTTP_STATUS_CODES.Ok).json({ message: 'Success' });
+      break;
+    }
+    default: {
+      logger.error('[POST /api/auth/verify]: Unknown method!');
+      res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'Unknown purpose' });
       return;
     }
-
-    const resetPasswordAccessToken = jwt.sign(
-      {
-        userID: user._id.toString(),
-        purpose: 'reset-password',
-      },
-      ResetPasswordAccessTokenSecret,
-      { expiresIn: tokenConfig.resetPasswordAccessToken.expiry / 1000 },
-    );
-
-    res.cookie('jwt_reset_at', resetPasswordAccessToken, {
-      ...cookieConfig,
-      maxAge: tokenConfig.resetPasswordAccessToken.expiry, // 15 minutes
-    });
-
-    res.status(HTTP_STATUS_CODES.Ok).json({ message: 'Success' });
-    break;
   }
-  default:
-  {
-    logger.err('[POST /api/auth/verify]: Unknown method!');
-    res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'Unknown purpose' });
-    return;
-  }
-  }
-});
+};
 
 /**
  * @route POST /auth/resend-code
  * @description Used for resending a verification code to user's email
  * @returns HTTP 200, 400, 403, 404
  */
-const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
-
+const resendCode = async (req: Request, res: Response) => {
   const { id, purpose } = req.body;
 
   if (!id) {
@@ -204,48 +206,47 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
   }
 
   switch (purpose) {
-  case 'user-verification':
-    if (user.isVerified) {
-      res.status(HTTP_STATUS_CODES.Forbidden).json({ message: 'User is already verified!' });
+    case 'user-verification':
+      if (user.isVerified) {
+        res.status(HTTP_STATUS_CODES.Forbidden).json({ message: 'User is already verified!' });
+        return;
+      }
+      break;
+    case 'reset-password':
+      if (user.recoveryState.isRecovering && user.recoveryState.hasVerifiedMail) {
+        res
+          .status(HTTP_STATUS_CODES.Forbidden)
+          .json({ message: 'You have verified your email already' });
+        return;
+      }
+      break;
+    default:
+      logger.error('[POST /api/auth/resend-verification-code]: Unknown method!');
+      res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'Unknown method' });
       return;
-    }
-    break;
-  case 'reset-password':
-    if (user.recoveryState.isRecovering && user.recoveryState.hasVerifiedMail) {
-      res.status(HTTP_STATUS_CODES.Forbidden).json({ message: 'You have verified your email already' });
-      return;
-    }
-    break;
-  default:
-    logger.err('[POST /api/auth/resend-verification-code]: Unknown method!');
-    res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'Unknown method' });
-    return;
   }
 
   const lastCodeRequestTime = codeCooldownManager.get(user._id.toString());
   const hasRecentlyRequestedCode = lastCodeRequestTime ? lastCodeRequestTime > Date.now() : false;
 
   if (hasRecentlyRequestedCode) {
-    res.status(HTTP_STATUS_CODES.TooManyRequests)
-      .json({
-        message: 'You have recently requested a verification code, Please wait before requesting a new one!',
-      });
+    res.status(HTTP_STATUS_CODES.TooManyRequests).json({
+      message:
+        'You have recently requested a verification code, Please wait before requesting a new one!',
+    });
     return;
   }
 
   const verificationCode = await VerificationCode.findOne({ user: user._id, purpose });
 
-  if (verificationCode)
-    await verificationCode.deleteOne();
+  if (verificationCode) await verificationCode.deleteOne();
 
   const code = generateVerificationCode();
 
   let mailInfo: null | undefined | SMTPTransport.SentMessageInfo = null;
 
-  if (purpose === 'user-verification')
-    mailInfo = await sendVerificationMail(user.email, code);
-  else if (purpose === 'reset-password')
-    mailInfo = await sendPasswordResetEmail(user.email, code);
+  if (purpose === 'user-verification') mailInfo = await sendVerificationMail(user.email, code);
+  else if (purpose === 'reset-password') mailInfo = await sendPasswordResetEmail(user.email, code);
 
   codeCooldownManager.set(user._id.toString(), Date.now() + CODE_REQUEST_COOLDOWN);
 
@@ -258,16 +259,16 @@ const resendCode = expressAsyncHandler(async (req: Request, res: Response) => {
 
   res.status(HTTP_STATUS_CODES.Ok).json({
     message: 'Success',
-    emailLink: !!mailInfo && Env.SmtpMock ? nodemailer.getTestMessageUrl(mailInfo) : null,
+    emailLink: !!mailInfo && ENV.SMTP_MOCK ? nodemailer.getTestMessageUrl(mailInfo) : null,
   });
-});
+};
 
 /**
  * @route POST /auth/login
  * @description Logs in the user and returns HTTP only cookies to the client.
  * @returns HTTP 200, 400, 401, 404, 500
  */
-const login = expressAsyncHandler(async (req: Request, res: Response) => {
+const login = async (req: Request, res: Response) => {
   const { username, password }: Record<string, string> = req.body;
 
   if (!username || !password) {
@@ -293,14 +294,6 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
     return;
   }
 
-  const AccessTokenSecret = Env.AccessTokenSecret;
-
-  if (!AccessTokenSecret) {
-    logger.err('ACCESS_TOKEN_SECRET is undefined!');
-    res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured in the server.' });
-    return;
-  }
-
   const accessToken = jwt.sign(
     {
       User: {
@@ -309,17 +302,9 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
         displayName: user.displayName,
       },
     },
-    AccessTokenSecret,
+    ENV.ACCESS_TOKEN_SECRET,
     { expiresIn: tokenConfig.accessToken.expiry / 1000 },
   );
-
-  const RefreshTokenSecret = Env.RefreshTokenSecret;
-
-  if (!RefreshTokenSecret) {
-    logger.err('REFRESH_TOKEN_SECRET is undefined!');
-    res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured in the server.' });
-    return;
-  }
 
   const refreshToken = jwt.sign(
     {
@@ -328,7 +313,7 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
         username: user.username,
       },
     },
-    RefreshTokenSecret,
+    ENV.REFRESH_TOKEN_SECRET,
     { expiresIn: tokenConfig.refreshToken.expiry / 1000 },
   );
 
@@ -339,23 +324,22 @@ const login = expressAsyncHandler(async (req: Request, res: Response) => {
 
   res.cookie('jwt_at', accessToken, cookieConfig);
 
-  res.status(HTTP_STATUS_CODES.Ok)
-    .send({
-      message: 'Logged in successfully',
-      user: {
-        displayName: user.displayName,
-        id: user._id.toString(),
-        email: user.email,
-      },
-    });
-});
+  res.status(HTTP_STATUS_CODES.Ok).send({
+    message: 'Logged in successfully',
+    user: {
+      displayName: user.displayName,
+      id: user._id.toString(),
+      email: user.email,
+    },
+  });
+};
 
 /**
  * @route POST /auth/recover-account
  * @description Used to initiate account recovery process.
  * @returns HTTP 200, 400, 404
  */
-const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) => {
+const recoverAccount = async (req: Request, res: Response) => {
   const { input }: Record<string, string> = req.body;
 
   if (!input) {
@@ -363,18 +347,24 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
     return;
   }
 
-  const user = await User.findOne({ $or: [{ username: input }, { email: input }] }).select('-password').exec();
+  const user = await User.findOne({ $or: [{ username: input }, { email: input }] })
+    .select('-password')
+    .exec();
 
   if (!user) {
     res.status(HTTP_STATUS_CODES.NotFound).send({ message: 'No account found' });
     return;
   }
 
-  if (user.recoveryState.isRecovering && user.recoveryState.hasVerifiedMail && req.cookies?.jwt_reset_at) {
-    res.status(HTTP_STATUS_CODES.Forbidden)
-      .json({
-        message: 'You are already in the process of recovering your account. Finish your attempt or restart account recovery process.',
-      });
+  if (
+    user.recoveryState.isRecovering &&
+    user.recoveryState.hasVerifiedMail &&
+    req.cookies['jwt_reset_at']
+  ) {
+    res.status(HTTP_STATUS_CODES.Forbidden).json({
+      message:
+        'You are already in the process of recovering your account. Finish your attempt or restart account recovery process.',
+    });
     return;
   }
 
@@ -400,17 +390,17 @@ const recoverAccount = expressAsyncHandler(async (req: Request, res: Response) =
 
   res.status(HTTP_STATUS_CODES.Ok).json({
     id: user._id.toString(),
-    email: isEmail(input) ? input : obfuscateEmail(user.email),
-    emailLink: !!mailInfo && Env.SmtpMock ? nodemailer.getTestMessageUrl(mailInfo) : null,
+    email: validator.isEmail(input) ? input : obfuscateEmail(user.email),
+    emailLink: !!mailInfo && ENV.SMTP_MOCK ? nodemailer.getTestMessageUrl(mailInfo) : null,
   });
-});
+};
 
 /**
  * @route POST /auth/reset-password
  * @description Used for finishing account recovery process.
  * @returns HTTP 200, 400, 403, 404
  */
-const resetPassword = expressAsyncHandler(async (req: Request, res: Response) => {
+const resetPassword = async (req: Request, res: Response) => {
   const { password, confirmPassword }: Record<string, string> = req.body;
 
   if (!password || !confirmPassword) {
@@ -426,10 +416,10 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
   }
 
   if (!user.recoveryState.isRecovering || !user.recoveryState.hasVerifiedMail) {
-    res.status(HTTP_STATUS_CODES.Forbidden)
-      .json({
-        message: 'You haven\'t completed the earlier stages of account recovery, complete them or restart the account recovery process.',
-      });
+    res.status(HTTP_STATUS_CODES.Forbidden).json({
+      message:
+        "You haven't completed the earlier stages of account recovery, complete them or restart the account recovery process.",
+    });
     return;
   }
 
@@ -443,7 +433,11 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
   user.recoveryState.hasVerifiedMail = true;
   user.recoveryState.hasSetPassword = true; // TODO: might remove later
 
-  if (user.recoveryState.isRecovering && user.recoveryState.hasVerifiedMail && user.recoveryState.hasSetPassword) {
+  if (
+    user.recoveryState.isRecovering &&
+    user.recoveryState.hasVerifiedMail &&
+    user.recoveryState.hasSetPassword
+  ) {
     user.recoveryState.isRecovering = false;
     user.recoveryState.hasVerifiedMail = false;
     user.recoveryState.hasSetPassword = false;
@@ -457,14 +451,14 @@ const resetPassword = expressAsyncHandler(async (req: Request, res: Response) =>
   });
 
   res.status(HTTP_STATUS_CODES.Ok).json({ message: 'Password changed successfully' });
-});
+};
 
 /**
  * @route POST /auth/logout
  * @description Logs out the user and clears HTTP only cookies on the client.
  * @returns HTTP 200
  */
-const logout = expressAsyncHandler((req: Request, res: Response) => {
+const logout = (_req: Request, res: Response) => {
   res.clearCookie('jwt_rt', {
     ...cookieConfig,
     maxAge: undefined,
@@ -476,7 +470,7 @@ const logout = expressAsyncHandler((req: Request, res: Response) => {
   });
 
   res.status(HTTP_STATUS_CODES.Ok).send({ message: 'User logged out successfully' });
-});
+};
 
 export default {
   register,

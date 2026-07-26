@@ -1,34 +1,38 @@
-import jetEnv, { bool, num, str } from 'jet-env';
+import z from 'zod';
 
+export const NODE_ENVS = {
+  DEVELOPMENT: 'development',
+  PRODUCTION: 'production',
+  TEST: 'test',
+} as const;
 
-/******************************************************************************
-                            Export default
-******************************************************************************/
+const envSchema = z.object({
+  NODE_ENV: z.enum(Object.values(NODE_ENVS)).default('development'),
 
-export default jetEnv({
-  NodeEnv: str,
-  
   /* App */
-  AppName: str,
-  Port: num,
-  MongodbUri: str,
-  FrontendOrigin: str,
-  
+  APP_NAME: z.string(),
+  PORT: z.coerce.number().default(3000),
+  MONGODB_URI: z.string(),
+  FRONTEND_ORIGIN: z.string(),
+
   /* AWS */
-  AwsRegion: str,
-  AwsBucketName: str,
-  AwsAccessKeyId: str,
-  AwsSecretAccessKey: str,
+  AWS_REGION: z.string(),
+  AWS_BUCKET_NAME: z.string(),
+  AWS_ACCESS_KEY_ID: z.string(),
+  AWS_SECRET_ACCESS_KEY: z.string(),
 
   /* Token secrets */
-  AccessTokenSecret: str,
-  RefreshTokenSecret: str,
-  ResetPasswordAccessTokenSecret: str,
+  ACCESS_TOKEN_SECRET: z.string(),
+  REFRESH_TOKEN_SECRET: z.string(),
+  RESET_PASSWORD_ACCESS_TOKEN_SECRET: z.string(),
 
   /* SMTP */
-  SmtpMock: bool,
-  SmtpProvider: str,
-  SmtpEmail: str,
-  SmtpPass: str,
-
+  SMTP_MOCK: z.coerce.boolean().default(true),
+  SMTP_PROVIDER: z.string(),
+  SMTP_EMAIL: z.email(),
+  SMTP_PASS: z.string(),
 });
+
+const ENV = envSchema.parse(process.env);
+
+export default ENV;

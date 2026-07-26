@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import limiter from '@src/middleware/LoginLimiter';
-import authController from '@src/controllers/authController';
-import AuthValidator from '@src/middleware/AuthValidator';
+import limiter from '@src/middleware/rateLimit.middleware.js';
+import authController from '@src/controllers/auth.controller.js';
+import AuthValidator from '@src/middleware/authValidation.middleware.js';
 
 const { register, verify, resendCode, login, recoverAccount, resetPassword, logout } = authController;
 

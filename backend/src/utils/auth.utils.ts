@@ -1,6 +1,6 @@
-import Env from '@src/common/Env';
-import { tokenConfig } from '@src/config/tokenConfig';
-import { IUser } from '@src/models/User';
+import ENV from '@src/common/env.js';
+import { tokenConfig } from '@src/config/token.config.js';
+import { type IUser } from '@src/models/user.model.js';
 import jwt from 'jsonwebtoken';
 
 /**
@@ -19,7 +19,7 @@ export function refreshAccessToken(user: IUser) {
         displayName: user.displayName,
       },
     },
-    Env.AccessTokenSecret,
+    ENV.ACCESS_TOKEN_SECRET,
     { expiresIn: tokenConfig.accessToken.expiry / 1000 },
   );
 

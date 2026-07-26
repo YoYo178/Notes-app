@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import notesController from '@src/controllers/notesController';
+import notesController from '@src/controllers/notes.controller.js';
 
 const { getAllNotes, getNoteById, createNote, updateNote, deleteNote } = notesController;
 

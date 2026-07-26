@@ -1,24 +1,25 @@
 import { Router } from 'express';
-import AuthRouter from './Auth/AuthRouter';
-import UsersRouter from './Users/UsersRouter';
-import NotesRouter from './Notes/NotesRouter';
-import FilesRouter from './Files/FilesRouter';
 
-import AuthValidator from '@src/middleware/AuthValidator';
+import AuthRouter from './auth.routes.js';
+import UsersRouter from './users.routes.js';
+import NotesRouter from './notes.routes.js';
+import FilesRouter from './files.routes.js';
+
+import AuthValidator from '@src/middleware/authValidation.middleware.js';
 
 /******************************************************************************
                                 Variables
 ******************************************************************************/
 
-const apiRouter = Router();
+const APIRouter = Router();
 
-apiRouter.use('/auth', AuthRouter);
-apiRouter.use('/users', AuthValidator, UsersRouter);
-apiRouter.use('/notes', AuthValidator, NotesRouter);
-apiRouter.use('/files', AuthValidator, FilesRouter);
+APIRouter.use('/auth', AuthRouter);
+APIRouter.use('/users', AuthValidator, UsersRouter);
+APIRouter.use('/notes', AuthValidator, NotesRouter);
+APIRouter.use('/files', AuthValidator, FilesRouter);
 
 /******************************************************************************
                                 Export default
 ******************************************************************************/
 
-export default apiRouter;
+export default APIRouter;

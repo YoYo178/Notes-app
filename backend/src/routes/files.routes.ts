@@ -1,13 +1,13 @@
-import HTTP_STATUS_CODES from '@src/common/HTTP_STATUS_CODES';
-import { ASSETS_PATH, multerFileFilter, multerLimits, multerStorageConfig } from '@src/config/multerConfig';
-import { Router, Request, Response } from 'express';
+import HTTP_STATUS_CODES from '@src/common/HttpStatusCodes.js';
+import { ASSETS_PATH, multerFileFilter, multerLimits, multerStorageConfig } from '@src/config/multer.config.js';
+import { Router, type Request, type Response } from 'express';
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 
 const FilesRouter = Router();
 
-const upload = multer({ storage: multerStorageConfig, fileFilter: multerFileFilter, limits: multerLimits });
+const upload = multer({ storage: multerStorageConfig, fileFilter: multerFileFilter!, limits: multerLimits });
 
 FilesRouter.post('/upload/image', upload.array('images[]', 5), (req: Request, res: Response) => {
   if (!req.files)
@@ -28,8 +28,10 @@ FilesRouter.post('/upload/audio', upload.single('audio'), (req: Request, res: Re
 FilesRouter.delete('/', (req: Request, res: Response) => {
   const { files } = req.body as { files: string[] };
 
-  if (!Array.isArray(files))
-    return res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'files must be an array!' });
+  if (!Array.isArray(files)) {
+    res.status(HTTP_STATUS_CODES.BadRequest).json({ message: 'files must be an array!' });
+    return;
+  }
 
   const deletedFilenames: string[] = [];
   const unableToDelete: string[] = [];

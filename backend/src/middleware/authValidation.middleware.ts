@@ -1,17 +1,14 @@
 import jwt from 'jsonwebtoken';
-import logger from 'jet-logger';
-import { Request, Response, NextFunction } from 'express';
-import expressAsyncHandler from 'express-async-handler';
+import type { Request, Response, NextFunction } from 'express';
 
-import { NODE_ENVS } from '@src/common/constants';
-import HTTP_STATUS_CODES from '@src/common/HTTP_STATUS_CODES';
-import Env from '@src/common/Env';
+import HTTP_STATUS_CODES from '@src/common/HttpStatusCodes.js';
+import ENV, {NODE_ENVS} from '@src/common/env.js';
 
-import cookieConfig from '@src/config/cookieConfig';
+import cookieConfig from '@src/config/cookies.config.js';
 
-import { User } from '@src/models/User';
+import { User } from '@src/models/user.model.js';
 
-import { refreshAccessToken } from '@src/util/auth.utils';
+import { refreshAccessToken } from '@src/utils/auth.utils.js';
 
 const tokenBlacklist: string[] = [];
 
@@ -19,27 +16,19 @@ const tokenBlacklist: string[] = [];
  * @description Authentication validator, verifies if the user is logged in or not
  * @returns HTTP 400, 401, 403, 409, 500
  */
-const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+const AuthValidator = async (req: Request, res: Response, next: NextFunction) => {
   const cookies = req.cookies;
 
-  const resetPasswordAccessToken: string | undefined = cookies?.jwt_reset_at;
-  const refreshToken: string | undefined = cookies?.jwt_rt;
-  const accessToken: string | undefined = cookies?.jwt_at;
+  const resetPasswordAccessToken: string | undefined = cookies['jwt_reset_at'];
+  const refreshToken: string | undefined = cookies['jwt_rt'];
+  const accessToken: string | undefined = cookies['jwt_at'];
 
   if (resetPasswordAccessToken) {
     const wantsToChangePassword = req.originalUrl.split('/').at(-1) === 'reset-password';
 
-    const ResetPasswordAccessTokenSecret = Env.ResetPasswordAccessTokenSecret;
-
-    if (!ResetPasswordAccessTokenSecret) {
-      logger.err('RESET_PASSWORD_ACCESS_TOKEN_SECRET is undefined!');
-      res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured in the server.' });
-      return;
-    }
-
     try {
       // Decode user's password reset access token
-      const decoded = jwt.verify(resetPasswordAccessToken, ResetPasswordAccessTokenSecret) as {
+      const decoded = jwt.verify(resetPasswordAccessToken, ENV.RESET_PASSWORD_ACCESS_TOKEN_SECRET) as {
                 userID: string,
                 purpose: 'reset-password' | 'user-verification',
             };
@@ -88,28 +77,12 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
     return;
   }
 
-  const AccessTokenSecret = Env.AccessTokenSecret;
-
-  if (!AccessTokenSecret) {
-    logger.err('ACCESS_TOKEN_SECRET is undefined!');
-    res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured in the server.' });
-    return;
-  }
-
-  const RefreshTokenSecret = Env.RefreshTokenSecret;
-
-  if (!RefreshTokenSecret) {
-    logger.err('REFRESH_TOKEN_SECRET is undefined!');
-    res.status(HTTP_STATUS_CODES.InternalServerError).send({ message: 'An error occured in the server.' });
-    return;
-  }
-
   let userID: string;
 
   // Check for user's refresh token first, make sure it's valid
   try {
     // Decode user's refresh token
-    const decoded = jwt.verify(refreshToken, RefreshTokenSecret) as {
+    const decoded = jwt.verify(refreshToken, ENV.REFRESH_TOKEN_SECRET) as {
             User: {
                 id: string,
                 username: string,
@@ -161,7 +134,7 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
   // If expired, then refresh it silently
   try {
     // Decode user's access token
-    const decoded = jwt.verify(accessToken, AccessTokenSecret) as {
+    const decoded = jwt.verify(accessToken, ENV.ACCESS_TOKEN_SECRET) as {
             User: {
                 id: string,
                 username: string,
@@ -178,13 +151,13 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
       res.clearCookie('jwt-at', {
         httpOnly: true,
         sameSite: 'none',
-        secure: Env.NodeEnv === NODE_ENVS.Production,
+        secure: ENV.NODE_ENV === NODE_ENVS.PRODUCTION,
       });
 
       res.clearCookie('jwt-rt', {
         httpOnly: true,
         sameSite: 'none',
-        secure: Env.NodeEnv === NODE_ENVS.Production,
+        secure: ENV.NODE_ENV === NODE_ENVS.PRODUCTION,
       });
 
       // Add the access token to token blacklist
@@ -233,6 +206,6 @@ const AuthValidator = expressAsyncHandler(async (req: Request, res: Response, ne
 
     return;
   }
-});
+};
 
 export default AuthValidator;

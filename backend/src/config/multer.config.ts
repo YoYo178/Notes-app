@@ -3,7 +3,7 @@ import path from 'path';
 import multer from 'multer';
 import { v4 as uuid } from 'uuid';
 
-export const ASSETS_PATH = path.resolve(__dirname, '..', '..', 'assets');
+export const ASSETS_PATH = path.resolve(import.meta.dirname, '..', '..', 'assets');
 
 export const IMAGES_PATH = path.join(ASSETS_PATH, 'images');
 export const AUDIO_PATH = path.join(ASSETS_PATH, 'audio');

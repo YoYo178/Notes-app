@@ -1,9 +1,9 @@
-import Env from '@src/common/Env';
-import nodemailer, { Transporter } from 'nodemailer';
-import logger from 'jet-logger';
-import Mail from 'nodemailer/lib/mailer';
-import SESTransport from 'nodemailer/lib/ses-transport';
-import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import ENV from '@src/common/env.js';
+import logger from '@src/utils/logger.utils.js';
+import nodemailer, { type Transporter } from 'nodemailer';
+import Mail from 'nodemailer/lib/mailer/index.js';
+import SESTransport from 'nodemailer/lib/ses-transport/index.js';
+import SMTPTransport from 'nodemailer/lib/smtp-transport/index.js';
 import Stream from 'stream';
 
 class MailService {
@@ -14,7 +14,7 @@ class MailService {
   }
 
   private async init() {
-    if (Env.SmtpMock) {
+    if (ENV.SMTP_MOCK) {
       const testAccount = await nodemailer.createTestAccount();
       logger.info('[MailService] Test account created:');
       logger.info(testAccount);
@@ -32,17 +32,17 @@ class MailService {
       return;
     }
 
-    if (!Env.SmtpProvider || !Env.SmtpEmail || !Env.SmtpPass) {
-      logger.err('SMTP Credentials not set!');
+    if (!ENV.SMTP_PROVIDER || !ENV.SMTP_EMAIL || !ENV.SMTP_PASS) {
+      logger.error('SMTP Credentials not set!');
       logger.warn('Mail service not initalized!');
       return;
     }
 
     this.transporter = nodemailer.createTransport({
-      service: Env.SmtpProvider,
+      service: ENV.SMTP_PROVIDER,
       auth: {
-        user: Env.SmtpEmail,
-        pass: Env.SmtpPass,
+        user: ENV.SMTP_EMAIL,
+        pass: ENV.SMTP_PASS,
       },
     });
   }
@@ -63,13 +63,13 @@ class MailService {
     if (!this.transporter)
       return;
 
-    if (Env.SmtpMock) {
+    if (ENV.SMTP_MOCK) {
       logger.info('New mail draft:');
-      logger.info({ from: `"${Env.AppName}" <${Env.SmtpEmail}>`, to, subject, text, html, attachments });
+      logger.info({ from: `"${ENV.APP_NAME}" <${ENV.SMTP_EMAIL}>`, to, subject, text, html, attachments });
     }
 
     const info: SESTransport.SentMessageInfo | SMTPTransport.SentMessageInfo = await this.transporter.sendMail({
-      from: `"${Env.AppName}" <${Env.SmtpEmail}>`,
+      from: `"${ENV.APP_NAME}" <${ENV.SMTP_EMAIL}>`,
       to,
       subject,
       text,
@@ -77,7 +77,7 @@ class MailService {
       attachments,
     });
 
-    if (Env.SmtpMock) {
+    if (ENV.SMTP_MOCK) {
       logger.info('Message sent:');
       logger.info(info.messageId);
       logger.info('Preview URL:');

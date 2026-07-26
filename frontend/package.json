@@ -15,37 +15,31 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "lint": "oxlint .",
+    "lint:fix": "oxlint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.90.21",
-    "axios": "^1.13.6",
-    "lodash": "^4.17.23",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "react-icons": "^5.5.0",
-    "react-router-dom": "^7.13.1",
-    "validator": "^13.15.26"
+    "@tanstack/react-query": "^5.101.4",
+    "@types/validator": "^13.15.10",
+    "axios": "^1.18.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-icons": "^5.7.0",
+    "react-router-dom": "^7.18.1",
+    "validator": "^13.15.35"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/dom-speech-recognition": "^0.0.7",
-    "@types/gh-pages": "^6.1.0",
-    "@types/lodash": "^4.17.24",
-    "@types/react": "^19.2.14",
+    "@types/dom-speech-recognition": "^0.0.12",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@types/validator": "^13.15.10",
-    "@vitejs/plugin-react": "^5.1.4",
-    "eslint": "^10.0.2",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "gh-pages": "^6.3.0",
-    "globals": "^17.3.0",
-    "typescript": "~5.9.3",
-    "typescript-eslint": "^8.56.1",
-    "vite": "^7.3.1"
+    "@vitejs/plugin-react": "^6.0.4",
+    "oxlint": "^1.75.0",
+    "prettier": "^3.9.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.5"
   },
-  "packageManager": "pnpm@10.30.3+sha512.c961d1e0a2d8e354ecaa5166b822516668b7f44cb5bd95122d590dd81922f606f5473b6d23ec4a5be05e7fcd18e8488d47d978bbe981872f1145d06e9a740017"
+  "packageManager": "pnpm@11.17.0+sha512.cca3cea332ad254bb84145f966d19f4879615210346fc92c79a047f23a0d7b3cca3c3792f0076ba1f1831d277efbcf0a9119b31a9a60eca7fb3d6231f331ef72"
 }

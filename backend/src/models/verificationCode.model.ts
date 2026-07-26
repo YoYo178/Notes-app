@@ -21,4 +21,4 @@ const codeSchema: mongoose.Schema = new mongoose.Schema<IVerificationCode>(
 
 const VerificationCode = mongoose.model<IVerificationCode>('codes', codeSchema);
 
-export { IVerificationCode, VerificationCode };
+export { type IVerificationCode, VerificationCode };

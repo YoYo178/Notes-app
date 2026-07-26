@@ -1,32 +1,31 @@
-import { User } from '@src/models/User';
-import expressAsyncHandler from 'express-async-handler';
-import { Request, Response } from 'express';
+import { User } from '@src/models/user.model.js';
+import type { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import HTTP_STATUS_CODES from '@src/common/HTTP_STATUS_CODES';
-import { isEmail } from 'validator';
-import cookieConfig from '@src/config/cookieConfig';
-import { Note } from '@src/models/Note';
+import HTTP_STATUS_CODES from '@src/common/HttpStatusCodes.js';
+import validator from 'validator';
+import cookieConfig from '@src/config/cookies.config.js';
+import { Note } from '@src/models/note.model.js';
 
 /**
  * @route GET /users/me
  * @description A query route for the client to know if they're logged in or not
  * @returns HTTP 200
  */
-const getLoggedInUser = expressAsyncHandler((req: Request, res: Response) => {
+const getLoggedInUser = (req: Request, res: Response) => {
   // No need to perform any checks
   // Auth validator middleware handles everything already
   res.status(HTTP_STATUS_CODES.Ok).send({ message: 'User is logged in', user: req.user });
-});
+};
 
 /**
  * @route PATCH /users
  * @description Updates an existing user.
  * @returns HTTP 200, 400, 404, 409
  */
-const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
-  const { currentPassword, newPassword, confirmNewPassword, displayName, email }: Record<string, string> = req.body;
+const updateUser = async (req: Request, res: Response) => {
+  const { currentPassword = '', newPassword, confirmNewPassword, displayName, email = '' }: Record<string, string> = req.body;
 
-  if (!isEmail(email)) {
+  if (!validator.isEmail(email)) {
     res.status(HTTP_STATUS_CODES.BadRequest).send({ message: 'Invalid Email' });
     return;
   }
@@ -71,14 +70,14 @@ const updateUser = expressAsyncHandler(async (req: Request, res: Response) => {
   await user.save();
 
   res.status(HTTP_STATUS_CODES.Ok).send({ message: 'User updated successfully', data: { user } });
-});
+};
 
 /**
  * @route DELETE /users
  * @description Deletes a user.
  * @returns HTTP 200, 404
  */
-const deleteUser = expressAsyncHandler(async (req: Request, res: Response) => {
+const deleteUser = async (req: Request, res: Response) => {
   const user = await User.findById(req.user.id);
 
   if (!user) {
@@ -102,7 +101,7 @@ const deleteUser = expressAsyncHandler(async (req: Request, res: Response) => {
   await user.deleteOne();
 
   res.status(HTTP_STATUS_CODES.Ok).send({ message: 'User deleted successfully' });
-});
+};
 
 export default {
   getLoggedInUser,
